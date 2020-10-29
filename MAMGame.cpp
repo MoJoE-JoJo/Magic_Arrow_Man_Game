@@ -13,7 +13,7 @@ using namespace std;
 MAMGame* MAMGame::instance = nullptr;
 const glm::vec2 MAMGame::windowSize(1280, 720);
 
-MAMGame::MAMGame() {
+MAMGame::MAMGame() : debugDraw(physicsScale) {
     instance = this;
     r.setWindowSize(windowSize);
     r.init().withSdlInitFlags(SDL_INIT_EVERYTHING).withSdlWindowFlags(SDL_WINDOW_OPENGL);
@@ -32,23 +32,44 @@ void MAMGame::init() {
     if (world != nullptr) { // deregister call backlistener to avoid getting callbacks when recreating the world
         world->SetContactListener(nullptr);
     }
+
+    gameObjects.clear();
+    physicsComponentLookup.clear();
+
     camera.setOrthographicProjection(windowSize.y / 2, -1, 1);
     camera.setWindowCoordinates();
     initPhysics();
 
     auto sprites = SpriteAtlas::createSingleSprite(Texture::getWhiteTexture());
+
     auto box = createGameObject({ windowSize.x / 2, windowSize.y / 2 });
     auto spriteBox = box->addComponent<SpriteComponent>();
     auto sprite = sprites->get("sprite");
-    sprite.setScale({ 100, 10 });
+    sprite.setScale({ 500, 10 });
     sprite.setColor({ 0.89f, 0.55f, 0.0f, 1.0f });
     spriteBox->setSprite(sprite);
+
+    auto phys = box->addComponent<PhysicsComponent>();
+    phys->initBox(b2_staticBody, glm::vec2(500, 10) / physicsScale, box->getPosition() / physicsScale, 1);
+
+    auto pbox = createGameObject({ windowSize.x / 2, windowSize.y / 2 + 200});
+    auto pSpriteBox = pbox->addComponent<SpriteComponent>();
+    auto pSprite = sprites->get("sprite");
+    pSprite.setScale({ 10, 10 });
+    pSprite.setColor({ 0.84f, 0.27f, 0.51f, 1.0f });
+    pSpriteBox->setSprite(pSprite);
+
+    auto pPhys = pbox->addComponent<PhysicsComponent>();
+    pPhys->initBox(b2_dynamicBody, glm::vec2(10, 10) / physicsScale, pbox->getPosition() / physicsScale, 0.2f);
 }
 
 void MAMGame::initPhysics() {
     delete world;
     world = new b2World(b2Vec2(0, gravity));
     world->SetContactListener(this);
+    if (doDebugDraw) {
+        world->SetDebugDraw(&debugDraw);
+    }
 }
 
 void MAMGame::BeginContact(b2Contact* contact) {
@@ -72,7 +93,23 @@ void MAMGame::handleContact(b2Contact* contact, bool begin) {
 }
 
 void MAMGame::update(float time) {
-    
+    updatePhysics();
+}
+
+void MAMGame::updatePhysics() {
+    const float32 timeStep = 1.0f / 60.0f;
+    const int positionIterations = 2;
+    const int velocityIterations = 6;
+    world->Step(timeStep, velocityIterations, positionIterations);
+
+    for (auto phys : physicsComponentLookup) {
+        if (phys.second->rbType == b2_staticBody) continue;
+        auto position = phys.second->body->GetPosition();
+        float angle = glm::degrees(phys.second->body->GetAngle());
+        auto gameObject = phys.second->getGameObject();
+        gameObject->setPosition(glm::vec2(position.x, position.y) * physicsScale);
+        gameObject->setRotation(angle);
+    }
 }
 
 void MAMGame::render() {
@@ -91,10 +128,31 @@ void MAMGame::render() {
 
     auto sb = spriteBatchBuilder.build();
     rp.draw(sb);
+
+    if (doDebugDraw) {
+        world->DrawDebugData();
+        rp.drawLines(debugDraw.getLines());
+        debugDraw.clear();
+    }
 }
 
 void MAMGame::onKey(SDL_Event& event) {
-
+    if (event.type == SDL_KEYDOWN) {
+        if (event.key.keysym.sym == SDLK_d) {
+            doDebugDraw = !doDebugDraw;
+            if (doDebugDraw) {
+                world->SetDebugDraw(&debugDraw);
+            } else {
+                world->SetDebugDraw(nullptr);
+            }
+        } else if (event.key.keysym.sym == SDLK_RIGHT) {
+            gameObjects[1]->getComponent<PhysicsComponent>()->addForce(glm::vec2(10 / physicsScale, 0));
+        } else if (event.key.keysym.sym == SDLK_LEFT) {
+            gameObjects[1]->getComponent<PhysicsComponent>()->addForce(glm::vec2(-10 / physicsScale, 0));
+        } else if (event.key.keysym.sym == SDLK_r) {
+            init();
+        }
+    }
 }
 
 void MAMGame::mouseEvent(SDL_Event& e) {
@@ -109,4 +167,17 @@ void MAMGame::mouseEvent(SDL_Event& e) {
     int mouseY = static_cast<int>(pos.y);
 
     std::cout << mouseX << " " << mouseY << std::endl;
+}
+
+void MAMGame::registerPhysicsComponent(PhysicsComponent* physComponent) {
+    physicsComponentLookup[physComponent->fixture] = physComponent;
+}
+
+void MAMGame::deregisterPhysicsComponent(PhysicsComponent* physComponent) {
+    auto iter = physicsComponentLookup.find(physComponent->fixture);
+    if (iter != physicsComponentLookup.end()) {
+        physicsComponentLookup.erase(iter);
+    } else {
+        assert(false); // cannot find physics object
+    }
 }

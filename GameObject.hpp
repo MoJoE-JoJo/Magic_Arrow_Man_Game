@@ -14,7 +14,9 @@ public:
     template <class T>
         std::shared_ptr<T> getComponent();
     float getRotation() const;
+    void setRotation(float rotation);
     const glm::vec2& getPosition() const;
+    void setPosition(const glm::vec2& position);
 private:
     std::vector<std::shared_ptr<Component>> components;
     glm::vec2 position;

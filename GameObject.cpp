@@ -17,6 +17,14 @@ const glm::vec2& GameObject::getPosition() const {
     return position;
 }
 
+void GameObject::setPosition(const glm::vec2& position) {
+    GameObject::position = position;
+}
+
 float GameObject::getRotation() const {
     return rotation;
+}
+
+void GameObject::setRotation(float rotation) {
+    GameObject::rotation = rotation;
 }
