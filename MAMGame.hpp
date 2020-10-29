@@ -37,5 +37,7 @@ private:
 	std::map<b2Fixture*, PhysicsComponent*> physicsComponentLookup;
 	Box2DDebugDraw debugDraw;
 	bool doDebugDraw = false;
+	bool movingLeft;
+	bool movingRight;
 	friend class PhysicsComponent;
 };

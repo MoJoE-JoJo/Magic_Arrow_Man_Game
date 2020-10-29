@@ -33,6 +33,9 @@ void MAMGame::init() {
         world->SetContactListener(nullptr);
     }
 
+    movingLeft = false;
+    movingRight = false;
+
     gameObjects.clear();
     physicsComponentLookup.clear();
 
@@ -93,6 +96,12 @@ void MAMGame::handleContact(b2Contact* contact, bool begin) {
 }
 
 void MAMGame::update(float time) {
+    if (movingRight) {
+        gameObjects[1]->getComponent<PhysicsComponent>()->addForce(glm::vec2(10 / physicsScale, 0));
+    }
+    if (movingLeft) {
+        gameObjects[1]->getComponent<PhysicsComponent>()->addForce(glm::vec2(-10 / physicsScale, 0));
+    }
     updatePhysics();
 }
 
@@ -113,10 +122,7 @@ void MAMGame::updatePhysics() {
 }
 
 void MAMGame::render() {
-    auto rp = RenderPass::create()
-        .withCamera(camera)
-        .withClearColor(true, { .52f, .80f, .92f, 1.0f })
-        .build();
+    auto rp = RenderPass::create().withCamera(camera).withClearColor(true, { .52f, .80f, .92f, 1.0f }).build();
 
     auto spriteBatchBuilder = SpriteBatch::create();
     for (auto& go : gameObjects) {
@@ -146,11 +152,21 @@ void MAMGame::onKey(SDL_Event& event) {
                 world->SetDebugDraw(nullptr);
             }
         } else if (event.key.keysym.sym == SDLK_RIGHT) {
-            gameObjects[1]->getComponent<PhysicsComponent>()->addForce(glm::vec2(10 / physicsScale, 0));
+            movingRight = true;
         } else if (event.key.keysym.sym == SDLK_LEFT) {
-            gameObjects[1]->getComponent<PhysicsComponent>()->addForce(glm::vec2(-10 / physicsScale, 0));
+            movingLeft = true;
         } else if (event.key.keysym.sym == SDLK_r) {
             init();
+        }
+    } else if (event.type == SDL_KEYUP) {
+        if (event.key.keysym.sym == SDLK_RIGHT) {
+            movingRight = false;
+            auto yy = gameObjects[1]->getComponent<PhysicsComponent>()->getLinearVelocity().y;
+            gameObjects[1]->getComponent<PhysicsComponent>()->setLinearVelocity(glm::vec2(0, yy));
+        } else if (event.key.keysym.sym == SDLK_LEFT) {
+            movingLeft = false;
+            auto yy = gameObjects[1]->getComponent<PhysicsComponent>()->getLinearVelocity().y;
+            gameObjects[1]->getComponent<PhysicsComponent>()->setLinearVelocity(glm::vec2(0, yy));
         }
     }
 }
