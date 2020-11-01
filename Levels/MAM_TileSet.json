@@ -1,0 +1,14 @@
+{ "columns":4,
+ "image":"MAM_tiles.png",
+ "imageheight":320,
+ "imagewidth":256,
+ "margin":0,
+ "name":"MAM_TileSet",
+ "spacing":0,
+ "tilecount":20,
+ "tiledversion":"1.4.2",
+ "tileheight":64,
+ "tilewidth":64,
+ "type":"tileset",
+ "version":1.4
+}
