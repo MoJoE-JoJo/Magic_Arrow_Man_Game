@@ -46,12 +46,11 @@ void MAMGame::init() {
     initPhysics();
 
     sprites = SpriteAtlas::create("MAM.json", "MAM.png");
-    //sprites = SpriteAtlas::createSingleSprite(Texture::getWhiteTexture());
-    /*auto box = createGameObject({ windowSize.x / 2, windowSize.y / 2 }, GOType::ground);
+    auto box = createGameObject({ windowSize.x / 2, windowSize.y / 2 }, GOType::ground);
     auto spriteBox = box->addComponent<SpriteComponent>();
-    auto sprite = sprites->get("sprite");
-    sprite.setScale({ 500, 10 });
-    sprite.setColor({ 0.89f, 0.55f, 0.0f, 1.0f });
+    auto sprite = sprites->get("Tilesets-1-02.png");
+    //sprite.setScale({ 500, 10 });
+    //sprite.setColor({ 0.89f, 0.55f, 0.0f, 1.0f });
     spriteBox->setSprite(sprite);
 
     auto phys = box->addComponent<PhysicsComponent>();
@@ -60,26 +59,20 @@ void MAMGame::init() {
     auto pbox = shared_ptr<PlayerObject>(new PlayerObject({ windowSize.x / 2, windowSize.y / 2 + 200 }));
     gameObjects.push_back(pbox);
     auto pSpriteBox = pbox->addComponent<SpriteComponent>();
-    auto pSprite = sprites->get("sprite");
-    pSprite.setScale({ 10, 10 });
-    pSprite.setColor({ 0.84f, 0.27f, 0.51f, 1.0f });
+    auto pSprite = sprites->get("player_f1.png");
+    //pSprite.setScale({ 10, 10 });
+    //pSprite.setColor({ 0.84f, 0.27f, 0.51f, 1.0f });
     pSpriteBox->setSprite(pSprite);
 
     auto pPhys = pbox->addComponent<PlayerPhysics>();
     pPhys->initBox(b2_dynamicBody, glm::vec2(10, 10) / physicsScale, pbox->getPosition() / physicsScale, 0.2f);
 
     playerController = shared_ptr<PlayerController>(new PlayerController(pbox));
-    */
+    
 
     // Test json loading
     LevelLoader ll = LevelLoader();
     ll.loadMap("Levels/Level1.json");
-    /*
-    auto loaded = ll.getTileObjects();
-    for each (std::shared_ptr<GameObject> ptr in loaded) {
-        gameObjects.push_back(ptr);
-    }
-    */
 }
 
 void MAMGame::initPhysics() {
