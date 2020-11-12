@@ -39,5 +39,7 @@ private:
 	bool doDebugDraw = false;
 	bool movingLeft;
 	bool movingRight;
+	std::shared_ptr<sre::SpriteAtlas> sprites;
 	friend class PhysicsComponent;
+	friend class LevelLoader;
 };

@@ -6,6 +6,7 @@
 #include "MAMGame.hpp"
 #include "GameObject.hpp"
 #include "SpriteComponent.hpp"
+#include "LevelLoader.hpp"
 
 using namespace sre;
 using namespace std;
@@ -43,7 +44,7 @@ void MAMGame::init() {
     camera.setWindowCoordinates();
     initPhysics();
 
-    auto sprites = SpriteAtlas::createSingleSprite(Texture::getWhiteTexture());
+    sprites = SpriteAtlas::createSingleSprite(Texture::getWhiteTexture());
 
     auto box = createGameObject({ windowSize.x / 2, windowSize.y / 2 });
     auto spriteBox = box->addComponent<SpriteComponent>();
@@ -64,6 +65,17 @@ void MAMGame::init() {
 
     auto pPhys = pbox->addComponent<PhysicsComponent>();
     pPhys->initBox(b2_dynamicBody, glm::vec2(10, 10) / physicsScale, pbox->getPosition() / physicsScale, 0.2f);
+
+
+    // Test json loading
+
+    LevelLoader ll = LevelLoader();
+    ll.loadMap("Levels/Level1.json");
+    auto loaded = ll.getTileObjects();
+    for each (std::shared_ptr<GameObject> ptr in loaded)
+    {
+        gameObjects.push_back(ptr);
+    }
 }
 
 void MAMGame::initPhysics() {
