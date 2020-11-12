@@ -3,6 +3,10 @@
 #include "PhysicsComponent.hpp"
 #include "MAMGame.hpp"
 
+PlayerObject::PlayerObject(glm::vec2 pos) : GameObject(pos, GOType::player) {
+    
+}
+
 void PlayerObject::update(float deltaTime) {
 	GameObject::update(deltaTime);
     if (movingRight && isGrounded) {

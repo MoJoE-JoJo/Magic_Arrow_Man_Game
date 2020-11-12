@@ -68,17 +68,15 @@ void MAMGame::init() {
     auto pPhys = pbox->addComponent<PlayerPhysics>();
     pPhys->initBox(b2_dynamicBody, glm::vec2(10, 10) / physicsScale, pbox->getPosition() / physicsScale, 0.2f);
 
+    playerController = shared_ptr<PlayerController>(new PlayerController(pbox));
 
     // Test json loading
-
     LevelLoader ll = LevelLoader();
     ll.loadMap("Levels/Level1.json");
     auto loaded = ll.getTileObjects();
-    for each (std::shared_ptr<GameObject> ptr in loaded)
-    {
+    for each (std::shared_ptr<GameObject> ptr in loaded) {
         gameObjects.push_back(ptr);
     }
-    playerController = shared_ptr<PlayerController>(new PlayerController(pbox));
 }
 
 void MAMGame::initPhysics() {
