@@ -22,46 +22,49 @@ void LevelLoader::loadMap(std::string filename) {
     IStreamWrapper isw(fis);
     Document d;
     d.ParseStream(isw);
-    const rapidjson::Value& layers = d["layers"];
-    const rapidjson::Value& layerObj = layers[0];
-    const rapidjson::Value& chunkArray = layerObj["chunks"];
+    rapidjson::Value& layers = d["layers"];
+    rapidjson::Value& layerObj = layers[0];
+    rapidjson::Value& chunkArray = layerObj["chunks"];
     
-    const rapidjson::Value& tilesets = d["tilesets"];
+    rapidjson::Value& tilesets = d["tilesets"];
     tileHeight = d["tileheight"].GetInt();
     tileWidth = d["tilewidth"].GetInt();
 
     for (rapidjson::SizeType i = 0; i < chunkArray.Size(); i++)
     {
-        const rapidjson::Value& chunk = chunkArray[i];
+        rapidjson::Value& chunk = chunkArray[i];
 
         int x = chunk["x"].GetInt();
         int y = chunk["y"].GetInt();
         int height = chunk["height"].GetInt();
-        int width = chunk["witdth"].GetInt();
+        int width = chunk["width"].GetInt();
         
 
-        const rapidjson::Value& data = chunk["data"];
+        rapidjson::Value& data = chunk["data"];
         int horizontalCounter = 0;
         int verticalCounter = 0;
         for (rapidjson::SizeType j = 0; j < data.Size(); j++) {
             //int tileId = data[j].GetInt();
             int hozMod = horizontalCounter % width;
-            if (hozMod == 15) {
+            int xPos = hozMod + x;
+            int yPos = (verticalCounter + y)*-1;
+            if (x == 0 && y == 0) {
+                std::cout << yPos << endl;
+            }
+            if (data[j].GetInt() != 0) {
+
+                glm::vec2 position = glm::vec2(xPos * tileWidth, yPos * tileHeight);
+                auto tile = MAMGame::instance->createGameObject(position);
+                auto spriteBox = tile->addComponent<SpriteComponent>();
+                auto sprite = MAMGame::instance->sprites->get("Tilesets-1-02.png");
+                //sprite.setScale({ 30, 30 });
+                //sprite.setColor({ 0.89f, 0.55f, 0.0f, 1.0f });
+                spriteBox->setSprite(sprite);
+                tileObjects.push_back(tile);
+            }
+            if (hozMod == width - 1) {
                 verticalCounter++;
             }
-            int xPos = hozMod + x;
-            int yPos = verticalCounter + y;
-
-            glm::vec2 position = glm::vec2(xPos*tileWidth, yPos*tileHeight);
-            auto tile = make_shared<GameObject>(position);
-            auto spriteBox = tile->addComponent<SpriteComponent>();
-            auto sprite = MAMGame::instance->sprites->get("sprite");
-            sprite.setScale({ 500, 10 });
-            sprite.setColor({ 0.89f, 0.55f, 0.0f, 1.0f });
-            spriteBox->setSprite(sprite);
-
-            tileObjects.push_back(tile);
-
             horizontalCounter++;
         }
         

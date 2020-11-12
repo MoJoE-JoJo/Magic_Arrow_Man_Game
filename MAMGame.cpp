@@ -43,9 +43,9 @@ void MAMGame::init() {
     camera.setWindowCoordinates();
     initPhysics();
 
-    sprites = SpriteAtlas::createSingleSprite(Texture::getWhiteTexture());
-
-    auto box = createGameObject({ windowSize.x / 2, windowSize.y / 2 });
+    //sprites = SpriteAtlas::createSingleSprite(Texture::getWhiteTexture());
+    sprites = SpriteAtlas::create("MAM.json", "MAM.png");
+    /*auto box = createGameObject({ windowSize.x / 2, windowSize.y / 2 });
     auto spriteBox = box->addComponent<SpriteComponent>();
     auto sprite = sprites->get("sprite");
     sprite.setScale({ 500, 10 });
@@ -65,18 +65,20 @@ void MAMGame::init() {
 
     auto pPhys = pbox->addComponent<PhysicsComponent>();
     pPhys->initBox(b2_dynamicBody, glm::vec2(10, 10) / physicsScale, pbox->getPosition() / physicsScale, 0.2f);
-
+    */
 
     // Test json loading
 
     LevelLoader ll = LevelLoader();
     ll.loadMap("Levels/Level1.json");
+    /*
     auto loaded = ll.getTileObjects();
     for each (std::shared_ptr<GameObject> ptr in loaded)
     {
         gameObjects.push_back(ptr);
     }
     playerController = shared_ptr<PlayerController>(new PlayerController(pbox));
+    */
 }
 
 void MAMGame::initPhysics() {
@@ -159,6 +161,14 @@ void MAMGame::onKey(SDL_Event& event) {
         } else if (event.key.keysym.sym == SDLK_r) {
             init();
             return;
+        } else if (event.key.keysym.sym == SDLK_LEFT) {
+            camera.setPositionAndRotation(glm::vec3(camera.getPosition().x - 10, camera.getPosition().y, camera.getPosition().z), camera.getRotationEuler());
+        } else if (event.key.keysym.sym == SDLK_RIGHT) {
+            camera.setPositionAndRotation(glm::vec3(camera.getPosition().x + 10, camera.getPosition().y, camera.getPosition().z), camera.getRotationEuler());
+        } else if (event.key.keysym.sym == SDLK_UP) {
+            camera.setPositionAndRotation(glm::vec3(camera.getPosition().x, camera.getPosition().y + 10, camera.getPosition().z), camera.getRotationEuler());
+        } else if (event.key.keysym.sym == SDLK_DOWN) {
+            camera.setPositionAndRotation(glm::vec3(camera.getPosition().x, camera.getPosition().y - 10, camera.getPosition().z), camera.getRotationEuler());
         }
     }
 
