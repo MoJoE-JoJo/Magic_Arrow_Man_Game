@@ -5,6 +5,7 @@
 
 #include "MAMGame.hpp"
 #include "GameObject.hpp"
+#include "PlayerObject.hpp"
 #include "SpriteComponent.hpp"
 #include "LevelLoader.hpp"
 
@@ -34,9 +35,7 @@ void MAMGame::init() {
         world->SetContactListener(nullptr);
     }
 
-    movingLeft = false;
-    movingRight = false;
-
+    playerController = nullptr;
     gameObjects.clear();
     physicsComponentLookup.clear();
 
@@ -56,7 +55,8 @@ void MAMGame::init() {
     auto phys = box->addComponent<PhysicsComponent>();
     phys->initBox(b2_staticBody, glm::vec2(500, 10) / physicsScale, box->getPosition() / physicsScale, 1);
 
-    auto pbox = createGameObject({ windowSize.x / 2, windowSize.y / 2 + 200});
+    auto pbox = shared_ptr<PlayerObject>(new PlayerObject({ windowSize.x / 2, windowSize.y / 2 + 200 }));
+    gameObjects.push_back(pbox);
     auto pSpriteBox = pbox->addComponent<SpriteComponent>();
     auto pSprite = sprites->get("sprite");
     pSprite.setScale({ 10, 10 });
@@ -76,6 +76,7 @@ void MAMGame::init() {
     {
         gameObjects.push_back(ptr);
     }
+    playerController = shared_ptr<PlayerController>(new PlayerController(pbox));
 }
 
 void MAMGame::initPhysics() {
@@ -108,13 +109,14 @@ void MAMGame::handleContact(b2Contact* contact, bool begin) {
 }
 
 void MAMGame::update(float time) {
-    if (movingRight) {
-        gameObjects[1]->getComponent<PhysicsComponent>()->addForce(glm::vec2(10 / physicsScale, 0));
-    }
-    if (movingLeft) {
-        gameObjects[1]->getComponent<PhysicsComponent>()->addForce(glm::vec2(-10 / physicsScale, 0));
-    }
     updatePhysics();
+
+    auto it = gameObjects.begin();
+    while (it != gameObjects.end()) {
+        shared_ptr<GameObject> ptr = *it;
+        ptr->update(time);
+        it++;
+    }
 }
 
 void MAMGame::updatePhysics() {
@@ -122,15 +124,6 @@ void MAMGame::updatePhysics() {
     const int positionIterations = 2;
     const int velocityIterations = 6;
     world->Step(timeStep, velocityIterations, positionIterations);
-
-    for (auto phys : physicsComponentLookup) {
-        if (phys.second->rbType == b2_staticBody) continue;
-        auto position = phys.second->body->GetPosition();
-        float angle = glm::degrees(phys.second->body->GetAngle());
-        auto gameObject = phys.second->getGameObject();
-        gameObject->setPosition(glm::vec2(position.x, position.y) * physicsScale);
-        gameObject->setRotation(angle);
-    }
 }
 
 void MAMGame::render() {
@@ -163,23 +156,14 @@ void MAMGame::onKey(SDL_Event& event) {
             } else {
                 world->SetDebugDraw(nullptr);
             }
-        } else if (event.key.keysym.sym == SDLK_RIGHT) {
-            movingRight = true;
-        } else if (event.key.keysym.sym == SDLK_LEFT) {
-            movingLeft = true;
         } else if (event.key.keysym.sym == SDLK_r) {
             init();
+            return;
         }
-    } else if (event.type == SDL_KEYUP) {
-        if (event.key.keysym.sym == SDLK_RIGHT) {
-            movingRight = false;
-            auto yy = gameObjects[1]->getComponent<PhysicsComponent>()->getLinearVelocity().y;
-            gameObjects[1]->getComponent<PhysicsComponent>()->setLinearVelocity(glm::vec2(0, yy));
-        } else if (event.key.keysym.sym == SDLK_LEFT) {
-            movingLeft = false;
-            auto yy = gameObjects[1]->getComponent<PhysicsComponent>()->getLinearVelocity().y;
-            gameObjects[1]->getComponent<PhysicsComponent>()->setLinearVelocity(glm::vec2(0, yy));
-        }
+    }
+
+    if (playerController != nullptr) {
+        playerController->onKey(event);
     }
 }
 

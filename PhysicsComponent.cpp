@@ -26,12 +26,12 @@ PhysicsComponent::~PhysicsComponent() {
 }
 
 void PhysicsComponent::addImpulse(glm::vec2 impulse) {
-    b2Vec2 iForceV{ impulse.x,impulse.y };
+    b2Vec2 iForceV{ impulse.x / MAMGame::instance->physicsScale, impulse.y / MAMGame::instance->physicsScale };
     body->ApplyLinearImpulse(iForceV, body->GetWorldCenter(), true);
 }
 
 void PhysicsComponent::addForce(glm::vec2 force) {
-    b2Vec2 forceV{ force.x,force.y };
+    b2Vec2 forceV{ force.x / MAMGame::instance->physicsScale, force.y / MAMGame::instance->physicsScale };
     body->ApplyForce(forceV, body->GetWorldCenter(), true);
 }
 
@@ -76,5 +76,9 @@ void PhysicsComponent::setSensor(bool enabled) {
 }
 
 void PhysicsComponent::update(float deltaTime) {
-
+    if (rbType == b2_staticBody) return;
+    auto position = body->GetPosition();
+    float angle = glm::degrees(body->GetAngle());
+    getGameObject()->setPosition(glm::vec2(position.x, position.y) * MAMGame::instance->physicsScale);
+    getGameObject()->setRotation(angle);
 }

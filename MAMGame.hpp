@@ -4,6 +4,7 @@
 #include "sre/Camera.hpp"
 
 #include "GameObject.hpp"
+#include "PlayerController.hpp"
 #include "PhysicsComponent.hpp"
 #include "Box2DDebugDraw.hpp"
 
@@ -31,14 +32,13 @@ private:
 	float gravity = -9.8;
 	const float physicsScale = 100;
 	sre::Camera camera;
+	std::shared_ptr<PlayerController> playerController;
 	std::vector<std::shared_ptr<GameObject>> gameObjects;
 	void registerPhysicsComponent(PhysicsComponent* r);
 	void deregisterPhysicsComponent(PhysicsComponent* r);
 	std::map<b2Fixture*, PhysicsComponent*> physicsComponentLookup;
 	Box2DDebugDraw debugDraw;
 	bool doDebugDraw = false;
-	bool movingLeft;
-	bool movingRight;
 	std::shared_ptr<sre::SpriteAtlas> sprites;
 	friend class PhysicsComponent;
 	friend class LevelLoader;
