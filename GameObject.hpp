@@ -9,14 +9,17 @@ class GameObject {
 public:
     GameObject(glm::vec2 pos);
     ~GameObject();
-    template <class T>
-        std::shared_ptr<T> addComponent();
-    template <class T>
-        std::shared_ptr<T> getComponent();
+    
     float getRotation() const;
     void setRotation(float rotation);
     const glm::vec2& getPosition() const;
     void setPosition(const glm::vec2& position);
+    virtual void update(float deltaTime);
+
+    template <class T>
+        std::shared_ptr<T> addComponent();
+    template <class T>
+        std::shared_ptr<T> getComponent();
 private:
     std::vector<std::shared_ptr<Component>> components;
     glm::vec2 position;

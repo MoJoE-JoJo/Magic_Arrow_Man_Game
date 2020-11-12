@@ -28,3 +28,9 @@ float GameObject::getRotation() const {
 void GameObject::setRotation(float rotation) {
     GameObject::rotation = rotation;
 }
+
+void GameObject::update(float deltaTime) {
+    for (auto& comp : components) {
+        comp->update(deltaTime);
+    }
+}
