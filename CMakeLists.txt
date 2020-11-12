@@ -17,9 +17,9 @@ add_executable(MagicArrowMan ${MagicArrowMan})
 target_link_libraries(MagicArrowMan ${all_libs})
 
 # copy files to dest
-file(COPY DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/Debug)
-file(COPY DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/Release)
-file(COPY DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
+file(COPY MAM.png MAM.json DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/Debug)
+file(COPY MAM.png MAM.json DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/Release)
+file(COPY MAM.png MAM.json DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
 IF (WIN32)
     # Copy dll files to ${CMAKE_CURRENT_BINARY_DIR}/Debug
