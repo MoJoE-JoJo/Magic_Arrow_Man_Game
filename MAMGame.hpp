@@ -39,5 +39,7 @@ private:
 	std::map<b2Fixture*, PhysicsComponent*> physicsComponentLookup;
 	Box2DDebugDraw debugDraw;
 	bool doDebugDraw = false;
+	std::shared_ptr<sre::SpriteAtlas> sprites;
 	friend class PhysicsComponent;
+	friend class LevelLoader;
 };
