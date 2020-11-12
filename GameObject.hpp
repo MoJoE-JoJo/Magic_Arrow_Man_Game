@@ -1,13 +1,15 @@
 #pragma once
 #include <memory>
 #include <vector>
+#include <string>
 #include "glm/glm.hpp"
 
 class Component;
+enum class GOType { player, ground };
 
 class GameObject {
 public:
-    GameObject(glm::vec2 pos);
+    GameObject(glm::vec2 pos, GOType goType);
     ~GameObject();
     
     float getRotation() const;
@@ -15,6 +17,8 @@ public:
     const glm::vec2& getPosition() const;
     void setPosition(const glm::vec2& position);
     virtual void update(float deltaTime);
+
+    GOType goType;
 
     template <class T>
         std::shared_ptr<T> addComponent();

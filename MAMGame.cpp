@@ -2,10 +2,12 @@
 #include "sre/Texture.hpp"
 #include "sre/SpriteAtlas.hpp"
 #include "glm/gtc/random.hpp"
+#include "Box2D/Dynamics/Contacts/b2Contact.h"
 
 #include "MAMGame.hpp"
 #include "GameObject.hpp"
 #include "PlayerObject.hpp"
+#include "PlayerPhysics.hpp"
 #include "SpriteComponent.hpp"
 
 using namespace sre;
@@ -44,7 +46,7 @@ void MAMGame::init() {
 
     auto sprites = SpriteAtlas::createSingleSprite(Texture::getWhiteTexture());
 
-    auto box = createGameObject({ windowSize.x / 2, windowSize.y / 2 });
+    auto box = createGameObject({ windowSize.x / 2, windowSize.y / 2 }, GOType::ground);
     auto spriteBox = box->addComponent<SpriteComponent>();
     auto sprite = sprites->get("sprite");
     sprite.setScale({ 500, 10 });
@@ -62,7 +64,7 @@ void MAMGame::init() {
     pSprite.setColor({ 0.84f, 0.27f, 0.51f, 1.0f });
     pSpriteBox->setSprite(pSprite);
 
-    auto pPhys = pbox->addComponent<PhysicsComponent>();
+    auto pPhys = pbox->addComponent<PlayerPhysics>();
     pPhys->initBox(b2_dynamicBody, glm::vec2(10, 10) / physicsScale, pbox->getPosition() / physicsScale, 0.2f);
 
     playerController = shared_ptr<PlayerController>(new PlayerController(pbox));
@@ -87,14 +89,26 @@ void MAMGame::EndContact(b2Contact* contact) {
     handleContact(contact, false);
 }
 
-std::shared_ptr<GameObject> MAMGame::createGameObject(glm::vec2 pos) {
-    auto obj = shared_ptr<GameObject>(new GameObject(pos));
+std::shared_ptr<GameObject> MAMGame::createGameObject(glm::vec2 pos, GOType goType) {
+    auto obj = shared_ptr<GameObject>(new GameObject(pos, goType));
     gameObjects.push_back(obj);
     return obj;
 }
 
 void MAMGame::handleContact(b2Contact* contact, bool begin) {
-
+    auto fixA = contact->GetFixtureA();
+    auto fixB = contact->GetFixtureB();
+    auto physA = physicsComponentLookup.find(fixA);
+    auto physB = physicsComponentLookup.find(fixB);
+    if (physA != physicsComponentLookup.end() && physB != physicsComponentLookup.end()) {
+        if (begin) {
+            physA->second->onCollisionStart(physB->second);
+            physB->second->onCollisionStart(physA->second);
+        } else {
+            physA->second->onCollisionEnd(physB->second);
+            physB->second->onCollisionEnd(physA->second);
+        }
+    }
 }
 
 void MAMGame::update(float time) {
@@ -138,7 +152,7 @@ void MAMGame::render() {
 
 void MAMGame::onKey(SDL_Event& event) {
     if (event.type == SDL_KEYDOWN) {
-        if (event.key.keysym.sym == SDLK_d) {
+        if (event.key.keysym.sym == SDLK_q) {
             doDebugDraw = !doDebugDraw;
             if (doDebugDraw) {
                 world->SetDebugDraw(&debugDraw);

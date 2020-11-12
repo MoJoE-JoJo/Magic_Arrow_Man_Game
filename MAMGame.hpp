@@ -13,7 +13,7 @@ public:
 	MAMGame();
 	void BeginContact(b2Contact* contact) override;
 	void EndContact(b2Contact* contact) override;
-	std::shared_ptr<GameObject> createGameObject(glm::vec2 pos);
+	std::shared_ptr<GameObject> createGameObject(glm::vec2 pos, GOType goType);
 
 	static MAMGame* instance;
 	static const glm::vec2 windowSize;

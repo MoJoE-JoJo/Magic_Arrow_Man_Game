@@ -2,9 +2,10 @@
 #include "GameObject.hpp"
 #include "Component.hpp"
 
-GameObject::GameObject(glm::vec2 pos) {
+GameObject::GameObject(glm::vec2 pos, GOType goType) {
     position = pos;
     rotation = 0;
+    this->goType = goType;
 }
 
 GameObject::~GameObject() {

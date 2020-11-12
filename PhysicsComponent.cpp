@@ -82,3 +82,7 @@ void PhysicsComponent::update(float deltaTime) {
     getGameObject()->setPosition(glm::vec2(position.x, position.y) * MAMGame::instance->physicsScale);
     getGameObject()->setRotation(angle);
 }
+
+void PhysicsComponent::onCollisionStart(PhysicsComponent* comp) { }
+
+void PhysicsComponent::onCollisionEnd(PhysicsComponent* comp) { }

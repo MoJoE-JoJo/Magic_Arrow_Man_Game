@@ -20,6 +20,8 @@ public:
     bool isSensor();
     void setSensor(bool enabled);
     void update(float deltaTime) override;
+    virtual void onCollisionStart(PhysicsComponent* comp);
+    virtual void onCollisionEnd(PhysicsComponent* comp);
 private:
     b2PolygonShape* polygon = nullptr;
     b2CircleShape* circle = nullptr;
