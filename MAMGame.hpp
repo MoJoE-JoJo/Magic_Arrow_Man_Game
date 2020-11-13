@@ -17,6 +17,7 @@ public:
 	void MAMGame::createPlayerObject(glm::vec2 pos);
 	static MAMGame* instance;
 	static const glm::vec2 windowSize;
+	sre::Sprite getSprite(int index);
 private:
 	void init();
 	void initPhysics();
@@ -26,6 +27,7 @@ private:
 	void onKey(SDL_Event& event);
 	void mouseEvent(SDL_Event& event);
 	void handleContact(b2Contact* contact, bool begin);
+	void MAMGame::createTileMap();
 
 	sre::SDLRenderer r;
 	b2World* world = nullptr;
@@ -42,4 +44,5 @@ private:
 	std::shared_ptr<sre::SpriteAtlas> sprites;
 	friend class PhysicsComponent;
 	friend class LevelLoader;
+	std::map<int, std::string> tileMap;
 };
