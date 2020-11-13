@@ -19,6 +19,7 @@ private:
     int collisionCounter = 0;
     float walkingSpriteIndicator = 0;
     int whichWalkIndicator = 0;
+    bool flipIndicator = false;
 
     void updateSprite(float deltaTime);
     friend class PlayerController;
