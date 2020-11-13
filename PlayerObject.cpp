@@ -9,6 +9,9 @@
 
 PlayerObject::PlayerObject(glm::vec2 pos, sre::Sprite walk1, sre::Sprite standing, sre::Sprite walk2) : GameObject(pos, GOType::player) {
     auto pSpriteBox = addComponent<SpriteComponent>();
+    this->walk1 = walk1;
+    this->walk2 = walk2;
+    this->standing = standing;
     pSpriteBox->setSprite(standing);
     auto phys = addComponent<PlayerPhysics>();
     phys->initBox(b2_dynamicBody, glm::vec2((standing.getSpriteSize().x - 15) / 2, (standing.getSpriteSize().y - 25) / 2), getPosition(), 0.2f);
@@ -23,6 +26,7 @@ void PlayerObject::update(float deltaTime) {
     if (movingLeft && isGrounded()) {
         phys->addForce(glm::vec2(-1000 * phys->getMass(), 0));
     }
+    updateSprite(deltaTime);
 }
 
 void PlayerObject::jump() {
@@ -40,4 +44,42 @@ void PlayerObject::decrCollisionCounter() {
 
 bool PlayerObject::isGrounded() {
     return collisionCounter != 0;
+}
+
+void PlayerObject::updateSprite(float deltaTime) {
+    auto phys = getComponent<PhysicsComponent>();
+    auto velocity = phys->getLinearVelocity();
+
+    auto newSprite = standing;
+    if (velocity.x == 0 && velocity.y == 0) {
+        newSprite = standing;
+        whichWalkIndicator = 2;
+        walkingSpriteIndicator = 0;
+    } else if (!isGrounded()) {
+        newSprite = walk1;
+        whichWalkIndicator = 2;
+        walkingSpriteIndicator = 0;
+    } else {
+        if (velocity.x > 0) walkingSpriteIndicator += deltaTime * velocity.x;
+        else walkingSpriteIndicator += deltaTime * velocity.x * -1;
+        
+        if (walkingSpriteIndicator > 1.8) {
+            whichWalkIndicator = 1;
+            walkingSpriteIndicator = 0;
+        } else if (walkingSpriteIndicator > 1.2) {
+            whichWalkIndicator = 0;
+        } else if (walkingSpriteIndicator > 0.9) {
+            whichWalkIndicator = 1;
+        } else if (walkingSpriteIndicator > 0.3) {
+            whichWalkIndicator = 2;
+        }
+
+        if (whichWalkIndicator == 0) newSprite = walk1;
+        else if (whichWalkIndicator == 1) newSprite = standing;
+        else if (whichWalkIndicator == 2) newSprite = walk2;
+    }
+
+    if (velocity.x < 0) newSprite.setFlip({ 1, newSprite.getFlip().y });
+
+    getComponent<SpriteComponent>()->setSprite(newSprite);
 }
