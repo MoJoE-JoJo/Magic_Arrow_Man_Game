@@ -55,9 +55,12 @@ void PhysicsComponent::initBox(b2BodyType type, glm::vec2 size, glm::vec2 center
     b2BodyDef bd;
     bd.type = type;
     rbType = type;
+    center = center / MAMGame::instance->physicsScale;
     bd.position = b2Vec2(center.x, center.y);
     body = world->CreateBody(&bd);
+    body->SetFixedRotation(true);
     polygon = new b2PolygonShape();
+    size = size / MAMGame::instance->physicsScale;
     polygon->SetAsBox(size.x, size.y, { 0,0 }, 0);
     b2FixtureDef fxD;
     fxD.shape = polygon;
@@ -86,3 +89,7 @@ void PhysicsComponent::update(float deltaTime) {
 void PhysicsComponent::onCollisionStart(PhysicsComponent* comp) { }
 
 void PhysicsComponent::onCollisionEnd(PhysicsComponent* comp) { }
+
+float PhysicsComponent::getMass() {
+    return body->GetMass();
+}

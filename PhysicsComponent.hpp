@@ -20,6 +20,7 @@ public:
     bool isSensor();
     void setSensor(bool enabled);
     void update(float deltaTime) override;
+    float getMass();
     virtual void onCollisionStart(PhysicsComponent* comp);
     virtual void onCollisionEnd(PhysicsComponent* comp);
 private:

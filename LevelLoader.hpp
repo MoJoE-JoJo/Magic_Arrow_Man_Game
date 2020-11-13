@@ -5,19 +5,18 @@
 
 #include "glm/glm.hpp"
 #include "GameObject.hpp"
+#include "PlayerObject.hpp"
 
 class GameObject;
-
 
 class LevelLoader {
 public:
     void loadMap(std::string filename);
     int getTileWidth();
     int getTileHeight();
-    std::vector<std::shared_ptr<GameObject>> getTileObjects();
+    glm::vec2 getTileSize();
 private:
     int tileWidth;
     int tileHeight;
-
-    std::vector<std::shared_ptr<GameObject>> tileObjects;
+    glm::vec2 tileSize;
 };

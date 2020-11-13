@@ -14,10 +14,9 @@
 #include <vector>
 
 using namespace std;
+using namespace rapidjson;
 
 void LevelLoader::loadMap(std::string filename) {
-    
-    using namespace rapidjson;
     ifstream fis(filename);
     IStreamWrapper isw(fis);
     Document d;
@@ -29,39 +28,41 @@ void LevelLoader::loadMap(std::string filename) {
     rapidjson::Value& tilesets = d["tilesets"];
     tileHeight = d["tileheight"].GetInt();
     tileWidth = d["tilewidth"].GetInt();
+    tileSize = glm::vec2(tileWidth / 2, tileHeight / 2);
 
-    for (rapidjson::SizeType i = 0; i < chunkArray.Size(); i++)
-    {
+    for (rapidjson::SizeType i = 0; i < chunkArray.Size(); i++) {
         rapidjson::Value& chunk = chunkArray[i];
 
         int x = chunk["x"].GetInt();
         int y = chunk["y"].GetInt();
         int height = chunk["height"].GetInt();
         int width = chunk["width"].GetInt();
-        
 
         rapidjson::Value& data = chunk["data"];
         int horizontalCounter = 0;
         int verticalCounter = 0;
         for (rapidjson::SizeType j = 0; j < data.Size(); j++) {
-            //int tileId = data[j].GetInt();
             int hozMod = horizontalCounter % width;
             int xPos = hozMod + x;
-            int yPos = (verticalCounter + y)*-1;
+            int yPos = (verticalCounter + y) * -1;
             if (x == 0 && y == 0) {
                 std::cout << yPos << endl;
             }
-            if (data[j].GetInt() != 0) {
 
+            int tileId = data[j].GetInt();
+            if (tileId == 1) {
+                glm::vec2 position = glm::vec2(xPos * tileWidth, yPos * tileHeight);
+                MAMGame::instance->createPlayerObject(position);
+            } else if (tileId != 0) {
                 glm::vec2 position = glm::vec2(xPos * tileWidth, yPos * tileHeight);
                 auto tile = MAMGame::instance->createGameObject(position, GOType::ground);
                 auto spriteBox = tile->addComponent<SpriteComponent>();
                 auto sprite = MAMGame::instance->sprites->get("Tilesets-1-02.png");
-                //sprite.setScale({ 30, 30 });
-                //sprite.setColor({ 0.89f, 0.55f, 0.0f, 1.0f });
                 spriteBox->setSprite(sprite);
-                tileObjects.push_back(tile);
+                auto phys = tile->addComponent<PhysicsComponent>();
+                phys->initBox(b2_staticBody, getTileSize(), tile->getPosition(), 1);
             }
+
             if (hozMod == width - 1) {
                 verticalCounter++;
             }
@@ -85,8 +86,6 @@ void LevelLoader::loadMap(std::string filename) {
 
 }
 
-
-
 int LevelLoader::getTileWidth() {
     return tileWidth;
 }
@@ -95,6 +94,6 @@ int LevelLoader::getTileHeight() {
     return tileHeight;
 }
 
-std::vector<shared_ptr<GameObject>> LevelLoader::getTileObjects() {
-    return tileObjects;
+glm::vec2 LevelLoader::getTileSize() {
+    return tileSize;
 }

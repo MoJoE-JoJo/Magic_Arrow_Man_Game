@@ -46,30 +46,6 @@ void MAMGame::init() {
     initPhysics();
 
     sprites = SpriteAtlas::create("MAM.json", "MAM.png");
-    auto box = createGameObject({ windowSize.x / 2, windowSize.y / 2 }, GOType::ground);
-    auto spriteBox = box->addComponent<SpriteComponent>();
-    auto sprite = sprites->get("Tilesets-1-02.png");
-    //sprite.setScale({ 500, 10 });
-    //sprite.setColor({ 0.89f, 0.55f, 0.0f, 1.0f });
-    spriteBox->setSprite(sprite);
-
-    auto phys = box->addComponent<PhysicsComponent>();
-    phys->initBox(b2_staticBody, glm::vec2(500, 10) / physicsScale, box->getPosition() / physicsScale, 1);
-
-    auto pbox = shared_ptr<PlayerObject>(new PlayerObject({ windowSize.x / 2, windowSize.y / 2 + 200 }));
-    gameObjects.push_back(pbox);
-    auto pSpriteBox = pbox->addComponent<SpriteComponent>();
-    auto pSprite = sprites->get("player_f1.png");
-    //pSprite.setScale({ 10, 10 });
-    //pSprite.setColor({ 0.84f, 0.27f, 0.51f, 1.0f });
-    pSpriteBox->setSprite(pSprite);
-
-    auto pPhys = pbox->addComponent<PlayerPhysics>();
-    pPhys->initBox(b2_dynamicBody, glm::vec2(10, 10) / physicsScale, pbox->getPosition() / physicsScale, 0.2f);
-
-    playerController = shared_ptr<PlayerController>(new PlayerController(pbox));
-    
-
     // Test json loading
     LevelLoader ll = LevelLoader();
     ll.loadMap("Levels/Level1.json");
@@ -98,6 +74,12 @@ std::shared_ptr<GameObject> MAMGame::createGameObject(glm::vec2 pos, GOType goTy
     auto obj = shared_ptr<GameObject>(new GameObject(pos, goType));
     gameObjects.push_back(obj);
     return obj;
+}
+
+void MAMGame::createPlayerObject(glm::vec2 pos) {
+    auto player = shared_ptr<PlayerObject>(new PlayerObject(pos, sprites->get("player_f1.png"), sprites->get("player_f2.png"), sprites->get("player_f3.png")));
+    gameObjects.push_back(player);
+    playerController = shared_ptr<PlayerController>(new PlayerController(player));
 }
 
 void MAMGame::handleContact(b2Contact* contact, bool begin) {
@@ -168,13 +150,13 @@ void MAMGame::onKey(SDL_Event& event) {
             init();
             return;
         } else if (event.key.keysym.sym == SDLK_LEFT) {
-            camera.setPositionAndRotation(glm::vec3(camera.getPosition().x - 10, camera.getPosition().y, camera.getPosition().z), camera.getRotationEuler());
+            camera.setPositionAndRotation(glm::vec3(camera.getPosition().x - 20, camera.getPosition().y, camera.getPosition().z), camera.getRotationEuler());
         } else if (event.key.keysym.sym == SDLK_RIGHT) {
-            camera.setPositionAndRotation(glm::vec3(camera.getPosition().x + 10, camera.getPosition().y, camera.getPosition().z), camera.getRotationEuler());
+            camera.setPositionAndRotation(glm::vec3(camera.getPosition().x + 20, camera.getPosition().y, camera.getPosition().z), camera.getRotationEuler());
         } else if (event.key.keysym.sym == SDLK_UP) {
-            camera.setPositionAndRotation(glm::vec3(camera.getPosition().x, camera.getPosition().y + 10, camera.getPosition().z), camera.getRotationEuler());
+            camera.setPositionAndRotation(glm::vec3(camera.getPosition().x, camera.getPosition().y + 20, camera.getPosition().z), camera.getRotationEuler());
         } else if (event.key.keysym.sym == SDLK_DOWN) {
-            camera.setPositionAndRotation(glm::vec3(camera.getPosition().x, camera.getPosition().y - 10, camera.getPosition().z), camera.getRotationEuler());
+            camera.setPositionAndRotation(glm::vec3(camera.getPosition().x, camera.getPosition().y - 20, camera.getPosition().z), camera.getRotationEuler());
         }
     }
 

@@ -4,13 +4,15 @@
 
 class PlayerObject : public GameObject {
 public:
-    PlayerObject(glm::vec2 pos);
+    PlayerObject(glm::vec2 pos, sre::Sprite walk1, sre::Sprite standing, sre::Sprite walk2);
     void update(float deltaTime) override;
     void jump();
-    void setGrounded(bool grounded);
+    void incrCollisionCounter();
+    void decrCollisionCounter();
+    bool isGrounded();
 private:
     bool movingLeft = false;
     bool movingRight = false;
-    bool isGrounded = true;
+    int collisionCounter = 0;
     friend class PlayerController;
 };

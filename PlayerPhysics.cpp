@@ -5,14 +5,16 @@
 
 void PlayerPhysics::onCollisionStart(PhysicsComponent* comp) {
 	if (comp->getGameObject()->goType == GOType::ground) {
+		std::cout << comp->getGameObject()->getPosition().x << " " << comp->getGameObject()->getPosition().y << " ";
+		std::cout << gameObject->getPosition().x << " " << gameObject->getPosition().y << std::endl;
 		auto player = dynamic_cast<PlayerObject*>(gameObject);
-		player->setGrounded(true);
+		player->incrCollisionCounter();
 	}
 }
 
 void PlayerPhysics::onCollisionEnd(PhysicsComponent* comp) {
 	if (comp->getGameObject()->goType == GOType::ground) {
 		auto player = dynamic_cast<PlayerObject*>(gameObject);
-		player->setGrounded(false);
+		player->decrCollisionCounter();
 	}
 }
