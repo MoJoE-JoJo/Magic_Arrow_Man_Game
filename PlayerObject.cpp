@@ -79,7 +79,9 @@ void PlayerObject::updateSprite(float deltaTime) {
         else if (whichWalkIndicator == 2) newSprite = walk2;
     }
 
-    if (velocity.x < 0) newSprite.setFlip({ 1, newSprite.getFlip().y });
-
+    if (movingLeft) flipIndicator = true;
+    else if (movingRight) flipIndicator = false;
+    
+    newSprite.setFlip({ flipIndicator, newSprite.getFlip().y });
     getComponent<SpriteComponent>()->setSprite(newSprite);
 }
