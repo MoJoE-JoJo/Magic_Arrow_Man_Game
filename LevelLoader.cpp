@@ -57,7 +57,7 @@ void LevelLoader::loadMap(std::string filename) {
                 glm::vec2 position = glm::vec2(xPos * tileWidth, yPos * tileHeight);
                 auto tile = MAMGame::instance->createGameObject(position, GOType::ground);
                 auto spriteBox = tile->addComponent<SpriteComponent>();
-                auto sprite = MAMGame::instance->sprites->get("Tilesets-1-02.png");
+                auto sprite = MAMGame::instance->getSprite(tileId);
                 spriteBox->setSprite(sprite);
                 auto phys = tile->addComponent<PhysicsComponent>();
                 phys->initBox(b2_staticBody, getTileSize(), tile->getPosition(), 1);

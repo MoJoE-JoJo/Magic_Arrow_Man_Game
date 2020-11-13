@@ -21,6 +21,7 @@ MAMGame::MAMGame() : debugDraw(physicsScale) {
     instance = this;
     r.setWindowSize(windowSize);
     r.init().withSdlInitFlags(SDL_INIT_EVERYTHING).withSdlWindowFlags(SDL_WINDOW_OPENGL);
+    createTileMap();
     init();
 
     // setup callback functions
@@ -49,6 +50,7 @@ void MAMGame::init() {
     // Test json loading
     LevelLoader ll = LevelLoader();
     ll.loadMap("Levels/Level1.json");
+
 }
 
 void MAMGame::initPhysics() {
@@ -190,4 +192,30 @@ void MAMGame::deregisterPhysicsComponent(PhysicsComponent* physComponent) {
     } else {
         assert(false); // cannot find physics object
     }
+}
+
+sre::Sprite MAMGame::getSprite(int index) {
+    return sprites->get(tileMap.find(index)->second);
+}
+
+void MAMGame::createTileMap() {
+    tileMap.insert({ 2, "Tilesets-1-01.png" });
+    tileMap.insert({ 3, "Tilesets-1-02.png" });
+    tileMap.insert({ 4, "Tilesets-1-03.png" });
+
+    tileMap.insert({ 5, "Tilesets-1-04.png" });
+    tileMap.insert({ 6, "Tilesets-1-05.png" });
+    tileMap.insert({ 7, "Tilesets-1-06.png" });
+    tileMap.insert({ 8, "Tilesets-1-07.png" });
+
+    tileMap.insert({ 10, "Tilesets-1-09.png" });
+
+    tileMap.insert({ 12, "Tilesets-1-11.png" });
+
+
+    tileMap.insert({ 16, "Tilesets-1-15.png" });
+    tileMap.insert({ 17, "Tilesets-1-16.png" });
+    tileMap.insert({ 18, "Tilesets-1-17.png" });
+
+    tileMap.insert({ 23, "target_legs.png" });
 }
