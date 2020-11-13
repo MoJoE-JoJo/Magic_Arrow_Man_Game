@@ -13,6 +13,13 @@ public:
 private:
     bool movingLeft = false;
     bool movingRight = false;
+    sre::Sprite walk1;
+    sre::Sprite walk2;
+    sre::Sprite standing;
     int collisionCounter = 0;
+    float walkingSpriteIndicator = 0;
+    int whichWalkIndicator = 0;
+
+    void updateSprite(float deltaTime);
     friend class PlayerController;
 };
