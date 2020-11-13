@@ -45,22 +45,43 @@ void LevelLoader::loadMap(std::string filename) {
             int hozMod = horizontalCounter % width;
             int xPos = hozMod + x;
             int yPos = (verticalCounter + y) * -1;
-            if (x == 0 && y == 0) {
-                std::cout << yPos << endl;
-            }
 
             int tileId = data[j].GetInt();
-            if (tileId == 1) {
-                glm::vec2 position = glm::vec2(xPos * tileWidth, yPos * tileHeight);
-                MAMGame::instance->createPlayerObject(position);
-            } else if (tileId != 0) {
-                glm::vec2 position = glm::vec2(xPos * tileWidth, yPos * tileHeight);
-                auto tile = MAMGame::instance->createGameObject(position, GOType::ground);
-                auto spriteBox = tile->addComponent<SpriteComponent>();
-                auto sprite = MAMGame::instance->getSprite(tileId);
-                spriteBox->setSprite(sprite);
-                auto phys = tile->addComponent<PhysicsComponent>();
-                phys->initBox(b2_staticBody, getTileSize(), tile->getPosition(), 1);
+            switch (tileId) {
+                case 1: {
+                    glm::vec2 position = glm::vec2(xPos * tileWidth, yPos * tileHeight);
+                    MAMGame::instance->createPlayerObject(position);
+                    break;
+                }
+                case 2:
+                case 3:
+                case 4:
+                case 5:
+                case 9:
+                case 16:
+                case 17:
+                case 18: {
+                    glm::vec2 position = glm::vec2(xPos * tileWidth, yPos * tileHeight);
+                    auto tile = MAMGame::instance->createGameObject(position, GOType::ground);
+                    auto spriteBox = tile->addComponent<SpriteComponent>();
+                    auto sprite = MAMGame::instance->getSprite(tileId);
+                    spriteBox->setSprite(sprite);
+                    auto phys = tile->addComponent<PhysicsComponent>();
+                    phys->initBox(b2_staticBody, getTileSize(), tile->getPosition(), 1);
+                    break;
+                }
+                case 0:
+                    break;
+                default: {
+                    glm::vec2 position = glm::vec2(xPos * tileWidth, yPos * tileHeight);
+                    auto tile = MAMGame::instance->createGameObject(position, GOType::wall);
+                    auto spriteBox = tile->addComponent<SpriteComponent>();
+                    auto sprite = MAMGame::instance->getSprite(tileId);
+                    spriteBox->setSprite(sprite);
+                    auto phys = tile->addComponent<PhysicsComponent>();
+                    phys->initBox(b2_staticBody, getTileSize(), tile->getPosition(), 1);
+                    break;
+                }
             }
 
             if (hozMod == width - 1) {
