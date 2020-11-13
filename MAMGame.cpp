@@ -82,6 +82,8 @@ void MAMGame::createPlayerObject(glm::vec2 pos) {
     auto player = shared_ptr<PlayerObject>(new PlayerObject(pos, sprites->get("player_f1.png"), sprites->get("player_f2.png"), sprites->get("player_f3.png")));
     gameObjects.push_back(player);
     playerController = shared_ptr<PlayerController>(new PlayerController(player));
+    // TODO: remove when camera works properly
+    camera.setPositionAndRotation(glm::vec3(pos.x - windowSize.x / 2, pos.y - windowSize.y / 2, camera.getPosition().z), camera.getRotationEuler());
 }
 
 void MAMGame::handleContact(b2Contact* contact, bool begin) {
