@@ -202,20 +202,23 @@ void MAMGame::createTileMap() {
     tileMap.insert({ 2, "Tilesets-1-01.png" });
     tileMap.insert({ 3, "Tilesets-1-02.png" });
     tileMap.insert({ 4, "Tilesets-1-03.png" });
-
     tileMap.insert({ 5, "Tilesets-1-04.png" });
     tileMap.insert({ 6, "Tilesets-1-05.png" });
     tileMap.insert({ 7, "Tilesets-1-06.png" });
     tileMap.insert({ 8, "Tilesets-1-07.png" });
-
+    tileMap.insert({ 9, "Tilesets-1-08.png" });
     tileMap.insert({ 10, "Tilesets-1-09.png" });
-
+    tileMap.insert({ 11, "Tilesets-1-10.png" });
     tileMap.insert({ 12, "Tilesets-1-11.png" });
-
-
+    tileMap.insert({ 13, "Tilesets-1-12.png" });
+    tileMap.insert({ 14, "Tilesets-1-13.png" });
+    tileMap.insert({ 15, "Tilesets-1-14.png" });
     tileMap.insert({ 16, "Tilesets-1-15.png" });
     tileMap.insert({ 17, "Tilesets-1-16.png" });
     tileMap.insert({ 18, "Tilesets-1-17.png" });
-
+    tileMap.insert({ 19, "Tilesets-1-18.png" });
+    tileMap.insert({ 20, "spawn.png" }); // Not an actual number
+    tileMap.insert({ 21, "monster_f1.png" });
+    tileMap.insert({ 22, "target.png" });
     tileMap.insert({ 23, "target_legs.png" });
 }
