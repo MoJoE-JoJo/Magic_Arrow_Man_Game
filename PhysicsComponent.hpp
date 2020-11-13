@@ -14,6 +14,7 @@ public:
     virtual ~PhysicsComponent();
     void initBox(b2BodyType type, glm::vec2 size, glm::vec2 center, float density);
     void initCircle(b2BodyType type, float radius, glm::vec2 center, float density);
+    void initPill(b2BodyType type, glm::vec2 size, glm::vec2 center, float density);
     void addForce(glm::vec2 force);
     void addImpulse(glm::vec2 impulse);
     void setLinearVelocity(glm::vec2 velocity);
