@@ -14,7 +14,8 @@ PlayerObject::PlayerObject(glm::vec2 pos, sre::Sprite walk1, sre::Sprite standin
     this->standing = standing;
     pSpriteBox->setSprite(standing);
     auto phys = addComponent<PlayerPhysics>();
-    phys->initBox(b2_dynamicBody, glm::vec2((standing.getSpriteSize().x - 15) / 2, (standing.getSpriteSize().y - 25) / 2), getPosition(), 0.2f);
+    //phys->initBox(b2_dynamicBody, glm::vec2((standing.getSpriteSize().x - 15) / 2, (standing.getSpriteSize().y - 25) / 2), getPosition(), 0.2f);
+    phys->initCircle(b2_dynamicBody, standing.getSpriteSize().x / 2, getPosition(), 0.2f);
 }
 
 void PlayerObject::update(float deltaTime) {
