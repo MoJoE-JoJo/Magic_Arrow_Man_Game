@@ -94,7 +94,7 @@ void PhysicsComponent::initCircle(b2BodyType type, float radius, glm::vec2 cente
 void PhysicsComponent::initPill(b2BodyType type, glm::vec2 size, glm::vec2 center, float density) {
     assert(body == nullptr);
     // do init
-    shapeType = b2Shape::Type::e_circle;
+    shapeType = b2Shape::Type::e_polygon;
     b2BodyDef bd;
     bd.type = type;
     rbType = type;
@@ -130,6 +130,32 @@ void PhysicsComponent::initPill(b2BodyType type, glm::vec2 size, glm::vec2 cente
 
 
     MAMGame::instance->registerPhysicsComponent(this);
+
+}
+
+void PhysicsComponent::initPolygon(b2BodyType type, glm::vec2 center, float density, b2Vec2* vertices, int32 vertexCount) {
+    assert(body == nullptr);
+    // do init
+    shapeType = b2Shape::Type::e_polygon;
+    b2BodyDef bd;
+    bd.type = type;
+    rbType = type;
+    center = center / MAMGame::instance->physicsScale;
+    bd.position = b2Vec2(center.x, center.y);
+    body = world->CreateBody(&bd);
+    body->SetFixedRotation(true);
+    polygon = new b2PolygonShape();
+
+    //b2PolygonShape polygon;
+    polygon->Set(vertices, vertexCount);
+    b2FixtureDef fxD;
+    fxD.shape = polygon;
+    fxD.density = density;
+    fixture = body->CreateFixture(&fxD);
+
+    MAMGame::instance->registerPhysicsComponent(this);
+    
+    
 }
 
 bool PhysicsComponent::isSensor() {

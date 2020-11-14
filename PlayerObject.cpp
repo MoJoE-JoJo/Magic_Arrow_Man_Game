@@ -15,7 +15,20 @@ PlayerObject::PlayerObject(glm::vec2 pos, sre::Sprite walk1, sre::Sprite standin
     pSpriteBox->setSprite(standing);
     auto phys = addComponent<PlayerPhysics>();
     //phys->initBox(b2_dynamicBody, glm::vec2((standing.getSpriteSize().x - 15) / 2, (standing.getSpriteSize().y - 25) / 2), getPosition(), 0.2f);
-    phys->initCircle(b2_dynamicBody, standing.getSpriteSize().x / 2, getPosition(), 0.2f);
+    //phys->initCircle(b2_dynamicBody, standing.getSpriteSize().x / 2, getPosition(), 0.2f);
+    b2Vec2 vertices[8];
+//    / MAMGame::instance->physicsScale
+//        glm::vec2((standing.getSpriteSize().x - 15) / 10, (standing.getSpriteSize().y - 25) / 2),
+    vertices[0].Set(-25.0f / MAMGame::instance->physicsScale,   20.0f / MAMGame::instance->physicsScale);
+    vertices[1].Set(-25.0f / MAMGame::instance->physicsScale,   -20.0f / MAMGame::instance->physicsScale);
+    vertices[2].Set(-10.0f / MAMGame::instance->physicsScale,   -30.0f / MAMGame::instance->physicsScale);
+    vertices[3].Set(10.0f / MAMGame::instance->physicsScale,    -30.0f / MAMGame::instance->physicsScale);
+    vertices[4].Set(25.0f / MAMGame::instance->physicsScale,    20.0f / MAMGame::instance->physicsScale);
+    vertices[5].Set(25.0f / MAMGame::instance->physicsScale,    -20.0f / MAMGame::instance->physicsScale);
+    vertices[6].Set(-10.0f / MAMGame::instance->physicsScale,   30.0f / MAMGame::instance->physicsScale);
+    vertices[7].Set(10.0f / MAMGame::instance->physicsScale,    30.0f / MAMGame::instance->physicsScale);
+
+    phys->initPolygon(b2_dynamicBody, getPosition(), 0.2f, vertices, 8);
     //phys->initPill(b2_dynamicBody, glm::vec2((standing.getSpriteSize().x - 15) / 2, (standing.getSpriteSize().y - 25) / 2), getPosition(), 0.2f);
     
 }
