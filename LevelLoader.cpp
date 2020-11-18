@@ -28,7 +28,7 @@ void LevelLoader::loadMap(std::string filename) {
     tileHeight = d["tileheight"].GetInt();
     tileWidth = d["tilewidth"].GetInt();
     tileSize = glm::vec2(tileWidth / 2, tileHeight / 2);
-
+    glm::vec2 size = getTileSize() / MAMGame::instance->physicsScale;
 
     int x = layerObj["x"].GetInt();
     int y = layerObj["y"].GetInt();
@@ -38,103 +38,81 @@ void LevelLoader::loadMap(std::string filename) {
     rapidjson::Value& data = layerObj["data"];
     int horizontalCounter = 0;
     int verticalCounter = 0;
+    //std::vector<b2Vec2> horizontalPoints;
+    glm::vec2 startOfBigPos;
+    int bigCount = 0;
+    bool startedOnBig = false;
+    bool leftDiamond = false;
+    bool rightDiamond = false;
+
     for (rapidjson::SizeType i = 0; i < data.Size(); i++) {
         int hozMod = horizontalCounter % width;
         int xPos = hozMod + x;
         int yPos = (verticalCounter + y) * -1;
 
+        glm::vec2 position = glm::vec2(xPos * tileWidth, yPos * tileHeight);
+
         int tileId = data[i].GetInt();
         switch (tileId) {
             case 1: {
-                playerPoint = glm::vec2(xPos * tileWidth, yPos * tileHeight);
-                //creating 
+                playerPoint = position;
+                // Adding player later so he is drawn last
                 break;
             }
+            case 2:
             case 3:
+            case 4:
             case 16:
             case 17:
             case 18: {
-                glm::vec2 position = glm::vec2(xPos * tileWidth, yPos * tileHeight);
-                auto tile = MAMGame::instance->createGameObject(position, GOType::ground);
-                auto spriteBox = tile->addComponent<SpriteComponent>();
-                auto sprite = MAMGame::instance->getSprite(tileId);
-                spriteBox->setSprite(sprite);
-                auto phys = tile->addComponent<PhysicsComponent>();
-                phys->initBox(b2_staticBody, getTileSize(), tile->getPosition(), 1);
-                break;
-            }
-            case 2: { // make top left diamond
-                glm::vec2 position = glm::vec2(xPos * tileWidth, yPos * tileHeight);
-                auto tile = MAMGame::instance->createGameObject(position, GOType::ground);
-                auto spriteBox = tile->addComponent<SpriteComponent>();
-                auto sprite = MAMGame::instance->getSprite(tileId);
-                spriteBox->setSprite(sprite);
-                auto phys = tile->addComponent<PhysicsComponent>();
-                b2Vec2 vertices[5];
-                glm::vec2 size = getTileSize() / MAMGame::instance->physicsScale;
-                float mult = 0.5;
-                vertices[0].Set(-size.x, size.y);
-                vertices[1].Set(-size.x, size.y * mult);
-                vertices[2].Set(size.x * mult, -size.y);
-                vertices[3].Set(size.x, -size.y);
-                vertices[4].Set(size.x, size.y);
-                phys->initPolygon(b2_staticBody, tile->getPosition(), 1, vertices, 5);
-                break;
-            }
-            case 4: { // make top right diamond
-                glm::vec2 position = glm::vec2(xPos * tileWidth, yPos * tileHeight);
-                auto tile = MAMGame::instance->createGameObject(position, GOType::ground);
-                auto spriteBox = tile->addComponent<SpriteComponent>();
-                auto sprite = MAMGame::instance->getSprite(tileId);
-                spriteBox->setSprite(sprite);
-                auto phys = tile->addComponent<PhysicsComponent>();
-                b2Vec2 vertices[5];
-                glm::vec2 size = getTileSize() / MAMGame::instance->physicsScale;
-                float mult = 0.5;
-                vertices[0].Set(-size.x, size.y);
-                vertices[1].Set(-size.x, -size.y);
-                vertices[2].Set(-size.x * mult, -size.y);
-                vertices[3].Set(size.x, size.y * mult);
-                vertices[4].Set(size.x, size.y);
-                phys->initPolygon(b2_staticBody, tile->getPosition(), 1, vertices, 5);
+                auto tile = createGameObject(position, GOType::ground, tileId);
+             
+                if (!startedOnBig) {
+                    startOfBigPos = position;
+                    bigCount++;
+                    startedOnBig = true;
+                } else {
+                    bigCount++;
+                }
+
+                if (tileId == 2) leftDiamond = true;
+                if (tileId == 4) rightDiamond = true;
+
+                int nextId = data[i + 1].GetInt();
+                if (nextId != 3 && nextId != 16 && nextId != 17 && nextId != 18 && nextId != 2 && nextId != 4) {
+                    createBig(tile, startOfBigPos, position, bigCount, leftDiamond, rightDiamond, size);
+
+                    startedOnBig = false;
+                    leftDiamond = false;
+                    rightDiamond = false;
+                    bigCount = 0;
+                }
+                
                 break;
             }
             case 5: { // make bottom right triangle
-                glm::vec2 position = glm::vec2(xPos * tileWidth, yPos * tileHeight);
-                auto tile = MAMGame::instance->createGameObject(position, GOType::slope);
-                auto spriteBox = tile->addComponent<SpriteComponent>();
-                auto sprite = MAMGame::instance->getSprite(tileId);
-                spriteBox->setSprite(sprite);
+                auto tile = createGameObject(position, GOType::slope, tileId);
                 auto phys = tile->addComponent<PhysicsComponent>();
                 b2Vec2 vertices[3];
-                glm::vec2 size = getTileSize() / MAMGame::instance->physicsScale;
                 vertices[0].Set(-size.x, -size.y);
                 vertices[1].Set(size.x, size.y);
                 vertices[2].Set(size.x, -size.y);
-                phys->initTriangle(b2_staticBody, size, tile->getPosition(), vertices, 1, 1);
+                phys->initTriangle(b2_staticBody, tile->getPosition(), vertices, 1, 1);
                 break;
             }
             case 9: { // make bottom left triangle
-                glm::vec2 position = glm::vec2(xPos * tileWidth, yPos * tileHeight);
-                auto tile = MAMGame::instance->createGameObject(position, GOType::slope);
-                auto spriteBox = tile->addComponent<SpriteComponent>();
-                auto sprite = MAMGame::instance->getSprite(tileId);
-                spriteBox->setSprite(sprite);
+                auto tile = createGameObject(position, GOType::slope, tileId);
                 auto phys = tile->addComponent<PhysicsComponent>();
                 b2Vec2 vertices[3];
-                glm::vec2 size = getTileSize() / MAMGame::instance->physicsScale;
                 vertices[0].Set(-size.x, size.y);
                 vertices[1].Set(-size.x, -size.y);
                 vertices[2].Set(size.x, -size.y);
-                phys->initTriangle(b2_staticBody, size, tile->getPosition(), vertices, 1, 1);
+                phys->initTriangle(b2_staticBody, tile->getPosition(), vertices, 1, 1);
                 break;
             }
             case 23: {
-                glm::vec2 position = glm::vec2(xPos * tileWidth, yPos * tileHeight + 15);
-                auto tile = MAMGame::instance->createGameObject(position, GOType::target);
-                auto spriteBox = tile->addComponent<SpriteComponent>();
-                auto sprite = MAMGame::instance->getSprite(tileId);
-                spriteBox->setSprite(sprite);
+                position = position + glm::vec2(0, 15);
+                auto tile = createGameObject(position, GOType::target, tileId);
                 auto phys = tile->addComponent<PhysicsComponent>();
                 phys->initTarget(b2_staticBody, tile->getPosition());
                 phys->setSensor(true);
@@ -143,11 +121,7 @@ void LevelLoader::loadMap(std::string filename) {
             case 0:
                 break;
             default: {
-                glm::vec2 position = glm::vec2(xPos * tileWidth, yPos * tileHeight);
-                auto tile = MAMGame::instance->createGameObject(position, GOType::wall);
-                auto spriteBox = tile->addComponent<SpriteComponent>();
-                auto sprite = MAMGame::instance->getSprite(tileId);
-                spriteBox->setSprite(sprite);
+                auto tile = createGameObject(position, GOType::wall, tileId);
                 auto phys = tile->addComponent<PhysicsComponent>();
                 phys->initBox(b2_staticBody, getTileSize(), tile->getPosition(), 1);
                 break;
@@ -156,11 +130,20 @@ void LevelLoader::loadMap(std::string filename) {
 
         if (hozMod == width - 1) {
             verticalCounter++;
+
         }
         horizontalCounter++;
     }
     
     MAMGame::instance->createPlayerObject(playerPoint);
+}
+
+std::shared_ptr<GameObject> LevelLoader::createGameObject(glm::vec2 position, GOType type, int tileId) {
+    auto tile = MAMGame::instance->createGameObject(position, type);
+    auto spriteBox = tile->addComponent<SpriteComponent>();
+    auto sprite = MAMGame::instance->getSprite(tileId);
+    spriteBox->setSprite(sprite);
+    return tile;
 }
 
 int LevelLoader::getTileWidth() {
@@ -173,4 +156,33 @@ int LevelLoader::getTileHeight() {
 
 glm::vec2 LevelLoader::getTileSize() {
     return tileSize;
+}
+
+void LevelLoader::createBig(std::shared_ptr<GameObject> tile, glm::vec2 startOfBigPos, glm::vec2 position, int bigCount, bool leftDiamond, bool rightDiamond, glm::vec2 size) {
+    b2Vec2 vertices[6];
+    int vertexCount = 4;
+    float mult = 0.5;
+    if (leftDiamond) {
+        vertices[0].Set(-size.x * bigCount, size.y);
+        vertices[1].Set(-size.x * bigCount, size.y * mult);
+        vertices[2].Set((-size.x * bigCount) + (size.x * 2) - (size.x * mult), -size.y);
+        vertexCount++;
+    } else {
+        vertices[0].Set(-size.x * bigCount, size.y);
+        vertices[1].Set(-size.x * bigCount, -size.y);
+    }
+
+    if (rightDiamond) {
+        vertices[2 + (vertexCount - 4)].Set((size.x * bigCount) - (size.x * 2) + (size.x * mult), -size.y);
+        vertices[3 + (vertexCount - 4)].Set(size.x * bigCount, size.y * mult);
+        vertices[4 + (vertexCount - 4)].Set(size.x * bigCount, size.y);
+        vertexCount++;
+    } else {
+        vertices[2 + (vertexCount - 4)].Set(size.x * bigCount, -size.y);
+        vertices[3 + (vertexCount - 4)].Set(size.x * bigCount, size.y);
+    }
+
+    auto phys = tile->addComponent<PhysicsComponent>();
+    glm::vec2 center = glm::vec2((startOfBigPos.x + position.x) / 2, position.y);
+    phys->initPolygon(b2_staticBody, center, 1, vertices, vertexCount);
 }

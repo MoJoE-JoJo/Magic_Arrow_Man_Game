@@ -71,7 +71,7 @@ void PhysicsComponent::initBox(b2BodyType type, glm::vec2 size, glm::vec2 center
     MAMGame::instance->registerPhysicsComponent(this);
 }
 
-void PhysicsComponent::initTriangle(b2BodyType type, glm::vec2 size, glm::vec2 center, b2Vec2 vertices[], float density, float friction) {
+void PhysicsComponent::initTriangle(b2BodyType type, glm::vec2 center, b2Vec2 vertices[], float density, float friction) {
     assert(body == nullptr);
     // do init
     shapeType = b2Shape::Type::e_polygon;
@@ -83,7 +83,6 @@ void PhysicsComponent::initTriangle(b2BodyType type, glm::vec2 size, glm::vec2 c
     body = world->CreateBody(&bd);
     body->SetFixedRotation(true);
     polygon = new b2PolygonShape();
-    size = size / MAMGame::instance->physicsScale;
     polygon->Set(vertices, 3);
     b2FixtureDef fxD;
     fxD.shape = polygon;

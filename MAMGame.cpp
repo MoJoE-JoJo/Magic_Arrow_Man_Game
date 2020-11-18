@@ -49,7 +49,7 @@ void MAMGame::init() {
     sprites = SpriteAtlas::create("MAM.json", "MAM.png");
     // Test json loading
     LevelLoader ll = LevelLoader();
-    ll.loadMap("Levels/Level0.json");
+    ll.loadMap("Levels/Level1.json");
 }
 
 void MAMGame::initPhysics() {
