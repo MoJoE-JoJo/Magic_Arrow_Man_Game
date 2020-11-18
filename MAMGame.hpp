@@ -34,6 +34,7 @@ private:
 	void handleContact(b2Contact* contact, bool begin);
 	void MAMGame::createTileMap();
 
+	int currentLevel = 0;
 	sre::SDLRenderer r;
 	b2World* world = nullptr;
 	float gravity = -9.8;

@@ -49,7 +49,7 @@ void MAMGame::init() {
     sprites = SpriteAtlas::create("MAM.json", "MAM.png");
     // Test json loading
     LevelLoader ll = LevelLoader();
-    ll.loadMap("Levels/Level0.json");
+    ll.loadMap("Levels/Level" + std::to_string(currentLevel) + ".json");
 }
 
 void MAMGame::initPhysics() {
@@ -163,6 +163,7 @@ void MAMGame::onKey(SDL_Event& event) {
         } else if (event.key.keysym.sym == SDLK_DOWN) {
             camera.setPositionAndRotation(glm::vec3(camera.getPosition().x, camera.getPosition().y - 20, camera.getPosition().z), camera.getRotationEuler());
         } else if (event.key.keysym.sym == SDLK_SPACE && gameState == GameState::Won) {
+            currentLevel++;
             init();
             setGameState(GameState::Running);
             return;
