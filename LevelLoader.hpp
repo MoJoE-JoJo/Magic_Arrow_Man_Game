@@ -19,4 +19,5 @@ private:
     int tileWidth;
     int tileHeight;
     glm::vec2 tileSize;
+    glm::vec2 playerPoint;
 };
