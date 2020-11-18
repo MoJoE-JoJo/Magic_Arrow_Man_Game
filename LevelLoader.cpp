@@ -66,18 +66,82 @@ void LevelLoader::loadMap(std::string filename) {
                     phys->initBox(b2_staticBody, getTileSize(), tile->getPosition(), 1);
                     break;
                 }
-                case 2:
-                    //make left side kinda triangle
+                case 2: { // make top left diamond
+                    glm::vec2 position = glm::vec2(xPos * tileWidth, yPos * tileHeight);
+                    auto tile = MAMGame::instance->createGameObject(position, GOType::ground);
+                    auto spriteBox = tile->addComponent<SpriteComponent>();
+                    auto sprite = MAMGame::instance->getSprite(tileId);
+                    spriteBox->setSprite(sprite);
+                    auto phys = tile->addComponent<PhysicsComponent>();
+                    b2Vec2 vertices[5];
+                    glm::vec2 size = getTileSize() / MAMGame::instance->physicsScale;
+                    float mult = 0.5;
+                    vertices[0].Set(-size.x, size.y);
+                    vertices[1].Set(-size.x, size.y * mult);
+                    vertices[2].Set(size.x * mult, -size.y);
+                    vertices[3].Set(size.x, -size.y);
+                    vertices[4].Set(size.x, size.y);
+                    phys->initPolygon(b2_staticBody, tile->getPosition(), 1, vertices, 5);
                     break;
-                case 4:
-                    //make right side kinda triangle
+                }
+                case 4: { // make top right diamond
+                    glm::vec2 position = glm::vec2(xPos * tileWidth, yPos * tileHeight);
+                    auto tile = MAMGame::instance->createGameObject(position, GOType::ground);
+                    auto spriteBox = tile->addComponent<SpriteComponent>();
+                    auto sprite = MAMGame::instance->getSprite(tileId);
+                    spriteBox->setSprite(sprite);
+                    auto phys = tile->addComponent<PhysicsComponent>();
+                    b2Vec2 vertices[5];
+                    glm::vec2 size = getTileSize() / MAMGame::instance->physicsScale;
+                    float mult = 0.5;
+                    vertices[0].Set(-size.x, size.y);
+                    vertices[1].Set(-size.x, -size.y);
+                    vertices[2].Set(-size.x * mult, -size.y);
+                    vertices[3].Set(size.x, size.y * mult);
+                    vertices[4].Set(size.x, size.y);
+                    phys->initPolygon(b2_staticBody, tile->getPosition(), 1, vertices, 5);
                     break;
-                case 5:
-                    //make triangle with corner in right bottom side
+                }
+                case 5: { // make bottom right triangle
+                    glm::vec2 position = glm::vec2(xPos * tileWidth, yPos * tileHeight);
+                    auto tile = MAMGame::instance->createGameObject(position, GOType::slope);
+                    auto spriteBox = tile->addComponent<SpriteComponent>();
+                    auto sprite = MAMGame::instance->getSprite(tileId);
+                    spriteBox->setSprite(sprite);
+                    auto phys = tile->addComponent<PhysicsComponent>();
+                    b2Vec2 vertices[3];
+                    glm::vec2 size = getTileSize() / MAMGame::instance->physicsScale;
+                    vertices[0].Set(-size.x, -size.y);
+                    vertices[1].Set(size.x, size.y);
+                    vertices[2].Set(size.x, -size.y);
+                    phys->initTriangle(b2_staticBody, size, tile->getPosition(), vertices, 1, 1);
                     break;
-                case 9:
-                    //make triangle with corner in left bottom side
+                }
+                case 9: { // make bottom left triangle
+                    glm::vec2 position = glm::vec2(xPos * tileWidth, yPos * tileHeight);
+                    auto tile = MAMGame::instance->createGameObject(position, GOType::slope);
+                    auto spriteBox = tile->addComponent<SpriteComponent>();
+                    auto sprite = MAMGame::instance->getSprite(tileId);
+                    spriteBox->setSprite(sprite);
+                    auto phys = tile->addComponent<PhysicsComponent>();
+                    b2Vec2 vertices[3];
+                    glm::vec2 size = getTileSize() / MAMGame::instance->physicsScale;
+                    vertices[0].Set(-size.x, size.y);
+                    vertices[1].Set(-size.x, -size.y);
+                    vertices[2].Set(size.x, -size.y);
+                    phys->initTriangle(b2_staticBody, size, tile->getPosition(), vertices, 1, 1);
                     break;
+                }
+                case 23: {
+                    glm::vec2 position = glm::vec2(xPos * tileWidth, yPos * tileHeight + 15);
+                    auto tile = MAMGame::instance->createGameObject(position, GOType::target);
+                    auto spriteBox = tile->addComponent<SpriteComponent>();
+                    auto sprite = MAMGame::instance->getSprite(tileId);
+                    spriteBox->setSprite(sprite);
+                    auto phys = tile->addComponent<PhysicsComponent>();
+                    phys->initTarget(b2_staticBody, tile->getPosition());
+                    break;
+                }
                 case 0:
                     break;
                 default: {

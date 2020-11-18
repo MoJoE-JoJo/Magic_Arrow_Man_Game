@@ -18,6 +18,8 @@ public:
 	static MAMGame* instance;
 	static const glm::vec2 windowSize;
 	sre::Sprite getSprite(int index);
+	
+	const float physicsScale = 100;
 private:
 	void init();
 	void initPhysics();
@@ -32,7 +34,6 @@ private:
 	sre::SDLRenderer r;
 	b2World* world = nullptr;
 	float gravity = -9.8;
-	const float physicsScale = 100;
 	sre::Camera camera;
 	std::shared_ptr<PlayerController> playerController;
 	std::vector<std::shared_ptr<GameObject>> gameObjects;
