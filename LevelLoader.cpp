@@ -53,11 +53,7 @@ void LevelLoader::loadMap(std::string filename) {
                     MAMGame::instance->createPlayerObject(position);
                     break;
                 }
-                case 2:
                 case 3:
-                case 4:
-                case 5:
-                case 9:
                 case 16:
                 case 17:
                 case 18: {
@@ -70,6 +66,18 @@ void LevelLoader::loadMap(std::string filename) {
                     phys->initBox(b2_staticBody, getTileSize(), tile->getPosition(), 1);
                     break;
                 }
+                case 2:
+                    //make left side kinda triangle
+                    break;
+                case 4:
+                    //make right side kinda triangle
+                    break;
+                case 5:
+                    //make triangle with corner in right bottom side
+                    break;
+                case 9:
+                    //make triangle with corner in left bottom side
+                    break;
                 case 0:
                     break;
                 default: {

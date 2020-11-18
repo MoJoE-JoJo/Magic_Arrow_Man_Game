@@ -61,9 +61,36 @@ void PhysicsComponent::initBox(b2BodyType type, glm::vec2 size, glm::vec2 center
     body->SetFixedRotation(true);
     polygon = new b2PolygonShape();
     size = size / MAMGame::instance->physicsScale;
-    polygon->SetAsBox(size.x, size.y, { 0,0 }, 0);
+    polygon->SetAsBox(size.x, size.y, { 0, 0 }, 0);
     b2FixtureDef fxD;
     fxD.shape = polygon;
+    fxD.friction = 1;
+    fxD.density = density;
+    fixture = body->CreateFixture(&fxD);
+
+    MAMGame::instance->registerPhysicsComponent(this);
+}
+
+void PhysicsComponent::initTriangle(b2BodyType type, glm::vec2 size, glm::vec2 center, b2Vec2 vertices[], float density, float friction) {
+    assert(body == nullptr);
+    // do init
+    shapeType = b2Shape::Type::e_polygon;
+    b2BodyDef bd;
+    bd.type = type;
+    rbType = type;
+    center = center / MAMGame::instance->physicsScale;
+    bd.position = b2Vec2(center.x, center.y);
+    body = world->CreateBody(&bd);
+    body->SetFixedRotation(true);
+    polygon = new b2PolygonShape();
+    size = size / MAMGame::instance->physicsScale;
+    vertices[0].Set(-size.x, -size.y); 
+    vertices[1].Set(size.x, size.y);
+    vertices[2].Set(size.x, -size.y);
+    polygon->Set(vertices, 3);
+    b2FixtureDef fxD;
+    fxD.shape = polygon;
+    fxD.friction = 1;
     fxD.density = density;
     fixture = body->CreateFixture(&fxD);
 
@@ -85,6 +112,7 @@ void PhysicsComponent::initCircle(b2BodyType type, float radius, glm::vec2 cente
     circle->m_radius = radius / MAMGame::instance->physicsScale;
     b2FixtureDef fxD;
     fxD.shape = circle;
+    fxD.friction = 0.3;
     fxD.density = density;
     fixture = body->CreateFixture(&fxD);
 
