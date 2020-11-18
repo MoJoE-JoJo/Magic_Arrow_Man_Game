@@ -36,9 +36,7 @@ void LevelLoader::loadMap(std::string filename) {
     int width = layerObj["width"].GetInt();
 
     rapidjson::Value& data = layerObj["data"];
-    int horizontalCounter = 0;
     int verticalCounter = 0;
-    //std::vector<b2Vec2> horizontalPoints;
     glm::vec2 startOfBigPos;
     int bigCount = 0;
     bool startedOnBig = false;
@@ -46,7 +44,7 @@ void LevelLoader::loadMap(std::string filename) {
     bool rightDiamond = false;
 
     for (rapidjson::SizeType i = 0; i < data.Size(); i++) {
-        int hozMod = horizontalCounter % width;
+        int hozMod = i % width;
         int xPos = hozMod + x;
         int yPos = (verticalCounter + y) * -1;
 
@@ -78,7 +76,7 @@ void LevelLoader::loadMap(std::string filename) {
                 if (tileId == 2) leftDiamond = true;
                 if (tileId == 4) rightDiamond = true;
 
-                int nextId = data[i + 1].GetInt();
+                int nextId = (i >= data.Size() || (i + 1) % width == 0) ? 0 : data[i + 1].GetInt();
                 if (nextId != 3 && nextId != 16 && nextId != 17 && nextId != 18 && nextId != 2 && nextId != 4) {
                     createBig(tile, startOfBigPos, position, bigCount, leftDiamond, rightDiamond, size);
 
@@ -130,9 +128,7 @@ void LevelLoader::loadMap(std::string filename) {
 
         if (hozMod == width - 1) {
             verticalCounter++;
-
         }
-        horizontalCounter++;
     }
     
     MAMGame::instance->createPlayerObject(playerPoint);
