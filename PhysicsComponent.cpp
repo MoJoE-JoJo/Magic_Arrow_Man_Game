@@ -71,7 +71,7 @@ void PhysicsComponent::initBox(b2BodyType type, glm::vec2 size, glm::vec2 center
     MAMGame::instance->registerPhysicsComponent(this);
 }
 
-void PhysicsComponent::initTriangle(b2BodyType type, glm::vec2 center, b2Vec2 vertices[], float density, float friction) {
+void PhysicsComponent::initTriangle(b2BodyType type, glm::vec2 center, b2Vec2 vertices[], float density) {
     assert(body == nullptr);
     // do init
     shapeType = b2Shape::Type::e_polygon;
@@ -86,7 +86,7 @@ void PhysicsComponent::initTriangle(b2BodyType type, glm::vec2 center, b2Vec2 ve
     polygon->Set(vertices, 3);
     b2FixtureDef fxD;
     fxD.shape = polygon;
-    fxD.friction = friction;
+    fxD.friction = 1;
     fxD.density = density;
     fixture = body->CreateFixture(&fxD);
 
@@ -108,14 +108,14 @@ void PhysicsComponent::initCircle(b2BodyType type, float radius, glm::vec2 cente
     circle->m_radius = radius / MAMGame::instance->physicsScale;
     b2FixtureDef fxD;
     fxD.shape = circle;
-    fxD.friction = 0.3;
+    fxD.friction = 1;
     fxD.density = density;
     fixture = body->CreateFixture(&fxD);
 
     MAMGame::instance->registerPhysicsComponent(this);
 }
 
-void PhysicsComponent::initPolygon(b2BodyType type, glm::vec2 center, float density, b2Vec2* vertices, int32 vertexCount) {
+void PhysicsComponent::initPolygon(b2BodyType type, glm::vec2 center, float density, b2Vec2* vertices, int32 vertexCount, float friction) {
     assert(body == nullptr);
     // do init
     shapeType = b2Shape::Type::e_polygon;
@@ -133,6 +133,7 @@ void PhysicsComponent::initPolygon(b2BodyType type, glm::vec2 center, float dens
     b2FixtureDef fxD;
     fxD.shape = polygon;
     fxD.density = density;
+    fxD.friction = friction;
     fixture = body->CreateFixture(&fxD);
 
     MAMGame::instance->registerPhysicsComponent(this);

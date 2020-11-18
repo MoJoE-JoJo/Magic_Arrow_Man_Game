@@ -49,7 +49,7 @@ void MAMGame::init() {
     sprites = SpriteAtlas::create("MAM.json", "MAM.png");
     // Test json loading
     LevelLoader ll = LevelLoader();
-    ll.loadMap("Levels/Level1.json");
+    ll.loadMap("Levels/Level0.json");
 }
 
 void MAMGame::initPhysics() {
@@ -102,13 +102,15 @@ void MAMGame::handleContact(b2Contact* contact, bool begin) {
 }
 
 void MAMGame::update(float time) {
-    updatePhysics();
+    if (gameState == GameState::Running) {
+        updatePhysics();
 
-    auto it = gameObjects.begin();
-    while (it != gameObjects.end()) {
-        shared_ptr<GameObject> ptr = *it;
-        ptr->update(time);
-        it++;
+        auto it = gameObjects.begin();
+        while (it != gameObjects.end()) {
+            shared_ptr<GameObject> ptr = *it;
+            ptr->update(time);
+            it++;
+        }
     }
 }
 
@@ -160,10 +162,14 @@ void MAMGame::onKey(SDL_Event& event) {
             camera.setPositionAndRotation(glm::vec3(camera.getPosition().x, camera.getPosition().y + 20, camera.getPosition().z), camera.getRotationEuler());
         } else if (event.key.keysym.sym == SDLK_DOWN) {
             camera.setPositionAndRotation(glm::vec3(camera.getPosition().x, camera.getPosition().y - 20, camera.getPosition().z), camera.getRotationEuler());
+        } else if (event.key.keysym.sym == SDLK_SPACE && gameState == GameState::Won) {
+            init();
+            setGameState(GameState::Running);
+            return;
         }
     }
 
-    if (playerController != nullptr) {
+    if (playerController != nullptr && gameState != GameState::Won) {
         playerController->onKey(event);
     }
 }
@@ -197,6 +203,10 @@ void MAMGame::deregisterPhysicsComponent(PhysicsComponent* physComponent) {
 
 sre::Sprite MAMGame::getSprite(int index) {
     return sprites->get(tileMap.find(index)->second);
+}
+
+void MAMGame::setGameState(GameState newState) {
+    gameState = newState;
 }
 
 void MAMGame::createTileMap() {

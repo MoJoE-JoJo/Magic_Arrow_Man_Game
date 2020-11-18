@@ -8,6 +8,8 @@
 #include "PhysicsComponent.hpp"
 #include "Box2DDebugDraw.hpp"
 
+enum class GameState { Won, Running };
+
 class MAMGame : public b2ContactListener {
 public:
 	MAMGame();
@@ -18,6 +20,7 @@ public:
 	static MAMGame* instance;
 	static const glm::vec2 windowSize;
 	sre::Sprite getSprite(int index);
+	void setGameState(GameState newState);
 	
 	const float physicsScale = 100;
 private:
@@ -43,7 +46,8 @@ private:
 	Box2DDebugDraw debugDraw;
 	bool doDebugDraw = false;
 	std::shared_ptr<sre::SpriteAtlas> sprites;
+	std::map<int, std::string> tileMap;
+	GameState gameState = GameState::Running;
 	friend class PhysicsComponent;
 	friend class LevelLoader;
-	std::map<int, std::string> tileMap;
 };

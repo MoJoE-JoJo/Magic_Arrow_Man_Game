@@ -97,7 +97,7 @@ void LevelLoader::loadMap(std::string filename) {
                 vertices[0].Set(-size.x, -size.y);
                 vertices[1].Set(size.x, size.y);
                 vertices[2].Set(size.x, -size.y);
-                phys->initTriangle(b2_staticBody, tile->getPosition(), vertices, 1, 1);
+                phys->initTriangle(b2_staticBody, tile->getPosition(), vertices, 1);
                 break;
             }
             case 9: { // make bottom left triangle
@@ -107,7 +107,7 @@ void LevelLoader::loadMap(std::string filename) {
                 vertices[0].Set(-size.x, size.y);
                 vertices[1].Set(-size.x, -size.y);
                 vertices[2].Set(size.x, -size.y);
-                phys->initTriangle(b2_staticBody, tile->getPosition(), vertices, 1, 1);
+                phys->initTriangle(b2_staticBody, tile->getPosition(), vertices, 1);
                 break;
             }
             case 23: {
@@ -184,5 +184,5 @@ void LevelLoader::createBig(std::shared_ptr<GameObject> tile, glm::vec2 startOfB
 
     auto phys = tile->addComponent<PhysicsComponent>();
     glm::vec2 center = glm::vec2((startOfBigPos.x + position.x) / 2, position.y);
-    phys->initPolygon(b2_staticBody, center, 1, vertices, vertexCount);
+    phys->initPolygon(b2_staticBody, center, 1, vertices, vertexCount, 1);
 }

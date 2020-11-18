@@ -14,8 +14,8 @@ public:
     virtual ~PhysicsComponent();
     void initBox(b2BodyType type, glm::vec2 size, glm::vec2 center, float density);
     void initCircle(b2BodyType type, float radius, glm::vec2 center, float density);
-    void initTriangle(b2BodyType type, glm::vec2 center, b2Vec2 vertices[], float density, float friction);
-    void initPolygon(b2BodyType type, glm::vec2 center, float density, b2Vec2* vertices, int32 vertexCount);
+    void initTriangle(b2BodyType type, glm::vec2 center, b2Vec2 vertices[], float density);
+    void initPolygon(b2BodyType type, glm::vec2 center, float density, b2Vec2* vertices, int32 vertexCount, float friction);
     void initTarget(b2BodyType type, glm::vec2 center);
     void addForce(glm::vec2 force);
     void addImpulse(glm::vec2 impulse);
