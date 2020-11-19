@@ -36,6 +36,15 @@ void PlayerObject::update(float deltaTime) {
     if (movingLeft && isGrounded()) {
         phys->addForce(glm::vec2(-1000 * phys->getMass(), 0));
     }
+    if (onLeftSlope && isGrounded()) {
+        phys->addForce(glm::vec2(-1000 * phys->getMass(), 0));
+    }
+    if (onRightSlope && isGrounded()) {
+        phys->addForce(glm::vec2(1000 * phys->getMass(), 0));
+    }
+    if (!movingRight && !movingLeft && isGrounded()) {
+        //TODO: Implement player deceleration
+    }
     updateSprite(deltaTime);
 }
 
@@ -54,6 +63,13 @@ void PlayerObject::decrCollisionCounter() {
 
 bool PlayerObject::isGrounded() {
     return collisionCounter != 0;
+}
+
+void PlayerObject::setOnRightSlope(bool newOnSlope) {
+    onRightSlope = newOnSlope;
+}
+void PlayerObject::setOnLeftSlope(bool newOnSlope) {
+    onLeftSlope = newOnSlope;
 }
 
 void PlayerObject::updateSprite(float deltaTime) {

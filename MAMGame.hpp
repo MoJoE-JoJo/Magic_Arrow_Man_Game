@@ -30,10 +30,12 @@ private:
 	void initPhysics();
 	void update(float time);
 	void updatePhysics();
+	void updateCamera(float time);
 	void render();
 	void onKey(SDL_Event& event);
 	void mouseEvent(SDL_Event& event);
 	void handleContact(b2Contact* contact, bool begin);
+	void reset();
 	void createTileMap();
 
 	int currentLevel = 0;
@@ -51,6 +53,22 @@ private:
 	std::shared_ptr<sre::SpriteAtlas> sprites;
 	std::map<int, std::string> tileMap;
 	GameState gameState = GameState::Running;
+	
+	float cameraTotalMoveTime = 0.0f;
+	float easingFunc(float x);
+	float levelCamXMinBound;
+	float levelCamXMaxBound;
+	float levelCamYMinBound;
+	float levelCamYMaxBound;
+
+	float levelXMinBound;
+	float levelXMaxBound;
+	float levelYMinBound;
+	float levelYMaxBound;
+
+	glm::vec2 levelBounds;
+	glm::vec2 originalPlayerPosition;
+	bool isPlayerWithinBounds();
 	friend class PhysicsComponent;
 	friend class LevelLoader;
 };

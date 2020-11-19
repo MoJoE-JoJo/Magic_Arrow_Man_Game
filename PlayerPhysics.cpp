@@ -6,9 +6,17 @@
 #include "MAMGame.hpp"
 
 void PlayerPhysics::onCollisionStart(PhysicsComponent* comp) {
-	if (comp->getGameObject()->goType == GOType::ground || comp->getGameObject()->goType == GOType::slope) {
+	if (comp->getGameObject()->goType == GOType::ground) {
 		auto player = dynamic_cast<PlayerObject*>(gameObject);
 		player->incrCollisionCounter();
+	} else if (comp->getGameObject()->goType == GOType::leftSlope) {
+		auto player = dynamic_cast<PlayerObject*>(gameObject);
+		player->incrCollisionCounter();
+		player->setOnLeftSlope(true);
+	} else if (comp->getGameObject()->goType == GOType::rightSlope) {
+		auto player = dynamic_cast<PlayerObject*>(gameObject);
+		player->incrCollisionCounter();
+		player->setOnRightSlope(true);
 	} else if (comp->getGameObject()->goType == GOType::target) {
 		MAMGame::instance->setGameState(GameState::Won);
 	} else if (comp->getGameObject()->goType == GOType::bow) {
@@ -17,8 +25,16 @@ void PlayerPhysics::onCollisionStart(PhysicsComponent* comp) {
 }
 
 void PlayerPhysics::onCollisionEnd(PhysicsComponent* comp) {
-	if (comp->getGameObject()->goType == GOType::ground || comp->getGameObject()->goType == GOType::slope) {
+	if (comp->getGameObject()->goType == GOType::ground) {
 		auto player = dynamic_cast<PlayerObject*>(gameObject);
 		player->decrCollisionCounter();
+	} else if (comp->getGameObject()->goType == GOType::leftSlope) {
+		auto player = dynamic_cast<PlayerObject*>(gameObject);
+		player->decrCollisionCounter();
+		player->setOnLeftSlope(false);
+	} else if (comp->getGameObject()->goType == GOType::rightSlope) {
+		auto player = dynamic_cast<PlayerObject*>(gameObject);
+		player->decrCollisionCounter();
+		player->setOnRightSlope(false);
 	}
 }
