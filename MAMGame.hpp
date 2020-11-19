@@ -53,6 +53,11 @@ private:
 	
 	float cameraTotalMoveTime = 0.0f;
 	float easingFunc(float x);
+	float levelXMinBound;
+	float levelXMaxBound;
+	float levelYMinBound;
+	float levelYMaxBound;
+
 	glm::vec2 levelBounds;
 	friend class PhysicsComponent;
 	friend class LevelLoader;
