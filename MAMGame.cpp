@@ -52,11 +52,16 @@ void MAMGame::init() {
     ll.loadMap("Levels/Level" + std::to_string(currentLevel) + ".json");
     levelBounds = glm::vec2(ll.getMapWidth(), ll.getMapHeight());
     
-    levelXMinBound = 0.0f - 64.0f; //-64.0f Keeps half a tile of padding at the left side of the screeen
-    levelXMaxBound = levelBounds.x - windowSize.x - 0.0f; //-0.0f Keeps half a tile of padding at the right side of the screeen
+    levelCamXMinBound = 0.0f - 64.0f; //-64.0f Keeps half a tile of padding at the left side of the screeen
+    levelCamXMaxBound = levelBounds.x - windowSize.x - 0.0f; //-0.0f Keeps half a tile of padding at the right side of the screeen
 
-    levelYMinBound = -levelBounds.y + 0.0f; //+0.0f Keeps half a tile of padding at the bottom of the screeen
-    levelYMaxBound = 0.0f - windowSize.y + 64.0f; //+64.0f Keeps half a tile of padding at the top of the screeen
+    levelCamYMinBound = -levelBounds.y + 0.0f; //+0.0f Keeps half a tile of padding at the bottom of the screeen
+    levelCamYMaxBound = 0.0f - windowSize.y + 64.0f; //+64.0f Keeps half a tile of padding at the top of the screeen
+
+    levelXMinBound = 0.0f - 64.0f;
+    levelXMaxBound = levelBounds.x;
+    levelYMinBound = -levelBounds.y;
+    levelYMaxBound = 0.0f + 64.0f;
 }
 
 void MAMGame::initPhysics() {
@@ -90,6 +95,7 @@ void MAMGame::createPlayerObject(glm::vec2 pos) {
     playerController = shared_ptr<PlayerController>(new PlayerController(player));
     // TODO: remove when camera works properly
     camera.setPositionAndRotation(glm::vec3(pos.x - windowSize.x / 2, pos.y - windowSize.y / 2, camera.getPosition().z), camera.getRotationEuler());
+    originalPlayerPosition = playerController->player->getPosition();
 }
 
 void MAMGame::handleContact(b2Contact* contact, bool begin) {
@@ -118,6 +124,8 @@ void MAMGame::update(float time) {
             ptr->update(time);
             it++;
         }
+        if (!isPlayerWithinBounds()) reset();
+
         updateCamera(time);
     }
 }
@@ -138,7 +146,7 @@ void MAMGame::updateCamera(float time) {
     auto newCameraPositionX = glm::mix(currentCameraPosition.x, playerPosition.x - windowSize.x / 2, easingX);
     auto newCameraPositionY = glm::mix(currentCameraPosition.y, playerPosition.y - windowSize.y / 2, easingY);
     
-    auto newCameraPosition = glm::vec3((int) glm::clamp(newCameraPositionX, levelXMinBound, levelXMaxBound), (int) glm::clamp(newCameraPositionY, levelYMinBound, levelYMaxBound), camera.getPosition().z);
+    auto newCameraPosition = glm::vec3((int) glm::clamp(newCameraPositionX, levelCamXMinBound, levelCamXMaxBound), (int) glm::clamp(newCameraPositionY, levelCamYMinBound, levelCamYMaxBound), camera.getPosition().z);
     
     camera.setPositionAndRotation(newCameraPosition, camera.getRotationEuler());
 }
@@ -181,7 +189,7 @@ void MAMGame::onKey(SDL_Event& event) {
                 world->SetDebugDraw(nullptr);
             }
         } else if (event.key.keysym.sym == SDLK_r) {
-            init();
+            reset();
             return;
         } else if (event.key.keysym.sym == SDLK_LEFT) {
             camera.setPositionAndRotation(glm::vec3(camera.getPosition().x - 20, camera.getPosition().y, camera.getPosition().z), camera.getRotationEuler());
@@ -262,4 +270,18 @@ void MAMGame::createTileMap() {
     tileMap.insert({ 21, "monster_f1.png" });
     tileMap.insert({ 22, "target.png" });
     tileMap.insert({ 23, "target_legs.png" });
+}
+
+void MAMGame::reset() {
+    std::cout << "yolo" << endl;
+    playerController->player->getComponent<PhysicsComponent>()->setPosition(b2Vec2(originalPlayerPosition.x / physicsScale, originalPlayerPosition.y / physicsScale));
+}
+
+bool MAMGame::isPlayerWithinBounds() {
+    auto playerPosition = playerController->player->getPosition();
+    if (playerPosition.x < levelXMinBound) return false;
+    if (playerPosition.x > levelXMaxBound) return false;
+    if (playerPosition.y < levelYMinBound) return false;
+    if (playerPosition.y > levelYMaxBound) return false;
+    return true;
 }

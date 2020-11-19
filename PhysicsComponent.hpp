@@ -25,6 +25,7 @@ public:
     void setSensor(bool enabled);
     void update(float deltaTime) override;
     float getMass();
+    void setPosition(b2Vec2 position);
     virtual void onCollisionStart(PhysicsComponent* comp);
     virtual void onCollisionEnd(PhysicsComponent* comp);
 private:

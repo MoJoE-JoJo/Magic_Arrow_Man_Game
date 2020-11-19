@@ -176,6 +176,11 @@ void PhysicsComponent::update(float deltaTime) {
     getGameObject()->setRotation(angle);
 }
 
+void PhysicsComponent::setPosition(b2Vec2 position) {
+    body->SetTransform(position, body->GetTransform().q.GetAngle());
+}
+
+
 void PhysicsComponent::onCollisionStart(PhysicsComponent* comp) { }
 
 void PhysicsComponent::onCollisionEnd(PhysicsComponent* comp) { }

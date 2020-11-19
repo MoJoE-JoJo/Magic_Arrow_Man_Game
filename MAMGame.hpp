@@ -34,6 +34,7 @@ private:
 	void mouseEvent(SDL_Event& event);
 	void handleContact(b2Contact* contact, bool begin);
 	void MAMGame::createTileMap();
+	void reset();
 
 	int currentLevel = 0;
 	sre::SDLRenderer r;
@@ -53,12 +54,19 @@ private:
 	
 	float cameraTotalMoveTime = 0.0f;
 	float easingFunc(float x);
+	float levelCamXMinBound;
+	float levelCamXMaxBound;
+	float levelCamYMinBound;
+	float levelCamYMaxBound;
+
 	float levelXMinBound;
 	float levelXMaxBound;
 	float levelYMinBound;
 	float levelYMaxBound;
 
 	glm::vec2 levelBounds;
+	glm::vec2 originalPlayerPosition;
+	bool isPlayerWithinBounds();
 	friend class PhysicsComponent;
 	friend class LevelLoader;
 };
