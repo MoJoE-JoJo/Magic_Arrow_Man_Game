@@ -111,6 +111,14 @@ void MAMGame::update(float time) {
             ptr->update(time);
             it++;
         }
+        camera.setPositionAndRotation(
+            glm::vec3(
+                playerController.get()->player.get()->getPosition().x - windowSize.x / 2, 
+                playerController.get()->player.get()->getPosition().y - windowSize.y / 2, 
+                camera.getPosition().z
+            ), 
+            camera.getRotationEuler()
+        );
     }
 }
 

@@ -13,4 +13,5 @@ public:
 private:
     std::shared_ptr<PlayerObject> player;
     friend class PlayerObject;
+    friend class MAMGame;
 };
