@@ -28,3 +28,11 @@ void BowObject::updatePos(glm::vec2 pos) {
     getComponent<PhysicsComponent>()->setPosition(pos / MAMGame::instance->physicsScale);
     setPosition(pos);
 }
+
+void BowObject::updateAngle(glm::vec2 mousePos) {
+    b2Vec2 toTarget = b2Vec2(mousePos.x, mousePos.y) - b2Vec2(getPosition().x, getPosition().y);
+    float angle = atan2f(-toTarget.x, toTarget.y);
+    getComponent<PhysicsComponent>()->setRotation(angle);
+    float degreeAngle = glm::degrees(angle) + 90;
+    setRotation(degreeAngle);
+}

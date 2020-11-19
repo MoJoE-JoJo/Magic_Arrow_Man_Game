@@ -34,11 +34,11 @@
 },
 {
 	"filename": "bow.png",
-	"frame": {"x":243,"y":21,"w":35,"h":49},
+	"frame": {"x":243,"y":21,"w":32,"h":64},
 	"rotated": false,
 	"trimmed": false,
-	"spriteSourceSize": {"x":0,"y":0,"w":35,"h":49},
-	"sourceSize": {"w":35,"h":49}
+	"spriteSourceSize": {"x":0,"y":0,"w":32,"h":64},
+	"sourceSize": {"w":32,"h":64}
 },
 {
 	"filename": "green_arrow_projectile.png",
@@ -58,7 +58,7 @@
 },
 {
 	"filename": "monster_f1.png",
-	"frame": {"x":256,"y":213,"w":96,"h":96},
+	"frame": {"x":384,"y":213,"w":96,"h":96},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":96,"h":96},
@@ -66,14 +66,6 @@
 },
 {
 	"filename": "monster_f2.png",
-	"frame": {"x":352,"y":213,"w":96,"h":96},
-	"rotated": false,
-	"trimmed": false,
-	"spriteSourceSize": {"x":0,"y":0,"w":96,"h":96},
-	"sourceSize": {"w":96,"h":96}
-},
-{
-	"filename": "monster_f3.png",
 	"frame": {"x":0,"y":309,"w":96,"h":96},
 	"rotated": false,
 	"trimmed": false,
@@ -81,8 +73,16 @@
 	"sourceSize": {"w":96,"h":96}
 },
 {
-	"filename": "monster_f4.png",
+	"filename": "monster_f3.png",
 	"frame": {"x":96,"y":309,"w":96,"h":96},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":96,"h":96},
+	"sourceSize": {"w":96,"h":96}
+},
+{
+	"filename": "monster_f4.png",
+	"frame": {"x":192,"y":309,"w":96,"h":96},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":96,"h":96},
@@ -106,22 +106,6 @@
 },
 {
 	"filename": "player_f1.png",
-	"frame": {"x":0,"y":213,"w":64,"h":74},
-	"rotated": false,
-	"trimmed": false,
-	"spriteSourceSize": {"x":0,"y":0,"w":64,"h":74},
-	"sourceSize": {"w":64,"h":74}
-},
-{
-	"filename": "player_f2.png",
-	"frame": {"x":64,"y":213,"w":64,"h":74},
-	"rotated": false,
-	"trimmed": false,
-	"spriteSourceSize": {"x":0,"y":0,"w":64,"h":74},
-	"sourceSize": {"w":64,"h":74}
-},
-{
-	"filename": "player_f3.png",
 	"frame": {"x":128,"y":213,"w":64,"h":74},
 	"rotated": false,
 	"trimmed": false,
@@ -129,8 +113,24 @@
 	"sourceSize": {"w":64,"h":74}
 },
 {
-	"filename": "player_f4.png",
+	"filename": "player_f2.png",
 	"frame": {"x":192,"y":213,"w":64,"h":74},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":64,"h":74},
+	"sourceSize": {"w":64,"h":74}
+},
+{
+	"filename": "player_f3.png",
+	"frame": {"x":256,"y":213,"w":64,"h":74},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":64,"h":74},
+	"sourceSize": {"w":64,"h":74}
+},
+{
+	"filename": "player_f4.png",
+	"frame": {"x":320,"y":213,"w":64,"h":74},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":64,"h":74},
@@ -154,7 +154,7 @@
 },
 {
 	"filename": "spawn.png",
-	"frame": {"x":448,"y":149,"w":64,"h":64},
+	"frame": {"x":64,"y":213,"w":64,"h":64},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":64,"h":64},
@@ -162,14 +162,6 @@
 },
 {
 	"filename": "target.png",
-	"frame": {"x":192,"y":309,"w":96,"h":96},
-	"rotated": false,
-	"trimmed": false,
-	"spriteSourceSize": {"x":0,"y":0,"w":96,"h":96},
-	"sourceSize": {"w":96,"h":96}
-},
-{
-	"filename": "target_legs.png",
 	"frame": {"x":288,"y":309,"w":96,"h":96},
 	"rotated": false,
 	"trimmed": false,
@@ -177,8 +169,16 @@
 	"sourceSize": {"w":96,"h":96}
 },
 {
+	"filename": "target_legs.png",
+	"frame": {"x":384,"y":309,"w":96,"h":96},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":96,"h":96},
+	"sourceSize": {"w":96,"h":96}
+},
+{
 	"filename": "Tilesets-1-01.png",
-	"frame": {"x":278,"y":21,"w":64,"h":64},
+	"frame": {"x":275,"y":21,"w":64,"h":64},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":64,"h":64},
@@ -186,7 +186,7 @@
 },
 {
 	"filename": "Tilesets-1-02.png",
-	"frame": {"x":342,"y":21,"w":64,"h":64},
+	"frame": {"x":339,"y":21,"w":64,"h":64},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":64,"h":64},
@@ -194,7 +194,7 @@
 },
 {
 	"filename": "Tilesets-1-03.png",
-	"frame": {"x":406,"y":21,"w":64,"h":64},
+	"frame": {"x":403,"y":21,"w":64,"h":64},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":64,"h":64},
@@ -258,14 +258,6 @@
 },
 {
 	"filename": "Tilesets-1-11.png",
-	"frame": {"x":448,"y":85,"w":64,"h":64},
-	"rotated": false,
-	"trimmed": false,
-	"spriteSourceSize": {"x":0,"y":0,"w":64,"h":64},
-	"sourceSize": {"w":64,"h":64}
-},
-{
-	"filename": "Tilesets-1-12.png",
 	"frame": {"x":0,"y":149,"w":64,"h":64},
 	"rotated": false,
 	"trimmed": false,
@@ -273,7 +265,7 @@
 	"sourceSize": {"w":64,"h":64}
 },
 {
-	"filename": "Tilesets-1-13.png",
+	"filename": "Tilesets-1-12.png",
 	"frame": {"x":64,"y":149,"w":64,"h":64},
 	"rotated": false,
 	"trimmed": false,
@@ -281,7 +273,7 @@
 	"sourceSize": {"w":64,"h":64}
 },
 {
-	"filename": "Tilesets-1-14.png",
+	"filename": "Tilesets-1-13.png",
 	"frame": {"x":128,"y":149,"w":64,"h":64},
 	"rotated": false,
 	"trimmed": false,
@@ -289,7 +281,7 @@
 	"sourceSize": {"w":64,"h":64}
 },
 {
-	"filename": "Tilesets-1-15.png",
+	"filename": "Tilesets-1-14.png",
 	"frame": {"x":192,"y":149,"w":64,"h":64},
 	"rotated": false,
 	"trimmed": false,
@@ -297,7 +289,7 @@
 	"sourceSize": {"w":64,"h":64}
 },
 {
-	"filename": "Tilesets-1-16.png",
+	"filename": "Tilesets-1-15.png",
 	"frame": {"x":256,"y":149,"w":64,"h":64},
 	"rotated": false,
 	"trimmed": false,
@@ -305,7 +297,7 @@
 	"sourceSize": {"w":64,"h":64}
 },
 {
-	"filename": "Tilesets-1-17.png",
+	"filename": "Tilesets-1-16.png",
 	"frame": {"x":320,"y":149,"w":64,"h":64},
 	"rotated": false,
 	"trimmed": false,
@@ -313,8 +305,16 @@
 	"sourceSize": {"w":64,"h":64}
 },
 {
-	"filename": "Tilesets-1-18.png",
+	"filename": "Tilesets-1-17.png",
 	"frame": {"x":384,"y":149,"w":64,"h":64},
+	"rotated": false,
+	"trimmed": false,
+	"spriteSourceSize": {"x":0,"y":0,"w":64,"h":64},
+	"sourceSize": {"w":64,"h":64}
+},
+{
+	"filename": "Tilesets-1-18.png",
+	"frame": {"x":0,"y":213,"w":64,"h":64},
 	"rotated": false,
 	"trimmed": false,
 	"spriteSourceSize": {"x":0,"y":0,"w":64,"h":64},
@@ -323,10 +323,10 @@
 "meta": {
 	"app": "https://www.codeandweb.com/texturepacker",
 	"version": "1.0",
-	"image": "MAM_2.png",
+	"image": "MAM.png",
 	"format": "RGBA8888",
-	"size": {"w":512,"h":512},
+	"size": {"w":480,"h":405},
 	"scale": "1",
-	"smartupdate": "$TexturePacker:SmartUpdate:d3fbc94007d9bfb5f139e04ffc973848:649fc257271268c846b83164937afe17:6a0432cd9e4a101533a7b87119ef62e8$"
+	"smartupdate": "$TexturePacker:SmartUpdate:486708015a91fe04287e22497fc38668:8466c935ba387dc14e3c4a045d0205fd:8b4e4ea31fce91f10f429769450d0c00$"
 }
 }

@@ -188,3 +188,7 @@ float PhysicsComponent::getMass() {
 void PhysicsComponent::setPosition(glm::vec2 pos) {
     body->SetTransform(b2Vec2(pos.x, pos.y), body->GetAngle());
 }
+
+void PhysicsComponent::setRotation(float angle) {
+    body->SetTransform(body->GetPosition(), angle);
+}

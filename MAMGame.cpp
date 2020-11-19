@@ -199,10 +199,10 @@ void MAMGame::mouseEvent(SDL_Event& e) {
     glm::vec2 pos{ e.motion.x, r->getWindowSize().y - e.motion.y };
 
     // convert to pixel coordinates (for HighDPI displays)
-    //pos /= r->getWindowSize();
-    //pos *= r->getDrawableSize();
+    pos /= r->getWindowSize();
+    pos *= r->getDrawableSize();
 
-    playerController->mouseEvent(e, pos);
+    playerController->mouseEvent(e, glm::vec2(camera.screenPointToRay(pos)[0]));
 }
 
 void MAMGame::registerPhysicsComponent(PhysicsComponent* physComponent) {

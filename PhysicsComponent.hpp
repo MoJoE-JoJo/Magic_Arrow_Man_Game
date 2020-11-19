@@ -24,6 +24,7 @@ public:
     bool isSensor();
     void setSensor(bool enabled);
     void setPosition(glm::vec2 pos);
+    void setRotation(float angle);
     void update(float deltaTime) override;
     float getMass();
     virtual void onCollisionStart(PhysicsComponent* comp);

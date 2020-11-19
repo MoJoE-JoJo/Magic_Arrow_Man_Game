@@ -32,13 +32,8 @@ void PlayerController::onKey(SDL_Event& event) {
 
 void PlayerController::mouseEvent(SDL_Event& event, glm::vec2 pos) {
     if (bowIsSet) {
-        std::cout << bow->getPosition().x << " " << bow->getPosition().y << std::endl;
+        bow->updateAngle(pos);
     }
-
-    int mouseX = static_cast<int>(pos.x);
-    int mouseY = static_cast<int>(pos.y);
-
-    std::cout << mouseX << " " << mouseY << std::endl;
 }
 
 void PlayerController::setBow(std::shared_ptr<BowObject> bow) {
@@ -47,7 +42,8 @@ void PlayerController::setBow(std::shared_ptr<BowObject> bow) {
 
 void PlayerController::update() {
     if (bowIsSet) {
-        auto position = player->getPosition();
+        auto offset = player->flipIndicator ? glm::vec2(-15, -13) : glm::vec2(15, -13);
+        auto position = player->getPosition() + offset;
         bow->updatePos(position);
     }
 }
