@@ -129,6 +129,7 @@ void PhysicsComponent::initPolygon(b2BodyType type, glm::vec2 center, float dens
     polygon = new b2PolygonShape();
 
     //b2PolygonShape polygon;
+
     polygon->Set(vertices, vertexCount);
     b2FixtureDef fxD;
     fxD.shape = polygon;
@@ -187,4 +188,8 @@ void PhysicsComponent::onCollisionEnd(PhysicsComponent* comp) { }
 
 float PhysicsComponent::getMass() {
     return body->GetMass();
+}
+
+void PhysicsComponent::setPosition(glm::vec2 pos) {
+    body->SetTransform(b2Vec2(pos.x, pos.y), body->GetAngle());
 }

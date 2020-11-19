@@ -1,4 +1,11 @@
 { "compressionlevel":-1,
+ "editorsettings":
+    {
+     "export":
+        {
+         "target":"."
+        }
+    },
  "height":20,
  "infinite":false,
  "layers":[
@@ -30,6 +37,10 @@
         {
          "firstgid":21,
          "source":"MAM_monster_target.json"
+        }, 
+        {
+         "firstgid":24,
+         "source":"MAM_extra.json"
         }],
  "tilewidth":64,
  "type":"map",

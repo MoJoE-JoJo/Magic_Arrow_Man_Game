@@ -1,5 +1,6 @@
 #pragma once
 #include "PhysicsComponent.hpp"
+#include "PlayerObject.hpp"
 
 class PlayerPhysics : public PhysicsComponent {
 public:
@@ -9,4 +10,3 @@ public:
 private:
     
 };
-

@@ -1,6 +1,9 @@
 #pragma once
 #include "GameObject.hpp"
+#include "BowObject.hpp"
 #include "PlayerController.hpp"
+
+class BowObject;
 
 class PlayerObject : public GameObject {
 public:

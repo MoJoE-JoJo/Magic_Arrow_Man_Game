@@ -16,7 +16,9 @@ public:
 	void BeginContact(b2Contact* contact) override;
 	void EndContact(b2Contact* contact) override;
 	std::shared_ptr<GameObject> createGameObject(glm::vec2 pos, GOType goType);
-	void MAMGame::createPlayerObject(glm::vec2 pos);
+	void createPlayerObject(glm::vec2 pos);
+	void createBowObject(glm::vec2 pos);
+	void setBow();
 	static MAMGame* instance;
 	static const glm::vec2 windowSize;
 	sre::Sprite getSprite(int index);
@@ -33,8 +35,8 @@ private:
 	void onKey(SDL_Event& event);
 	void mouseEvent(SDL_Event& event);
 	void handleContact(b2Contact* contact, bool begin);
-	void MAMGame::createTileMap();
 	void reset();
+	void createTileMap();
 
 	int currentLevel = 0;
 	sre::SDLRenderer r;
