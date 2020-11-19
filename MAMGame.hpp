@@ -28,6 +28,7 @@ private:
 	void initPhysics();
 	void update(float time);
 	void updatePhysics();
+	void updateCamera(float time);
 	void render();
 	void onKey(SDL_Event& event);
 	void mouseEvent(SDL_Event& event);
@@ -49,6 +50,10 @@ private:
 	std::shared_ptr<sre::SpriteAtlas> sprites;
 	std::map<int, std::string> tileMap;
 	GameState gameState = GameState::Running;
+	
+	float cameraTotalMoveTime = 0.0f;
+	float easingFunc(float x);
+	glm::vec2 levelBounds;
 	friend class PhysicsComponent;
 	friend class LevelLoader;
 };

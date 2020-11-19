@@ -50,6 +50,7 @@ void MAMGame::init() {
     // Test json loading
     LevelLoader ll = LevelLoader();
     ll.loadMap("Levels/Level" + std::to_string(currentLevel) + ".json");
+    levelBounds = glm::vec2(ll.getMapWidth(), ll.getMapHeight());
 }
 
 void MAMGame::initPhysics() {
@@ -104,21 +105,14 @@ void MAMGame::handleContact(b2Contact* contact, bool begin) {
 void MAMGame::update(float time) {
     if (gameState == GameState::Running) {
         updatePhysics();
-
+        
         auto it = gameObjects.begin();
         while (it != gameObjects.end()) {
             shared_ptr<GameObject> ptr = *it;
             ptr->update(time);
             it++;
         }
-        camera.setPositionAndRotation(
-            glm::vec3(
-                playerController.get()->player.get()->getPosition().x - windowSize.x / 2, 
-                playerController.get()->player.get()->getPosition().y - windowSize.y / 2, 
-                camera.getPosition().z
-            ), 
-            camera.getRotationEuler()
-        );
+        updateCamera(time);
     }
 }
 
@@ -127,6 +121,46 @@ void MAMGame::updatePhysics() {
     const int positionIterations = 2;
     const int velocityIterations = 6;
     world->Step(timeStep, velocityIterations, positionIterations);
+}
+
+void MAMGame::updateCamera(float time) {
+    auto currentCameraPosition = camera.getPosition();
+    //auto currentCameraRotation = camera.getRotationEuler();
+
+    //float sTime = time;
+
+    //float moveSpeed = 5.0f;
+    //cameraTotalMoveTime += sTime;
+    auto playerPosition = playerController->player->getPosition();
+    //cameraTotalMoveTime = (float)fmod(cameraTotalMoveTime, 1);
+
+    //std::cout << cameraTotalMoveTime << endl;
+
+
+    //auto cameraPlayerDiff = glm::vec3(playerPosition.x - windowSize.x / 2, playerPosition.y - windowSize.y / 2, camera.getPosition().z) - currentCameraPosition;
+    auto easingX = 0.035f;
+    auto easingY = 0.035f;
+    //auto easingX = easingFunc(0.01f);
+    //auto easingY = easingFunc(0.01f);
+    auto newCameraPositionX = glm::mix(currentCameraPosition.x, playerPosition.x - windowSize.x / 2, easingX);
+    auto newCameraPositionY = glm::mix(currentCameraPosition.y, playerPosition.y - windowSize.y / 2, easingY);
+    
+    auto xMin = 0.0f - 64.0f; //-64.0f Keeps half a tile of padding at the left side of the screeen
+    auto xMax = levelBounds.x - windowSize.x - 0.0f; //-0.0f Keeps half a tile of padding at the right side of the screeen
+
+    auto yMin = - levelBounds.y + 0.0f; //+0.0f Keeps half a tile of padding at the bottom of the screeen
+    auto yMax = 0.0f - windowSize.y + 64.0f; //+64.0f Keeps half a tile of padding at the top of the screeen
+
+    auto newCameraPosition = glm::vec3((int) glm::clamp(newCameraPositionX, xMin, xMax), (int) glm::clamp(newCameraPositionY, yMin, yMax), camera.getPosition().z);
+    
+    camera.setPositionAndRotation(newCameraPosition, camera.getRotationEuler());
+}
+
+float MAMGame::easingFunc(float x) {
+    //return x;
+    return 1 - (1 - x) * (1 - x);
+    //return x < 0.5 ? 2 * x * x : 1 - pow(-2 * x + 2, 2) / 2;
+    //return x * x;
 }
 
 void MAMGame::render() {
