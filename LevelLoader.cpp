@@ -93,22 +93,27 @@ void LevelLoader::loadMap(std::string filename) {
             }
             case 5: { // make bottom right triangle
                 auto tile = createGameObject(position, GOType::slope, tileId);
-                auto phys = tile->addComponent<PhysicsComponent>();
-                b2Vec2 vertices[3];
-                vertices[0].Set(-size.x, -size.y);
-                vertices[1].Set(size.x, size.y);
-                vertices[2].Set(size.x, -size.y);
-                phys->initTriangle(b2_staticBody, tile->getPosition(), vertices, 1);
+
+                int lowerLeftId = i + width - 1;
+                int nexttileid = (lowerLeftId >= data.Size() || (lowerLeftId) % width == 29) ? 0 : data[lowerLeftId].GetInt();
+                if (nexttileid != tileId) {
+                    std::cout << "bong" << std::endl;
+                    createBigSlopeRight(tile, position, tileId, size, i, width, data);
+                }
+
+                
                 break;
             }
             case 9: { // make bottom left triangle
                 auto tile = createGameObject(position, GOType::slope, tileId);
-                auto phys = tile->addComponent<PhysicsComponent>();
-                b2Vec2 vertices[3];
-                vertices[0].Set(-size.x, size.y);
-                vertices[1].Set(-size.x, -size.y);
-                vertices[2].Set(size.x, -size.y);
-                phys->initTriangle(b2_staticBody, tile->getPosition(), vertices, 1);
+                
+                int lowerRightId = i + width + 1;
+                int nexttileid = (lowerRightId >= data.Size() || (lowerRightId) % width == 0) ? 0 : data[lowerRightId].GetInt();
+                if (nexttileid != tileId) {
+                    std::cout << "bing" << std::endl;
+                    createBigSlopeLeft(tile, position, tileId, size, i, width, data);
+                }
+                
                 break;
             }
             case 23: {
@@ -190,4 +195,91 @@ void LevelLoader::createBig(std::shared_ptr<GameObject> tile, glm::vec2 startOfB
     auto phys = tile->addComponent<PhysicsComponent>();
     glm::vec2 center = glm::vec2((startOfBigPos.x + position.x) / 2, position.y);
     phys->initPolygon(b2_staticBody, center, 1, vertices, vertexCount, 1);
+}
+
+
+void LevelLoader::createBigSlopeRight(std::shared_ptr<GameObject> tile, glm::vec2 position, int tileId, glm::vec2 size, int initialIndex, int width, rapidjson::Value& data) {
+    
+    int slopeCount = 1; 
+    int nextCandidate = initialIndex - width + 1;
+    int nextId = (nextCandidate < 0 || (nextCandidate) % width == 0) ? 0 : data[nextCandidate].GetInt();
+    while (nextId == tileId) {
+        slopeCount++;
+        nextCandidate = nextCandidate - width + 1;
+        nextId = (nextCandidate < 0 || (nextCandidate) % width == 0) ? 0 : data[nextCandidate].GetInt();
+    }
+    
+    std::cout << "slope count " << slopeCount << std::endl;
+    
+    std::vector<b2Vec2> vertices;
+
+    glm::vec2 otherPosition = glm::vec2(position.x + ((slopeCount-1) * tileWidth), position.y + ((slopeCount-1) * tileHeight));
+
+    glm::vec2 center = glm::vec2((otherPosition.x + position.x) / 2, (otherPosition.y + position.y) / 2);
+    
+    float offset = slopeCount / 2.0f; 
+
+    for (int i = 0; i < slopeCount; i++) {
+        float x = -((size.x * 2) * (offset - i));
+        float y = -((size.y * 2) * (offset - i));
+        b2Vec2 firstPoint = b2Vec2(x, y);
+        b2Vec2 secondPoint = b2Vec2(x + (size.x*2), y);
+
+        vertices.push_back(firstPoint);
+        vertices.push_back(secondPoint);
+
+    }
+    b2Vec2 lastPoint = b2Vec2((size.x * slopeCount), (size.y * slopeCount));
+    vertices.push_back(lastPoint);
+    
+    
+    
+    auto phys = tile->addComponent<PhysicsComponent>();
+
+    int vertexCount = (slopeCount * 2) + 1;
+
+    phys->initPolygon(b2_staticBody, center, 1, &vertices[0], vertexCount, 1);
+}
+
+void LevelLoader::createBigSlopeLeft(std::shared_ptr<GameObject> tile, glm::vec2 position, int tileId, glm::vec2 size, int initialIndex, int width, rapidjson::Value& data) {
+
+    int slopeCount = 1;
+    int nextCandidate = initialIndex - width - 1;
+    int nextId = (nextCandidate < 0 || (nextCandidate) % width == 29) ? 0 : data[nextCandidate].GetInt();
+    while (nextId == tileId) {
+        slopeCount++;
+        nextCandidate = nextCandidate - width - 1;
+        nextId = (nextCandidate < 0 || (nextCandidate) % width == 29) ? 0 : data[nextCandidate].GetInt();
+    }
+
+    std::cout << "slope count " << slopeCount << std::endl;
+
+    std::vector<b2Vec2> vertices;
+
+    glm::vec2 otherPosition = glm::vec2(position.x - ((slopeCount - 1) * tileWidth), position.y + ((slopeCount - 1) * tileHeight));
+
+    glm::vec2 center = glm::vec2((otherPosition.x + position.x) / 2, (otherPosition.y + position.y) / 2);
+
+    float offset = slopeCount / 2.0f;
+
+    for (int i = 0; i < slopeCount; i++) {
+        float x = ((size.x * 2) * (offset - i));
+        float y = -((size.y * 2) * (offset - i));
+        b2Vec2 firstPoint = b2Vec2(x, y);
+        b2Vec2 secondPoint = b2Vec2(x - (size.x * 2), y);
+
+        vertices.push_back(firstPoint);
+        vertices.push_back(secondPoint);
+
+    }
+    b2Vec2 lastPoint = b2Vec2(-(size.x * slopeCount), (size.y * slopeCount));
+    vertices.push_back(lastPoint);
+
+
+
+    auto phys = tile->addComponent<PhysicsComponent>();
+
+    int vertexCount = (slopeCount * 2) + 1;
+
+    phys->initPolygon(b2_staticBody, center, 1, &vertices[0], vertexCount, 1);
 }
