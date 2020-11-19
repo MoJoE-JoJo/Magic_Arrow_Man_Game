@@ -42,6 +42,9 @@ void PlayerObject::update(float deltaTime) {
     if (onRightSlope && isGrounded()) {
         phys->addForce(glm::vec2(1000 * phys->getMass(), 0));
     }
+    if (!movingRight && !movingLeft && isGrounded()) {
+        //TODO: Implement player deceleration
+    }
     updateSprite(deltaTime);
 }
 

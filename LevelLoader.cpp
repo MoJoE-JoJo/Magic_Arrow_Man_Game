@@ -34,6 +34,8 @@ void LevelLoader::loadMap(std::string filename) {
     int y = layerObj["y"].GetInt();
     int height = layerObj["height"].GetInt();
     int width = layerObj["width"].GetInt();
+    mapHeight = height * tileHeight;
+    mapWidth = width * tileWidth;
 
     rapidjson::Value& data = layerObj["data"];
     int verticalCounter = 0;
@@ -164,6 +166,14 @@ int LevelLoader::getTileHeight() {
 
 glm::vec2 LevelLoader::getTileSize() {
     return tileSize;
+}
+
+float LevelLoader::getMapHeight() {
+    return mapHeight;
+}
+
+float LevelLoader::getMapWidth() {
+    return mapWidth;
 }
 
 void LevelLoader::createBig(std::shared_ptr<GameObject> tile, glm::vec2 startOfBigPos, glm::vec2 position, int bigCount, bool leftDiamond, bool rightDiamond, glm::vec2 size) {
