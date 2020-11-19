@@ -9,6 +9,7 @@ PlayerController::PlayerController(std::shared_ptr<PlayerObject> player) {
 
 PlayerController::~PlayerController() {
     player = nullptr;
+    bow = nullptr;
 }
 
 void PlayerController::onKey(SDL_Event& event) {
@@ -26,5 +27,27 @@ void PlayerController::onKey(SDL_Event& event) {
         } else if (event.key.keysym.sym == SDLK_a) {
             player->movingLeft = false;
         }
+    }
+}
+
+void PlayerController::mouseEvent(SDL_Event& event, glm::vec2 pos) {
+    if (bowIsSet) {
+        std::cout << bow->getPosition().x << " " << bow->getPosition().y << std::endl;
+    }
+
+    int mouseX = static_cast<int>(pos.x);
+    int mouseY = static_cast<int>(pos.y);
+
+    std::cout << mouseX << " " << mouseY << std::endl;
+}
+
+void PlayerController::setBow(std::shared_ptr<BowObject> bow) {
+    this->bow = bow;
+}
+
+void PlayerController::update() {
+    if (bowIsSet) {
+        auto position = player->getPosition();
+        bow->updatePos(position);
     }
 }

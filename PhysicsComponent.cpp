@@ -183,3 +183,7 @@ void PhysicsComponent::onCollisionEnd(PhysicsComponent* comp) { }
 float PhysicsComponent::getMass() {
     return body->GetMass();
 }
+
+void PhysicsComponent::setPosition(glm::vec2 pos) {
+    body->SetTransform(b2Vec2(pos.x, pos.y), body->GetAngle());
+}

@@ -23,6 +23,7 @@ public:
     glm::vec2 getLinearVelocity();
     bool isSensor();
     void setSensor(bool enabled);
+    void setPosition(glm::vec2 pos);
     void update(float deltaTime) override;
     float getMass();
     virtual void onCollisionStart(PhysicsComponent* comp);

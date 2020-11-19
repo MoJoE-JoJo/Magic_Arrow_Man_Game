@@ -43,6 +43,9 @@ void LevelLoader::loadMap(std::string filename) {
     bool leftDiamond = false;
     bool rightDiamond = false;
 
+    bool bowSet = false;
+    glm::vec2 bowPos;
+
     for (rapidjson::SizeType i = 0; i < data.Size(); i++) {
         int hozMod = i % width;
         int xPos = hozMod + x;
@@ -116,6 +119,10 @@ void LevelLoader::loadMap(std::string filename) {
                 phys->setSensor(true);
                 break;
             }
+            case 24: {
+                bowPos = position;
+                bowSet = true;
+            }
             case 0:
                 break;
             default: {
@@ -132,6 +139,8 @@ void LevelLoader::loadMap(std::string filename) {
     }
     
     MAMGame::instance->createPlayerObject(playerPoint);
+    if (!bowSet) MAMGame::instance->createBowObject(playerPoint);
+    else MAMGame::instance->createBowObject(bowPos);
 }
 
 std::shared_ptr<GameObject> LevelLoader::createGameObject(glm::vec2 position, GOType type, int tileId) {

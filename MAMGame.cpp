@@ -81,8 +81,16 @@ void MAMGame::createPlayerObject(glm::vec2 pos) {
     auto player = shared_ptr<PlayerObject>(new PlayerObject(pos, sprites->get("player_f1.png"), sprites->get("player_f2.png"), sprites->get("player_f3.png")));
     gameObjects.push_back(player);
     playerController = shared_ptr<PlayerController>(new PlayerController(player));
-    // TODO: remove when camera works properly
-    camera.setPositionAndRotation(glm::vec3(pos.x - windowSize.x / 2, pos.y - windowSize.y / 2, camera.getPosition().z), camera.getRotationEuler());
+}
+
+void MAMGame::createBowObject(glm::vec2 pos) {
+    auto bow = shared_ptr<BowObject>(new BowObject(pos, sprites->get("bow.png")));
+    gameObjects.push_back(bow);
+    playerController->setBow(bow);
+}
+
+void MAMGame::setBow() {
+    playerController->bowIsSet = true;
 }
 
 void MAMGame::handleContact(b2Contact* contact, bool begin) {
@@ -111,10 +119,13 @@ void MAMGame::update(float time) {
             ptr->update(time);
             it++;
         }
+
+        playerController->update();
+        
         camera.setPositionAndRotation(
             glm::vec3(
-                playerController.get()->player.get()->getPosition().x - windowSize.x / 2, 
-                playerController.get()->player.get()->getPosition().y - windowSize.y / 2, 
+                playerController->player->getPosition().x - windowSize.x / 2, 
+                playerController->player->getPosition().y - windowSize.y / 2, 
                 camera.getPosition().z
             ), 
             camera.getRotationEuler()
@@ -188,13 +199,10 @@ void MAMGame::mouseEvent(SDL_Event& e) {
     glm::vec2 pos{ e.motion.x, r->getWindowSize().y - e.motion.y };
 
     // convert to pixel coordinates (for HighDPI displays)
-    pos /= r->getWindowSize();
-    pos *= r->getDrawableSize();
+    //pos /= r->getWindowSize();
+    //pos *= r->getDrawableSize();
 
-    int mouseX = static_cast<int>(pos.x);
-    int mouseY = static_cast<int>(pos.y);
-
-    std::cout << mouseX << " " << mouseY << std::endl;
+    playerController->mouseEvent(e, pos);
 }
 
 void MAMGame::registerPhysicsComponent(PhysicsComponent* physComponent) {
@@ -241,4 +249,5 @@ void MAMGame::createTileMap() {
     tileMap.insert({ 21, "monster_f1.png" });
     tileMap.insert({ 22, "target.png" });
     tileMap.insert({ 23, "target_legs.png" });
+    tileMap.insert({ 24, "bow.png" });
 }
