@@ -13,9 +13,13 @@ public:
     void incrCollisionCounter();
     void decrCollisionCounter();
     bool isGrounded();
+    void setOnLeftSlope(bool newOnSlope);
+    void setOnRightSlope(bool newOnSlope);
 private:
     bool movingLeft = false;
     bool movingRight = false;
+    bool onLeftSlope = false;
+    bool onRightSlope = false;
     sre::Sprite walk1;
     sre::Sprite walk2;
     sre::Sprite standing;

@@ -92,7 +92,7 @@ void LevelLoader::loadMap(std::string filename) {
                 break;
             }
             case 5: { // make bottom right triangle
-                auto tile = createGameObject(position, GOType::slope, tileId);
+                auto tile = createGameObject(position, GOType::rightSlope, tileId);
 
                 int lowerLeftId = i + width - 1;
                 int nexttileid = (lowerLeftId >= data.Size() || (lowerLeftId) % width == 29) ? 0 : data[lowerLeftId].GetInt();
@@ -104,7 +104,7 @@ void LevelLoader::loadMap(std::string filename) {
                 break;
             }
             case 9: { // make bottom left triangle
-                auto tile = createGameObject(position, GOType::slope, tileId);
+                auto tile = createGameObject(position, GOType::leftSlope, tileId);
                 
                 int lowerRightId = i + width + 1;
                 int nexttileid = (lowerRightId >= data.Size() || (lowerRightId) % width == 0) ? 0 : data[lowerRightId].GetInt();
