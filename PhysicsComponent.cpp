@@ -129,6 +129,7 @@ void PhysicsComponent::initPolygon(b2BodyType type, glm::vec2 center, float dens
     polygon = new b2PolygonShape();
 
     //b2PolygonShape polygon;
+
     polygon->Set(vertices, vertexCount);
     b2FixtureDef fxD;
     fxD.shape = polygon;
