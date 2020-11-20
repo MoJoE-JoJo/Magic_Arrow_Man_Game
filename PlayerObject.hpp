@@ -11,8 +11,10 @@ public:
     ~PlayerObject();
     void update(float deltaTime) override;
     void jump();
-    void incrCollisionCounter();
-    void decrCollisionCounter();
+    void incrGroundCounter();
+    void decrGroundCounter(); 
+    void incrSlopeCounter();
+    void decrSlopeCounter();
     bool isGrounded();
     void setOnLeftSlope(bool newOnSlope);
     void setOnRightSlope(bool newOnSlope);
@@ -27,7 +29,10 @@ private:
     sre::Sprite walk1;
     sre::Sprite walk2;
     sre::Sprite standing;
-    int collisionCounter = 0;
+    int groundCounter = 0;
+    int slopeCounter = 0;
+    int slopeSpeed = 1000;
+
     float walkingSpriteIndicator = 0;
     int whichWalkIndicator = 0;
     bool flipIndicator = false;

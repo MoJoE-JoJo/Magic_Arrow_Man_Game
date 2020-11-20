@@ -34,16 +34,36 @@ PlayerObject::~PlayerObject() {
 void PlayerObject::update(float deltaTime) {
 	GameObject::update(deltaTime);
     auto phys = getComponent<PhysicsComponent>();
+    bool debug = true;
+    if (debug) std::cout << "Begin update" << std::endl;
     if (movingRight && isGrounded()) {
-        phys->addForce(glm::vec2(1000 * phys->getMass(), 0));
+
+        float xValue = 1000 * phys->getMass();
+        float yValue = 0;
+        glm::vec2 dotVector = glm::vec2(1, 0);
+        
+        if (onRightSlope) {
+            yValue = slopeSpeed * phys->getMass();
+            dotVector = glm::vec2(1, 1);
+        }
+        
+        glm::vec2 vector = glm::vec2(xValue, yValue);
+        phys->addForce(vector);
     }
     if (movingLeft && isGrounded()) {
+        if (debug) std::cout << "moving left" << std::endl;
+        phys->addForce(glm::vec2(-1000 * phys->getMass(), 0));
+        if (onLeftSlope) {
+            if (debug) std::cout << "and up" << std::endl;
+            phys->addForce(glm::vec2(0, slopeSpeed * phys->getMass()));
+        }
+    }
+    if (onLeftSlope && isGrounded() && groundCounter == 0 && !onRightSlope) {
+        if (debug) std::cout << "standing on left" << std::endl;
         phys->addForce(glm::vec2(-1000 * phys->getMass(), 0));
     }
-    if (onLeftSlope && isGrounded()) {
-        phys->addForce(glm::vec2(-1000 * phys->getMass(), 0));
-    }
-    if (onRightSlope && isGrounded()) {
+    if (onRightSlope && isGrounded() && groundCounter == 0 && !onLeftSlope) {
+        if (debug) std::cout << "standing on right" << std::endl;
         phys->addForce(glm::vec2(1000 * phys->getMass(), 0));
     }
     if (!movingRight && !movingLeft && isGrounded()) {
@@ -64,16 +84,24 @@ void PlayerObject::jump() {
     phys->addForce(glm::vec2(0, 20000 * phys->getMass()));
 }
 
-void PlayerObject::incrCollisionCounter() {
-    collisionCounter++;
+void PlayerObject::incrGroundCounter() {
+    groundCounter++;
 }
 
-void PlayerObject::decrCollisionCounter() {
-    collisionCounter--;
+void PlayerObject::decrGroundCounter() {
+    groundCounter--;
+}
+
+void PlayerObject::incrSlopeCounter() {
+    slopeCounter++;
+}
+
+void PlayerObject::decrSlopeCounter() {
+    slopeCounter--;
 }
 
 bool PlayerObject::isGrounded() {
-    return collisionCounter != 0;
+    return (groundCounter + slopeCounter) != 0;
 }
 
 void PlayerObject::setOnRightSlope(bool newOnSlope) {
