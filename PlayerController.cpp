@@ -9,7 +9,6 @@ PlayerController::PlayerController(std::shared_ptr<PlayerObject> player) {
 
 PlayerController::~PlayerController() {
     player = nullptr;
-    bow = nullptr;
 }
 
 void PlayerController::onKey(SDL_Event& event) {
@@ -31,19 +30,5 @@ void PlayerController::onKey(SDL_Event& event) {
 }
 
 void PlayerController::mouseEvent(SDL_Event& event, glm::vec2 pos) {
-    if (bowIsSet) {
-        bow->updateAngle(pos);
-    }
-}
-
-void PlayerController::setBow(std::shared_ptr<BowObject> bow) {
-    this->bow = bow;
-}
-
-void PlayerController::update() {
-    if (bowIsSet) {
-        auto offset = player->flipIndicator ? glm::vec2(-15, -13) : glm::vec2(15, -13);
-        auto position = player->getPosition() + offset;
-        bow->updatePos(position);
-    }
+    player->useBow(event, pos);
 }

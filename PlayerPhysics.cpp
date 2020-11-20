@@ -20,7 +20,8 @@ void PlayerPhysics::onCollisionStart(PhysicsComponent* comp) {
 	} else if (comp->getGameObject()->goType == GOType::target) {
 		MAMGame::instance->setGameState(GameState::Won);
 	} else if (comp->getGameObject()->goType == GOType::bow) {
-		MAMGame::instance->setBow();
+		auto player = dynamic_cast<PlayerObject*>(gameObject);
+		player->pickUpBow();
 	}
 }
 

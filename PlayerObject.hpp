@@ -8,6 +8,7 @@ class BowObject;
 class PlayerObject : public GameObject {
 public:
     PlayerObject(glm::vec2 pos, sre::Sprite walk1, sre::Sprite standing, sre::Sprite walk2);
+    ~PlayerObject();
     void update(float deltaTime) override;
     void jump();
     void incrCollisionCounter();
@@ -15,6 +16,9 @@ public:
     bool isGrounded();
     void setOnLeftSlope(bool newOnSlope);
     void setOnRightSlope(bool newOnSlope);
+    void setBow(std::shared_ptr<BowObject> bow);
+    void pickUpBow();
+    void useBow(SDL_Event& event, glm::vec2 pos);
 private:
     bool movingLeft = false;
     bool movingRight = false;
@@ -27,6 +31,8 @@ private:
     float walkingSpriteIndicator = 0;
     int whichWalkIndicator = 0;
     bool flipIndicator = false;
+    std::shared_ptr<BowObject> bow;
+    bool bowIsSet = false;
 
     void updateSprite(float deltaTime);
     friend class PlayerController;

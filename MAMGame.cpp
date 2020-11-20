@@ -100,11 +100,7 @@ void MAMGame::createPlayerObject(glm::vec2 pos) {
 void MAMGame::createBowObject(glm::vec2 pos) {
     auto bow = shared_ptr<BowObject>(new BowObject(pos, sprites->get("bow.png")));
     gameObjects.push_back(bow);
-    playerController->setBow(bow);
-}
-
-void MAMGame::setBow() {
-    playerController->bowIsSet = true;
+    playerController->player->setBow(bow);
 }
 
 void MAMGame::handleContact(b2Contact* contact, bool begin) {
@@ -135,8 +131,7 @@ void MAMGame::update(float time) {
         }
         if (!isPlayerWithinBounds()) reset();
 
-        updateCamera(time);
-        playerController->update();   
+        updateCamera(time);  
     }
 }
 
@@ -199,7 +194,7 @@ void MAMGame::onKey(SDL_Event& event) {
                 world->SetDebugDraw(nullptr);
             }
         } else if (event.key.keysym.sym == SDLK_r) {
-            reset();
+            init();
             return;
         } else if (event.key.keysym.sym == SDLK_LEFT) {
             camera.setPositionAndRotation(glm::vec3(camera.getPosition().x - 20, camera.getPosition().y, camera.getPosition().z), camera.getRotationEuler());

@@ -27,6 +27,10 @@ PlayerObject::PlayerObject(glm::vec2 pos, sre::Sprite walk1, sre::Sprite standin
     phys->initPolygon(b2_dynamicBody, getPosition(), 0.2f, vertices, 8, 0.2);
 }
 
+PlayerObject::~PlayerObject() {
+    bow = nullptr;
+}
+
 void PlayerObject::update(float deltaTime) {
 	GameObject::update(deltaTime);
     auto phys = getComponent<PhysicsComponent>();
@@ -45,6 +49,13 @@ void PlayerObject::update(float deltaTime) {
     if (!movingRight && !movingLeft && isGrounded()) {
         //TODO: Implement player deceleration
     }
+
+    if (bowIsSet) {
+        auto offset = flipIndicator ? glm::vec2(-15, -13) : glm::vec2(15, -13);
+        auto position = getPosition() + offset;
+        bow->updatePos(position);
+    }
+
     updateSprite(deltaTime);
 }
 
@@ -110,4 +121,18 @@ void PlayerObject::updateSprite(float deltaTime) {
     
     newSprite.setFlip({ flipIndicator, newSprite.getFlip().y });
     getComponent<SpriteComponent>()->setSprite(newSprite);
+}
+
+void PlayerObject::setBow(std::shared_ptr<BowObject> bow) {
+    this->bow = bow;
+}
+
+void PlayerObject::pickUpBow() {
+    bowIsSet = true;
+}
+
+void PlayerObject::useBow(SDL_Event& event, glm::vec2 pos) {
+    if (bowIsSet) {
+        bow->updateAngle(pos);
+    }
 }

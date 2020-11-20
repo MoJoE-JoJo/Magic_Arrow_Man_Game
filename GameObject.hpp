@@ -10,7 +10,7 @@ enum class GOType { player, ground, wall, leftSlope, rightSlope, target, bow };
 class GameObject {
 public:
     GameObject(glm::vec2 pos, GOType goType);
-    ~GameObject();
+    virtual ~GameObject();
     
     float getRotation() const;
     void setRotation(float rotation);

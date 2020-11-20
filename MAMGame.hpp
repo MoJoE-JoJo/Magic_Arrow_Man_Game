@@ -18,7 +18,6 @@ public:
 	std::shared_ptr<GameObject> createGameObject(glm::vec2 pos, GOType goType);
 	void createPlayerObject(glm::vec2 pos);
 	void createBowObject(glm::vec2 pos);
-	void setBow();
 	static MAMGame* instance;
 	static const glm::vec2 windowSize;
 	sre::Sprite getSprite(int index);
