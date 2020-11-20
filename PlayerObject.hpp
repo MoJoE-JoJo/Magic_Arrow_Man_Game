@@ -27,6 +27,7 @@ private:
     sre::Sprite standing;
     int groundCounter = 0;
     int slopeCounter = 0;
+    int slopeSpeed = 1000;
 
     float walkingSpriteIndicator = 0;
     int whichWalkIndicator = 0;

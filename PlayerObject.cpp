@@ -30,16 +30,36 @@ PlayerObject::PlayerObject(glm::vec2 pos, sre::Sprite walk1, sre::Sprite standin
 void PlayerObject::update(float deltaTime) {
 	GameObject::update(deltaTime);
     auto phys = getComponent<PhysicsComponent>();
+    bool debug = true;
+    if (debug) std::cout << "Begin update" << std::endl;
     if (movingRight && isGrounded()) {
-        phys->addForce(glm::vec2(1000 * phys->getMass(), 0));
+
+        float xValue = 1000 * phys->getMass();
+        float yValue = 0;
+        glm::vec2 dotVector = glm::vec2(1, 0);
+        
+        if (onRightSlope) {
+            yValue = slopeSpeed * phys->getMass();
+            dotVector = glm::vec2(1, 1);
+        }
+        
+        glm::vec2 vector = glm::vec2(xValue, yValue);
+        phys->addForce(vector);
     }
     if (movingLeft && isGrounded()) {
+        if (debug) std::cout << "moving left" << std::endl;
+        phys->addForce(glm::vec2(-1000 * phys->getMass(), 0));
+        if (onLeftSlope) {
+            if (debug) std::cout << "and up" << std::endl;
+            phys->addForce(glm::vec2(0, slopeSpeed * phys->getMass()));
+        }
+    }
+    if (onLeftSlope && isGrounded() && groundCounter == 0 && !onRightSlope) {
+        if (debug) std::cout << "standing on left" << std::endl;
         phys->addForce(glm::vec2(-1000 * phys->getMass(), 0));
     }
-    if (onLeftSlope && isGrounded() && groundCounter == 0) {
-        phys->addForce(glm::vec2(-1000 * phys->getMass(), 0));
-    }
-    if (onRightSlope && isGrounded() && groundCounter == 0) {
+    if (onRightSlope && isGrounded() && groundCounter == 0 && !onLeftSlope) {
+        if (debug) std::cout << "standing on right" << std::endl;
         phys->addForce(glm::vec2(1000 * phys->getMass(), 0));
     }
     if (!movingRight && !movingLeft && isGrounded()) {
