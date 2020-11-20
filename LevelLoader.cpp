@@ -133,7 +133,9 @@ void LevelLoader::loadMap(std::string filename) {
             default: {
                 auto tile = createGameObject(position, GOType::wall, tileId);
                 auto phys = tile->addComponent<PhysicsComponent>();
-                phys->initBox(b2_staticBody, getTileSize(), tile->getPosition(), 1);
+                float wallSizeOffset = 0.5;
+                glm::vec2 wallSize = glm::vec2(getTileSize().x - wallSizeOffset, getTileSize().y - wallSizeOffset);
+                phys->initBox(b2_staticBody, wallSize, tile->getPosition(), 1);
                 break;
             }
         }
