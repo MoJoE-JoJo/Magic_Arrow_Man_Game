@@ -10,11 +10,12 @@
 
 enum class GameState { Won, Running };
 
-class MAMGame : public b2ContactListener {
+class MAMGame : public b2ContactListener, public b2ContactFilter {
 public:
 	MAMGame();
 	void BeginContact(b2Contact* contact) override;
 	void EndContact(b2Contact* contact) override;
+	bool ShouldCollide(b2Fixture* fixtureA, b2Fixture* fixtureB) override;
 	std::shared_ptr<GameObject> createGameObject(glm::vec2 pos, GOType goType);
 	void createPlayerObject(glm::vec2 pos);
 	void createBowObject(glm::vec2 pos);

@@ -161,6 +161,36 @@ void PhysicsComponent::initTarget(b2BodyType type, glm::vec2 center) {
     MAMGame::instance->registerPhysicsComponent(this);
 }
 
+void PhysicsComponent::initArrow(b2BodyType type, glm::vec2 center) {
+    assert(body == nullptr);
+    // do init
+    shapeType = b2Shape::Type::e_polygon;
+    b2BodyDef bd;
+    bd.type = type;
+    rbType = type;
+    center = center / MAMGame::instance->physicsScale;
+    bd.position = b2Vec2(center.x, center.y);
+    body = world->CreateBody(&bd);
+    body->SetFixedRotation(false);
+    polygon = new b2PolygonShape();
+
+    b2Vec2 vertices[4];
+    vertices[0].Set(-30 / MAMGame::instance->physicsScale, 10 / MAMGame::instance->physicsScale);
+    vertices[1].Set(-30 / MAMGame::instance->physicsScale, -10 / MAMGame::instance->physicsScale);
+    vertices[2].Set(30 / MAMGame::instance->physicsScale, -10 / MAMGame::instance->physicsScale);
+    vertices[3].Set(30 / MAMGame::instance->physicsScale, 10 / MAMGame::instance->physicsScale);
+
+    polygon->Set(vertices, 4);
+    b2FixtureDef fxD;
+    fxD.shape = polygon;
+    fxD.density = 0.2;
+    fxD.friction = 0.1;
+    fixture = body->CreateFixture(&fxD);
+    fixture->SetSensor(true);
+
+    MAMGame::instance->registerPhysicsComponent(this);
+}
+
 bool PhysicsComponent::isSensor() {
     return fixture->IsSensor();
 }
@@ -180,7 +210,6 @@ void PhysicsComponent::update(float deltaTime) {
 void PhysicsComponent::setPosition(b2Vec2 position) {
     body->SetTransform(position, body->GetTransform().q.GetAngle());
 }
-
 
 void PhysicsComponent::onCollisionStart(PhysicsComponent* comp) { }
 

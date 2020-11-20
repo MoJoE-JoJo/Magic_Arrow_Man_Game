@@ -5,7 +5,7 @@
 #include "glm/glm.hpp"
 
 class Component;
-enum class GOType { player, ground, wall, leftSlope, rightSlope, target, bow };
+enum class GOType { player, ground, wall, leftSlope, rightSlope, target, bow, arrow };
 
 class GameObject {
 public:

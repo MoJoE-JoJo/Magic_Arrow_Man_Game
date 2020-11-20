@@ -17,6 +17,7 @@ public:
     void initTriangle(b2BodyType type, glm::vec2 center, b2Vec2 vertices[], float density);
     void initPolygon(b2BodyType type, glm::vec2 center, float density, b2Vec2* vertices, int32 vertexCount, float friction);
     void initTarget(b2BodyType type, glm::vec2 center);
+    void initArrow(b2BodyType type, glm::vec2 center);
     void addForce(glm::vec2 force);
     void addImpulse(glm::vec2 impulse);
     void setLinearVelocity(glm::vec2 velocity);
@@ -30,7 +31,7 @@ public:
     void setPosition(b2Vec2 position);
     virtual void onCollisionStart(PhysicsComponent* comp);
     virtual void onCollisionEnd(PhysicsComponent* comp);
-private:
+protected:
     b2PolygonShape* polygon = nullptr;
     b2CircleShape* circle = nullptr;
     b2Body* body = nullptr;

@@ -8,6 +8,7 @@
 #include "GameObject.hpp"
 #include "PlayerObject.hpp"
 #include "PlayerPhysics.hpp"
+#include "ArrowPhysics.hpp"
 #include "SpriteComponent.hpp"
 #include "LevelLoader.hpp"
 
@@ -36,6 +37,7 @@ MAMGame::MAMGame() : debugDraw(physicsScale) {
 void MAMGame::init() {
     if (world != nullptr) { // deregister call backlistener to avoid getting callbacks when recreating the world
         world->SetContactListener(nullptr);
+        world->SetContactFilter(nullptr);
     }
 
     playerController = nullptr;
@@ -68,19 +70,10 @@ void MAMGame::initPhysics() {
     delete world;
     world = new b2World(b2Vec2(0, gravity));
     world->SetContactListener(this);
+    world->SetContactFilter(this);
     if (doDebugDraw) {
         world->SetDebugDraw(&debugDraw);
     }
-}
-
-void MAMGame::BeginContact(b2Contact* contact) {
-    b2ContactListener::BeginContact(contact);
-    handleContact(contact, true);
-}
-
-void MAMGame::EndContact(b2Contact* contact) {
-    b2ContactListener::EndContact(contact);
-    handleContact(contact, false);
 }
 
 std::shared_ptr<GameObject> MAMGame::createGameObject(glm::vec2 pos, GOType goType) {
@@ -98,9 +91,25 @@ void MAMGame::createPlayerObject(glm::vec2 pos) {
 }
 
 void MAMGame::createBowObject(glm::vec2 pos) {
-    auto bow = shared_ptr<BowObject>(new BowObject(pos, sprites->get("bow.png")));
+    auto arrow = createGameObject(pos, GOType::arrow);
+    auto arrowSpriteBox = arrow->addComponent<SpriteComponent>();
+    arrowSpriteBox->setSprite(sprites->get("blue_arrow_projectile.png"));
+    auto phys = arrow->addComponent<ArrowPhysics>();
+    phys->initArrow(b2_dynamicBody, arrow->getPosition() * 100000.0f);
+
+    auto bow = shared_ptr<BowObject>(new BowObject(pos, sprites->get("bow.png"), arrow));
     gameObjects.push_back(bow);
     playerController->player->setBow(bow);
+}
+
+void MAMGame::BeginContact(b2Contact* contact) {
+    b2ContactListener::BeginContact(contact);
+    handleContact(contact, true);
+}
+
+void MAMGame::EndContact(b2Contact* contact) {
+    b2ContactListener::EndContact(contact);
+    handleContact(contact, false);
 }
 
 void MAMGame::handleContact(b2Contact* contact, bool begin) {
@@ -117,6 +126,19 @@ void MAMGame::handleContact(b2Contact* contact, bool begin) {
             physB->second->onCollisionEnd(physA->second);
         }
     }
+}
+
+bool MAMGame::ShouldCollide(b2Fixture* fixtureA, b2Fixture* fixtureB) {
+    auto physA = physicsComponentLookup.find(fixtureA);
+    auto physB = physicsComponentLookup.find(fixtureB);
+    if (physA != physicsComponentLookup.end() && physB != physicsComponentLookup.end()) {
+        if (physA->second->getGameObject()->goType == GOType::arrow && physB->second->getGameObject()->goType == GOType::player) {
+            return false;
+        } else if (physB->second->getGameObject()->goType == GOType::arrow && physA->second->getGameObject()->goType == GOType::player) {
+            return false;
+        }
+    }
+    return true;
 }
 
 void MAMGame::update(float time) {

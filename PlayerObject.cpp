@@ -134,5 +134,8 @@ void PlayerObject::pickUpBow() {
 void PlayerObject::useBow(SDL_Event& event, glm::vec2 pos) {
     if (bowIsSet) {
         bow->updateAngle(pos);
+        if (event.type == SDL_MOUSEBUTTONDOWN && event.button.button == SDL_BUTTON_LEFT) {
+            bow->shootArrow();
+        }
     }
 }

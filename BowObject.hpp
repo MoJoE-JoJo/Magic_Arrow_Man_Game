@@ -1,13 +1,17 @@
 #pragma once
+#include "sre/SDLRenderer.hpp"
+
 #include "GameObject.hpp"
-#include "PlayerController.hpp"
 
 class BowObject : public GameObject {
 public:
-    BowObject(glm::vec2 pos, sre::Sprite bowSprite);
-    void update(float deltaTime) override;
+    BowObject(glm::vec2 pos, sre::Sprite bowSprite, std::shared_ptr<GameObject> arrow);
+    ~BowObject();
     void updatePos(glm::vec2 pos);
     void updateAngle(glm::vec2 mousePos);
+    void shootArrow();
+    void arrowReturned();
 private:
-    friend class PlayerController;
+    std::shared_ptr<GameObject> arrow;
+    bool hasArrow = true;
 };
