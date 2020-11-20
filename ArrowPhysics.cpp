@@ -10,6 +10,7 @@ void ArrowPhysics::onCollisionStart(PhysicsComponent* comp) {
 		bow->arrowReturned();
 		setSensor(true);
 		isReturned = true;
+		body->SetAngularVelocity(0);
 	} else if (comp->getGameObject()->goType == GOType::target) {
 		if (!isReturned) MAMGame::instance->setGameState(GameState::Won);
 	}
@@ -25,7 +26,9 @@ void ArrowPhysics::update(float deltaTime) {
 	PhysicsComponent::update(deltaTime);
 	if (!isReturned) {
 		auto velocity = body->GetLinearVelocity();
-		float angle = glm::radians(glm::degrees(atan2((double)velocity.y, (double)velocity.x)) + 90);
-		body->SetTransform(body->GetPosition(), angle - (3.14159265) / 2.0f);
+		if (velocity.x > 0.1 && velocity.y > 0.1) {
+			float angle = glm::radians(glm::degrees(atan2((double)velocity.y, (double)velocity.x)) + 90);
+			body->SetTransform(body->GetPosition(), angle - (3.14159265) / 2.0f);
+		}
 	}
 }

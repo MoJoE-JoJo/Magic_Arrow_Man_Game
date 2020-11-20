@@ -298,7 +298,6 @@ void MAMGame::createTileMap() {
 }
 
 void MAMGame::reset() {
-    std::cout << "yolo" << endl;
     playerController->player->getComponent<PhysicsComponent>()->setPosition(b2Vec2(originalPlayerPosition.x / physicsScale, originalPlayerPosition.y / physicsScale));
 }
 
