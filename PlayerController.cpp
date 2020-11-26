@@ -32,3 +32,7 @@ void PlayerController::onKey(SDL_Event& event) {
 void PlayerController::mouseEvent(SDL_Event& event, glm::vec2 pos) {
     player->useBow(event, pos);
 }
+
+void PlayerController::reset() {
+    player->reset();
+}

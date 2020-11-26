@@ -20,6 +20,7 @@ BowObject::BowObject(glm::vec2 pos, sre::Sprite bowSprite, std::shared_ptr<GameO
     phys->setSensor(true);
 
     this->arrow = arrow;
+    originalPosition = pos / MAMGame::instance->physicsScale;
 }
 
 BowObject::~BowObject() {
@@ -87,4 +88,14 @@ void BowObject::callArrow(glm::vec2 playerPos) {
 
 glm::vec2 BowObject::getArrowPosition() {
     return arrow->getPosition();
+}
+
+void BowObject::reset() {
+    hasArrow = true;
+    auto phys = getComponent<PhysicsComponent>();
+    phys->setPosition(originalPosition);
+    phys->setRotation(0);
+    auto arrowPhys = arrow->getComponent<PhysicsComponent>();
+    arrowPhys->setPosition(originalPosition * 100000.0f);
+    arrowPhys->setLinearVelocity(glm::vec2(0, 0));
 }

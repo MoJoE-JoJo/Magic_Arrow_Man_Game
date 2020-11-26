@@ -25,6 +25,7 @@ PlayerObject::PlayerObject(glm::vec2 pos, sre::Sprite walk1, sre::Sprite standin
     vertices[7].Set(10.0f / MAMGame::instance->physicsScale,    30.0f / MAMGame::instance->physicsScale);
 
     phys->initPolygon(b2_dynamicBody, getPosition(), 0.2f, vertices, 8, 0.2);
+    originalPosition = pos / MAMGame::instance->physicsScale;
 }
 
 PlayerObject::~PlayerObject() {
@@ -170,8 +171,9 @@ void PlayerObject::updateSprite(float deltaTime) {
     getComponent<SpriteComponent>()->setSprite(newSprite);
 }
 
-void PlayerObject::setBow(std::shared_ptr<BowObject> bow) {
+void PlayerObject::setBow(std::shared_ptr<BowObject> bow, bool samePosAsPlayer) {
     this->bow = bow;
+    this->samePosAsPlayer = samePosAsPlayer;
 }
 
 void PlayerObject::pickUpBow() {
@@ -203,5 +205,13 @@ void PlayerObject::stopAfterFlying() {
     auto phys = getComponent<PhysicsComponent>();
     auto currentVelocity = phys->getLinearVelocity();
     phys->setLinearVelocity(glm::vec2(0, 0));
-    phys->addForce(currentVelocity * 50.0f);
+    phys->addForce(currentVelocity * 100.0f);
+}
+
+void PlayerObject::reset() {
+    auto phys = getComponent<PhysicsComponent>();
+    phys->setPosition(originalPosition);
+    phys->setLinearVelocity(glm::vec2(0, 0));
+    bowIsSet = samePosAsPlayer;
+    bow->reset();
 }

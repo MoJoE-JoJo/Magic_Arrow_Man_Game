@@ -18,9 +18,10 @@ public:
     bool isGrounded();
     void setOnLeftSlope(bool newOnSlope);
     void setOnRightSlope(bool newOnSlope);
-    void setBow(std::shared_ptr<BowObject> bow);
+    void setBow(std::shared_ptr<BowObject> bow, bool samePosAsPlayer);
     void pickUpBow();
     void useBow(SDL_Event& event, glm::vec2 pos);
+    void reset();
 private:
     bool movingLeft = false;
     bool movingRight = false;
@@ -34,6 +35,9 @@ private:
     int groundCounter = 0;
     int slopeCounter = 0;
     int slopeSpeed = 1000;
+
+    glm::vec2 originalPosition;
+    bool samePosAsPlayer = false;
 
     float walkingSpriteIndicator = 0;
     int whichWalkIndicator = 0;
