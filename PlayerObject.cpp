@@ -6,6 +6,7 @@
 #include "PlayerPhysics.hpp"
 #include "SpriteComponent.hpp"
 #include "MAMGame.hpp"
+#include "AudioPlayer.hpp"
 
 PlayerObject::PlayerObject(glm::vec2 pos, sre::Sprite walk1, sre::Sprite standing, sre::Sprite walk2) : GameObject(pos, GOType::player) {
     auto pSpriteBox = addComponent<SpriteComponent>();
@@ -35,9 +36,12 @@ PlayerObject::~PlayerObject() {
 void PlayerObject::update(float deltaTime) {
 	GameObject::update(deltaTime);
     auto phys = getComponent<PhysicsComponent>();
-    bool debug = false;
+    bool debug = true;
     if (debug) std::cout << "Begin update" << std::endl;
-    if (isGrounded()) { hasCalledArrowOnceInAir = false; }
+    if (isGrounded()) { 
+        hasCalledArrowOnceInAir = false;
+        stoppedCallingArrow = false;
+    }
     if (movingRight && isGrounded()) {
         
         if (phys->getLinearVelocity().x < 0) {
@@ -75,7 +79,7 @@ void PlayerObject::update(float deltaTime) {
         glm::vec2 vec = phys->getLinearVelocity();
         if (glm::length(vec) > 0.1) {
             float decel = (1 - (playerDeceleration * deltaTime));
-            std::cout << "decel: " << decel << std::endl;
+            if (debug) std::cout << "decel: " << decel << std::endl;
             phys->setLinearVelocity(vec * decel);
         }
         decelerate = false;
@@ -87,27 +91,32 @@ void PlayerObject::update(float deltaTime) {
         bow->updatePos(position);
 
         if (callingArrow) {
+            hasCalledArrowOnceInAir = true;
             bow->callArrow(getPosition());
             if (!isGrounded()) {
                 if (bow->isHoldingArrow()) {
                     stopAfterFlying();
                     callingArrow = false;
-                } else if (!hasCalledArrowOnceInAir) {
+                } else if (!stoppedCallingArrow) {
                     auto arrowPos = bow->getArrowPosition();
                     b2Vec2 toTarget = b2Vec2(arrowPos.x, arrowPos.y) - b2Vec2(getPosition().x, getPosition().y);
                     float angle = glm::radians(glm::degrees(atan2f(-toTarget.x, toTarget.y)) + 90);
-                    float force = 300 * phys->getMass();
-                    phys->setLinearVelocity(glm::vec2(cos(angle), sin(angle)) * force);
-                    hasCalledArrowOnceInAir = true;
+                    float force = (1500 * phys->getMass());
+                    glm::vec2 linVelocity = glm::vec2(cos(angle), sin(angle)) * force;
+                    phys->addImpulse(linVelocity);
                 }
             }
         }
     }
 
+    if (hasCalledArrowOnceInAir && !isGrounded() && !callingArrow) {
+        stoppedCallingArrow = true;
+    }
+
     updateSprite(deltaTime);
     glm::vec2 physVec = phys->getLinearVelocity();
     float length = glm::length(physVec);
-    std::cout << length << std::endl;
+   if (debug) std::cout << length << std::endl;
     if (length > maxVelocity) {
         glm::vec2 newVelocity = (physVec / length) * maxVelocity;
         phys->setLinearVelocity(newVelocity);
@@ -115,6 +124,7 @@ void PlayerObject::update(float deltaTime) {
 }
 
 void PlayerObject::jump() {
+    MAMGame::instance->audioSystem.playSound(SoundType::PlayerJumping, 100);
     auto phys = getComponent<PhysicsComponent>();
     phys->addForce(glm::vec2(0, 22500 * phys->getMass()));
 }
@@ -200,6 +210,7 @@ void PlayerObject::useBow(SDL_Event& event, glm::vec2 pos) {
         bow->updateAngle(pos);
         if (event.type == SDL_MOUSEBUTTONDOWN && event.button.button == SDL_BUTTON_LEFT) {
             if (bow->isHoldingArrow()) {
+                MAMGame::instance->audioSystem.playSound(SoundType::BowShooting, 100);
                 bow->shootArrow();
             } else {
                 callingArrow = true;

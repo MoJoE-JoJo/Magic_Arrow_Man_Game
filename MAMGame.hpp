@@ -7,9 +7,11 @@
 #include "PlayerController.hpp"
 #include "PhysicsComponent.hpp"
 #include "Box2DDebugDraw.hpp"
+#include "AudioPlayer.hpp"
 #include "Gui.hpp"
 
 enum class GameState { Won, Running, Menu };
+
 
 class MAMGame : public b2ContactListener, public b2ContactFilter {
 public:
@@ -27,6 +29,7 @@ public:
 	void beginLevel(std::string filename);
 	
 	const float physicsScale = 100;
+	AudioPlayer audioSystem;
 private:
 	void init();
 	void initPhysics();
@@ -58,6 +61,7 @@ private:
 	std::map<int, std::string> tileMap;
 	GameState gameState = GameState::Menu;
 	
+	//Camera-stuff
 	float cameraTotalMoveTime = 0.0f;
 	float easingFunc(float x);
 	float levelCamXMinBound;
@@ -72,6 +76,10 @@ private:
 
 	glm::vec2 levelBounds;
 	bool isPlayerWithinBounds();
+
+	//Audio
+
 	friend class PhysicsComponent;
 	friend class LevelLoader;
+
 };
