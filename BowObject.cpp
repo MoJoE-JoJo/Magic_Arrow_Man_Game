@@ -59,3 +59,32 @@ void BowObject::shootArrow() {
 void BowObject::arrowReturned() {
     hasArrow = true;
 }
+
+bool BowObject::isHoldingArrow() {
+    return hasArrow;
+}
+
+void BowObject::stopArrow() {
+    if (!hasArrow) {
+        auto phys = arrow->getComponent<PhysicsComponent>();
+        auto currentVelocity = phys->getLinearVelocity();
+        phys->setLinearVelocity(glm::vec2(0, 0));
+        phys->addForce(currentVelocity * 50.0f);
+    }
+}
+
+void BowObject::callArrow(glm::vec2 playerPos) {
+    if (!hasArrow) {
+        auto phys = arrow->getComponent<PhysicsComponent>();
+
+        b2Vec2 toTarget = b2Vec2(playerPos.x, playerPos.y) - b2Vec2(arrow->getPosition().x, arrow->getPosition().y);
+        float angle = glm::radians(glm::degrees(atan2f(-toTarget.x, toTarget.y)) + 90);
+        float force = 500 * phys->getMass();
+        phys->setLinearVelocity(glm::vec2(cos(angle), sin(angle)) * force);
+        phys->setRotation(angle);
+    }
+}
+
+glm::vec2 BowObject::getArrowPosition() {
+    return arrow->getPosition();
+}
