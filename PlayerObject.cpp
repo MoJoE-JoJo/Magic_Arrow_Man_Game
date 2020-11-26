@@ -36,7 +36,7 @@ PlayerObject::~PlayerObject() {
 void PlayerObject::update(float deltaTime) {
 	GameObject::update(deltaTime);
     auto phys = getComponent<PhysicsComponent>();
-    bool debug = true;
+    bool debug = false;
     if (debug) std::cout << "Begin update" << std::endl;
     if (isGrounded()) { 
         hasCalledArrowOnceInAir = false;
