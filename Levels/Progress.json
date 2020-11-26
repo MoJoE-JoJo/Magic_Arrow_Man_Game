@@ -7,16 +7,52 @@
             "BestTime": "00:00:00",
             "Gold": "00:00:05",
             "Silver": "00:00:15",
-            "Bronce": "00:05:00"
+            "Bronze": "00:05:00"
         },
         {
             "Name": "Pillars",
             "File": "pillars",
             "Completed": false,
             "BestTime": "00:00:00",
+            "Gold": "00:00:10",
+            "Silver": "00:01:00",
+            "Bronze": "00:05:00"
+        },
+        {
+            "Name": "Jumpshot",
+            "File": "jumpshot",
+            "Completed": false,
+            "BestTime": "00:00:00",
+            "Gold": "00:00:05",
+            "Silver": "00:01:00",
+            "Bronze": "00:05:00"
+        },
+        {
+            "Name": "Elevator",
+            "File": "elevator",
+            "Completed": false,
+            "BestTime": "00:00:00",
+            "Gold": "00:00:05",
+            "Silver": "00:01:00",
+            "Bronze": "00:05:00"
+        },
+        {
+            "Name": "Leap of faith",
+            "File": "leapoffaith",
+            "Completed": false,
+            "BestTime": "00:00:00",
+            "Gold": "00:00:05",
+            "Silver": "00:01:00",
+            "Bronze": "00:05:00"
+        },
+        {
+            "Name": "Floating ladder",
+            "File": "jumpingfloatyhard",
+            "Completed": false,
+            "BestTime": "00:00:00",
             "Gold": "00:00:15",
             "Silver": "00:01:00",
-            "Bronce": "00:05:00"
+            "Bronze": "00:05:00"
         }
     ]
 }
