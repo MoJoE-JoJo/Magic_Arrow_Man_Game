@@ -11,6 +11,7 @@ public:
     ~PlayerController();
     void onKey(SDL_Event& event);
     void mouseEvent(SDL_Event& event, glm::vec2 pos);
+    void reset();
 private:
     std::shared_ptr<PlayerObject> player;
     

@@ -97,7 +97,7 @@ void LevelLoader::loadMap(std::string filename) {
                 auto tile = createGameObject(position, GOType::rightSlope, tileId);
 
                 int lowerLeftId = i + width - 1;
-                int nexttileid = (lowerLeftId >= data.Size() || (lowerLeftId) % width == 29) ? 0 : data[lowerLeftId].GetInt();
+                int nexttileid = (lowerLeftId >= data.Size() || (lowerLeftId) % width == (width-1)) ? 0 : data[lowerLeftId].GetInt();
                 if (nexttileid != tileId) {
                     createBigSlopeRight(tile, position, tileId, size, i, width, data);
                 }
@@ -146,8 +146,8 @@ void LevelLoader::loadMap(std::string filename) {
     }
     
     MAMGame::instance->createPlayerObject(playerPoint);
-    if (!bowSet) MAMGame::instance->createBowObject(playerPoint);
-    else MAMGame::instance->createBowObject(bowPos);
+    if (!bowSet) MAMGame::instance->createBowObject(playerPoint, true);
+    else MAMGame::instance->createBowObject(bowPos, false);
 }
 
 std::shared_ptr<GameObject> LevelLoader::createGameObject(glm::vec2 position, GOType type, int tileId) {
@@ -239,7 +239,7 @@ void LevelLoader::createBigSlopeLeft(std::shared_ptr<GameObject> tile, glm::vec2
     do {
         slopeCount++;
         initialIndex = initialIndex - width - 1;
-        nextId = (initialIndex < 0 || (initialIndex) % width == 29) ? 0 : data[initialIndex].GetInt();
+        nextId = (initialIndex < 0 || (initialIndex) % width == (width-1)) ? 0 : data[initialIndex].GetInt();
     } while (nextId == tileId);
 
     float offset = slopeCount / 2.0f;

@@ -90,10 +90,9 @@ void MAMGame::createPlayerObject(glm::vec2 pos) {
     gameObjects.push_back(player);
     playerController = shared_ptr<PlayerController>(new PlayerController(player));
     camera.setPositionAndRotation(glm::vec3(pos.x - windowSize.x / 2, pos.y - windowSize.y / 2, camera.getPosition().z), camera.getRotationEuler());
-    originalPlayerPosition = playerController->player->getPosition();
 }
 
-void MAMGame::createBowObject(glm::vec2 pos) {
+void MAMGame::createBowObject(glm::vec2 pos, bool samePosAsPlayer) {
     auto arrow = createGameObject(pos, GOType::arrow);
     auto arrowSpriteBox = arrow->addComponent<SpriteComponent>();
     arrowSpriteBox->setSprite(sprites->get("blue_arrow_projectile.png"));
@@ -102,7 +101,7 @@ void MAMGame::createBowObject(glm::vec2 pos) {
 
     auto bow = shared_ptr<BowObject>(new BowObject(pos, sprites->get("bow.png"), arrow));
     gameObjects.push_back(bow);
-    playerController->player->setBow(bow);
+    playerController->player->setBow(bow, samePosAsPlayer);
 }
 
 void MAMGame::BeginContact(b2Contact* contact) {
@@ -182,10 +181,7 @@ void MAMGame::updateCamera(float time) {
 }
 
 float MAMGame::easingFunc(float x) {
-    //return x;
     return 1 - (1 - x) * (1 - x);
-    //return x < 0.5 ? 2 * x * x : 1 - pow(-2 * x + 2, 2) / 2;
-    //return x * x;
 }
 
 void MAMGame::render() {
@@ -219,7 +215,7 @@ void MAMGame::onKey(SDL_Event& event) {
                 world->SetDebugDraw(nullptr);
             }
         } else if (event.key.keysym.sym == SDLK_r) {
-            init();
+            reset();
             return;
         } else if (event.key.keysym.sym == SDLK_LEFT) {
             camera.setPositionAndRotation(glm::vec3(camera.getPosition().x - 20, camera.getPosition().y, camera.getPosition().z), camera.getRotationEuler());
@@ -301,7 +297,7 @@ void MAMGame::createTileMap() {
 }
 
 void MAMGame::reset() {
-    playerController->player->getComponent<PhysicsComponent>()->setPosition(b2Vec2(originalPlayerPosition.x / physicsScale, originalPlayerPosition.y / physicsScale));
+    playerController->reset();
 }
 
 bool MAMGame::isPlayerWithinBounds() {

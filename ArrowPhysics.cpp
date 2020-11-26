@@ -5,6 +5,7 @@
 #include "MAMGame.hpp"
 
 void ArrowPhysics::onCollisionStart(PhysicsComponent* comp) {
+	collisionCounter++;
 	if (comp->getGameObject()->goType == GOType::bow) {
 		auto bow = dynamic_cast<BowObject*>(comp->getGameObject());
 		bow->arrowReturned();
@@ -17,6 +18,7 @@ void ArrowPhysics::onCollisionStart(PhysicsComponent* comp) {
 }
 
 void ArrowPhysics::onCollisionEnd(PhysicsComponent* comp) {
+	collisionCounter--;
 	if (comp->getGameObject()->goType == GOType::bow) {
 		isReturned = false;
 	}
@@ -30,5 +32,11 @@ void ArrowPhysics::update(float deltaTime) {
 			float angle = glm::radians(glm::degrees(atan2((double)velocity.y, (double)velocity.x)) + 90);
 			body->SetTransform(body->GetPosition(), angle - (3.14159265) / 2.0f);
 		}
+	}
+}
+
+void ArrowPhysics::setRotation(float angle) {
+	if (collisionCounter == 0 || isReturned) {
+		body->SetTransform(body->GetPosition(), angle);
 	}
 }

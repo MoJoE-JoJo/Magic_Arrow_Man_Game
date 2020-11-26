@@ -20,7 +20,7 @@ public:
 	bool ShouldCollide(b2Fixture* fixtureA, b2Fixture* fixtureB) override;
 	std::shared_ptr<GameObject> createGameObject(glm::vec2 pos, GOType goType);
 	void createPlayerObject(glm::vec2 pos);
-	void createBowObject(glm::vec2 pos);
+	void createBowObject(glm::vec2 pos, bool samePosAsPlayer);
 	static MAMGame* instance;
 	static const glm::vec2 windowSize;
 	sre::Sprite getSprite(int index);
@@ -70,7 +70,6 @@ private:
 	float levelYMaxBound;
 
 	glm::vec2 levelBounds;
-	glm::vec2 originalPlayerPosition;
 	bool isPlayerWithinBounds();
 
 	//Audio
