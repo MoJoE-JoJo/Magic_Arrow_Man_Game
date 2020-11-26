@@ -73,9 +73,11 @@ void PlayerObject::update(float deltaTime) {
     }
     if (decelerate || (!movingRight && !movingLeft && isGrounded())) {
         glm::vec2 vec = phys->getLinearVelocity();
-        float decel = (1 - (playerDeceleration * deltaTime));
-        std::cout << "decel: " << decel << std::endl;
-        phys->setLinearVelocity(vec * decel);
+        if (glm::length(vec) > 0.1) {
+            float decel = (1 - (playerDeceleration * deltaTime));
+            std::cout << "decel: " << decel << std::endl;
+            phys->setLinearVelocity(vec * decel);
+        }
         decelerate = false;
     }
 
