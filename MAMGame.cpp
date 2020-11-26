@@ -64,6 +64,9 @@ void MAMGame::init() {
     levelXMaxBound = levelBounds.x;
     levelYMinBound = -levelBounds.y;
     levelYMaxBound = 0.0f + 64.0f;
+    audioSystem = AudioPlayer();
+    audioSystem.init();
+    audioSystem.startBackgroundMusic(MusicType::Background_Menu);
 }
 
 void MAMGame::initPhysics() {
