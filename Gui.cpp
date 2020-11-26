@@ -19,7 +19,7 @@ Gui::Gui(glm::vec2 windowSize) {
     fonts->AddFontDefault();
     auto fontName = "Fonts/Swanky/Swanky.ttf";
     headerFont = fonts->AddFontFromFileTTF(fontName, 50);
-    normalFont = fonts->AddFontFromFileTTF(fontName, 20);
+    normalFont = fonts->AddFontFromFileTTF(fontName, 25);
 }
 
 void Gui::renderGui() {
@@ -65,26 +65,30 @@ void Gui::renderLevelSelect() {
     ImGui::SetNextWindowPos({ 0, 0 }, ImGuiSetCond_Always);
     ImGui::SetNextWindowSize(ImGui::GetIO().DisplaySize, ImGuiSetCond_Always);
     ImGui::Begin("background wall", NULL, ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
-    ImGui::Columns(3, NULL);
-    ImGui::Separator();
+    ImGui::Columns(5, NULL, false);
+
+    ImVec2 buttonSize = { 200, 100 };
   
     for (int i = 0; i < levels.Size(); i++) {
-        if (i > 0 && i % 3 == 0) ImGui::Separator();
         rapidjson::Value& level = levels[i];
         std::string name = level["Name"].GetString();
         std::string file = level["File"].GetString();
-        bool btnPress = ImGui::Button(name.c_str(), { ImGui::GetIO().DisplaySize.x / 6 - 10, ImGui::GetIO().DisplaySize.y / 6 - 10 });
+        bool btnPress = ImGui::Button(name.c_str(), buttonSize);
         if (btnPress) {
             MAMGame::instance->beginLevel(file);
         }
         std::string hasCompleted = level["Completed"].GetBool() ? "yes" : "no";
         std::string completed = "Completed: " + hasCompleted;
-        //ImGui::SetCursorPos(ImVec2(10, 10));
         ImGui::Text(completed.c_str());
+
+        std::string bestTime = level["BestTime"].GetString();
+        std::string printBestTime = "Best time: " + bestTime;
+        ImGui::TextColored({ 0.831, 0.686, 0.216, 1 }, printBestTime.c_str());
+
+        ImGui::Text("");
         ImGui::NextColumn();
     }
     ImGui::Columns(1);
-    ImGui::Separator();
     ImGui::End();
 
     ImGui::PopFont();
