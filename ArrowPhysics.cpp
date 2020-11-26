@@ -14,6 +14,7 @@ void ArrowPhysics::onCollisionStart(PhysicsComponent* comp) {
 		body->SetAngularVelocity(0);
 	} else if (comp->getGameObject()->goType == GOType::target) {
 		if (!isReturned) MAMGame::instance->setGameState(GameState::Won);
+		MAMGame::instance->audioSystem.playSound(SoundType::ArrowHitting, 100);
 	}
 }
 

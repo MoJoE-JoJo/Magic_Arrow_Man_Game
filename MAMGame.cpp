@@ -23,6 +23,7 @@ MAMGame::MAMGame() : debugDraw(physicsScale) {
     r.setWindowSize(windowSize);
     r.init().withSdlInitFlags(SDL_INIT_EVERYTHING).withSdlWindowFlags(SDL_WINDOW_OPENGL);
     createTileMap();
+    audioSystem = AudioPlayer();
     init();
 
     gui = new Gui(windowSize);
@@ -66,6 +67,8 @@ void MAMGame::init() {
     levelXMaxBound = levelBounds.x;
     levelYMinBound = -levelBounds.y;
     levelYMaxBound = 0.0f + 64.0f;
+    audioSystem.init(MIX_MAX_VOLUME/2, MIX_MAX_VOLUME/2);
+    audioSystem.startBackgroundMusic(MusicType::Background_Game, 40);
 }
 
 void MAMGame::initPhysics() {

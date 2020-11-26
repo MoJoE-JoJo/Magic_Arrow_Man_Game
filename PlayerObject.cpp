@@ -6,6 +6,7 @@
 #include "PlayerPhysics.hpp"
 #include "SpriteComponent.hpp"
 #include "MAMGame.hpp"
+#include "AudioPlayer.hpp"
 
 PlayerObject::PlayerObject(glm::vec2 pos, sre::Sprite walk1, sre::Sprite standing, sre::Sprite walk2) : GameObject(pos, GOType::player) {
     auto pSpriteBox = addComponent<SpriteComponent>();
@@ -123,6 +124,7 @@ void PlayerObject::update(float deltaTime) {
 }
 
 void PlayerObject::jump() {
+    MAMGame::instance->audioSystem.playSound(SoundType::PlayerJumping, 100);
     auto phys = getComponent<PhysicsComponent>();
     phys->addForce(glm::vec2(0, 22500 * phys->getMass()));
 }
@@ -208,6 +210,7 @@ void PlayerObject::useBow(SDL_Event& event, glm::vec2 pos) {
         bow->updateAngle(pos);
         if (event.type == SDL_MOUSEBUTTONDOWN && event.button.button == SDL_BUTTON_LEFT) {
             if (bow->isHoldingArrow()) {
+                MAMGame::instance->audioSystem.playSound(SoundType::BowShooting, 100);
                 bow->shootArrow();
             } else {
                 callingArrow = true;
