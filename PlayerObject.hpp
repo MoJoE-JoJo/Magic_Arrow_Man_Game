@@ -23,6 +23,7 @@ public:
     void useBow(SDL_Event& event, glm::vec2 pos);
     void reset();
 private:
+    bool decelerate = false;
     bool movingLeft = false;
     bool movingRight = false;
     bool callingArrow = false;
@@ -34,7 +35,9 @@ private:
     sre::Sprite standing;
     int groundCounter = 0;
     int slopeCounter = 0;
-    int slopeSpeed = 1000;
+    int speed = 1000;
+    float playerDeceleration = 5.0f;
+    float maxVelocity = 10.0f;
 
     glm::vec2 originalPosition;
     bool samePosAsPlayer = false;
