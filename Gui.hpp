@@ -14,8 +14,8 @@ public:
 	void renderMenu();
 	void renderLevelSelect();
 private:
-	std::vector<std::string> levelFiles;
 	glm::vec2 windowSize;
-	ImFont* font;
+	ImFont* headerFont;
+	ImFont* normalFont;
 	bool isRenderMenu = true;
 };

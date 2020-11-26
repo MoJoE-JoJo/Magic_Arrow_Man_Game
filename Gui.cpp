@@ -18,20 +18,18 @@ Gui::Gui(glm::vec2 windowSize) {
     auto fonts = ImGui::GetIO().Fonts;
     fonts->AddFontDefault();
     auto fontName = "Fonts/Swanky/Swanky.ttf";
-    int fontSize = 50;
-    font = fonts->AddFontFromFileTTF(fontName, fontSize);
+    headerFont = fonts->AddFontFromFileTTF(fontName, 50);
+    normalFont = fonts->AddFontFromFileTTF(fontName, 20);
 }
 
 void Gui::renderGui() {
-    ImGui::PushFont(font);
-
     if (isRenderMenu) renderMenu();
     else renderLevelSelect();
-
-    ImGui::PopFont();
 }
 
 void Gui::renderMenu() {
+    ImGui::PushFont(headerFont);
+
     ImVec2 size = { 600, 300 };
     ImGui::SetNextWindowSize(size, ImGuiCond_Always);
     ImGui::SetNextWindowBgAlpha(1);
@@ -51,10 +49,12 @@ void Gui::renderMenu() {
         isRenderMenu = false;
     }
     ImGui::End();
+
+    ImGui::PopFont();
 }
 
 void Gui::renderLevelSelect() {
-    levelFiles.clear();
+    ImGui::PushFont(normalFont);
 
     std::ifstream fis("Levels/Progress.json");
     IStreamWrapper isw(fis);
@@ -65,11 +65,11 @@ void Gui::renderLevelSelect() {
     ImGui::SetNextWindowPos({ 0, 0 }, ImGuiSetCond_Always);
     ImGui::SetNextWindowSize(ImGui::GetIO().DisplaySize, ImGuiSetCond_Always);
     ImGui::Begin("background wall", NULL, ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
-    ImGui::Columns(4, NULL);
+    ImGui::Columns(3, NULL);
     ImGui::Separator();
   
     for (int i = 0; i < levels.Size(); i++) {
-        if (i > 0 && i % 4 == 0) ImGui::Separator();
+        if (i > 0 && i % 3 == 0) ImGui::Separator();
         rapidjson::Value& level = levels[i];
         std::string name = level["Name"].GetString();
         std::string file = level["File"].GetString();
@@ -77,10 +77,15 @@ void Gui::renderLevelSelect() {
         if (btnPress) {
             MAMGame::instance->beginLevel(file);
         }
-        bool completed = level["Completed"].GetBool();
+        std::string hasCompleted = level["Completed"].GetBool() ? "yes" : "no";
+        std::string completed = "Completed: " + hasCompleted;
+        //ImGui::SetCursorPos(ImVec2(10, 10));
+        ImGui::Text(completed.c_str());
         ImGui::NextColumn();
     }
     ImGui::Columns(1);
     ImGui::Separator();
     ImGui::End();
+
+    ImGui::PopFont();
 }
