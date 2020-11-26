@@ -1,0 +1,22 @@
+{
+    "Levels": [
+        {
+            "Name": "The Start",
+            "File": "thestart",
+            "Completed": false,
+            "BestTime": "00:00:00",
+            "Gold": "00:00:05",
+            "Silver": "00:00:15",
+            "Bronce": "00:05:00"
+        },
+        {
+            "Name": "Pillars",
+            "File": "pillars",
+            "Completed": false,
+            "BestTime": "00:00:00",
+            "Gold": "00:00:15",
+            "Silver": "00:01:00",
+            "Bronce": "00:05:00"
+        }
+    ]
+}

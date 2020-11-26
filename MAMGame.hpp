@@ -24,7 +24,7 @@ public:
 	static const glm::vec2 windowSize;
 	sre::Sprite getSprite(int index);
 	void setGameState(GameState newState);
-	void beginLevel(int level);
+	void beginLevel(std::string filename);
 	
 	const float physicsScale = 100;
 private:
@@ -42,7 +42,7 @@ private:
 
 	Gui* gui;
 
-	int currentLevel = 0;
+	std::string currentLevel = "";
 	sre::SDLRenderer r;
 	b2World* world = nullptr;
 	float gravity = -9.8;

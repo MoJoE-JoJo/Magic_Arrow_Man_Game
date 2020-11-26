@@ -1,6 +1,16 @@
 #pragma once
+#include "rapidjson/rapidjson.h"
+#include "rapidjson/document.h"
+#include "rapidjson/istreamwrapper.h"
+#include <fstream>
+#include <iostream>
+#include <memory>
+#include <vector>
+
 #include "Gui.hpp"
 #include "MAMGame.hpp"
+
+using namespace rapidjson;
 
 Gui::Gui(glm::vec2 windowSize) {
     this->windowSize = windowSize;
@@ -44,19 +54,30 @@ void Gui::renderMenu() {
 }
 
 void Gui::renderLevelSelect() {
+    levelFiles.clear();
+
+    std::ifstream fis("Levels/Progress.json");
+    IStreamWrapper isw(fis);
+    Document d;
+    d.ParseStream(isw);
+    rapidjson::Value& levels = d["Levels"];
+
     ImGui::SetNextWindowPos({ 0, 0 }, ImGuiSetCond_Always);
     ImGui::SetNextWindowSize(ImGui::GetIO().DisplaySize, ImGuiSetCond_Always);
     ImGui::Begin("background wall", NULL, ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
     ImGui::Columns(4, NULL);
     ImGui::Separator();
-    char name[16];
-    for (int i = 0; i < 18; i++) {
+  
+    for (int i = 0; i < levels.Size(); i++) {
         if (i > 0 && i % 4 == 0) ImGui::Separator();
-        sprintf(name, "%d", i);
-        bool btnPress = ImGui::Button(name, { ImGui::GetIO().DisplaySize.x / 6 - 10, ImGui::GetIO().DisplaySize.y / 6 - 10 });
+        rapidjson::Value& level = levels[i];
+        std::string name = level["Name"].GetString();
+        std::string file = level["File"].GetString();
+        bool btnPress = ImGui::Button(name.c_str(), { ImGui::GetIO().DisplaySize.x / 6 - 10, ImGui::GetIO().DisplaySize.y / 6 - 10 });
         if (btnPress) {
-            MAMGame::instance->beginLevel(i);
+            MAMGame::instance->beginLevel(file);
         }
+        bool completed = level["Completed"].GetBool();
         ImGui::NextColumn();
     }
     ImGui::Columns(1);

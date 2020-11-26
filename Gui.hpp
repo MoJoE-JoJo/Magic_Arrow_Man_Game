@@ -3,7 +3,6 @@
 #include <string>
 #include <memory>
 #include "sre/SDLRenderer.hpp"
-
 #include "glm/glm.hpp"
 #include "rapidjson/rapidjson.h"
 #include "rapidjson/document.h"
@@ -15,6 +14,7 @@ public:
 	void renderMenu();
 	void renderLevelSelect();
 private:
+	std::vector<std::string> levelFiles;
 	glm::vec2 windowSize;
 	ImFont* font;
 	bool isRenderMenu = true;

@@ -23,7 +23,6 @@ MAMGame::MAMGame() : debugDraw(physicsScale) {
     r.setWindowSize(windowSize);
     r.init().withSdlInitFlags(SDL_INIT_EVERYTHING).withSdlWindowFlags(SDL_WINDOW_OPENGL);
     createTileMap();
-    init();
 
     gui = new Gui(windowSize);
 
@@ -53,7 +52,7 @@ void MAMGame::init() {
     sprites = SpriteAtlas::create("MAM.json", "MAM.png");
     // Test json loading
     LevelLoader ll = LevelLoader();
-    ll.loadMap("Levels/Level" + std::to_string(currentLevel) + ".json");
+    ll.loadMap("Levels/Level-" + currentLevel + ".json");
     levelBounds = glm::vec2(ll.getMapWidth(), ll.getMapHeight());
     
     levelCamXMinBound = 0.0f - 64.0f; //-64.0f Keeps half a tile of padding at the left side of the screeen
@@ -209,22 +208,24 @@ void MAMGame::render() {
 }
 
 void MAMGame::onKey(SDL_Event& event) {
-    if (event.type == SDL_KEYDOWN) {
-        if (event.key.keysym.sym == SDLK_p) {
-            doDebugDraw = !doDebugDraw;
-            if (doDebugDraw) {
-                world->SetDebugDraw(&debugDraw);
-            } else {
-                world->SetDebugDraw(nullptr);
+    if (gameState != GameState::Menu) {
+        if (event.type == SDL_KEYDOWN) {
+            if (event.key.keysym.sym == SDLK_p) {
+                doDebugDraw = !doDebugDraw;
+                if (doDebugDraw) {
+                    world->SetDebugDraw(&debugDraw);
+                } else {
+                    world->SetDebugDraw(nullptr);
+                }
+            } else if (event.key.keysym.sym == SDLK_r) {
+                reset();
+                return;
+            } else if (event.key.keysym.sym == SDLK_q) {
+                setGameState(GameState::Menu);
+            } else if (event.key.keysym.sym == SDLK_SPACE && gameState == GameState::Won) {
+                setGameState(GameState::Menu);
+                return;
             }
-        } else if (event.key.keysym.sym == SDLK_r) {
-            reset();
-            return;
-        } else if (event.key.keysym.sym == SDLK_q) {
-            setGameState(GameState::Menu);
-        } else if (event.key.keysym.sym == SDLK_SPACE && gameState == GameState::Won) {
-            beginLevel(currentLevel + 1);
-            return;
         }
     }
 
@@ -234,14 +235,16 @@ void MAMGame::onKey(SDL_Event& event) {
 }
 
 void MAMGame::mouseEvent(SDL_Event& e) {
-    auto r = Renderer::instance;
-    glm::vec2 pos{ e.motion.x, r->getWindowSize().y - e.motion.y };
+    if (gameState != GameState::Menu) {
+        auto r = Renderer::instance;
+        glm::vec2 pos{ e.motion.x, r->getWindowSize().y - e.motion.y };
 
-    // convert to pixel coordinates (for HighDPI displays)
-    pos /= r->getWindowSize();
-    pos *= r->getDrawableSize();
+        // convert to pixel coordinates (for HighDPI displays)
+        pos /= r->getWindowSize();
+        pos *= r->getDrawableSize();
 
-    playerController->mouseEvent(e, glm::vec2(camera.screenPointToRay(pos)[0]));
+        playerController->mouseEvent(e, glm::vec2(camera.screenPointToRay(pos)[0]));
+    }
 }
 
 void MAMGame::registerPhysicsComponent(PhysicsComponent* physComponent) {
@@ -304,7 +307,7 @@ bool MAMGame::isPlayerWithinBounds() {
     return true;
 }
 
-void MAMGame::beginLevel(int level) {
+void MAMGame::beginLevel(std::string level) {
     currentLevel = level;
     init();
     setGameState(GameState::Running);
