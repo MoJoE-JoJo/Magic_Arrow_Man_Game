@@ -27,6 +27,7 @@ public:
 	void setGameState(GameState newState);
 	
 	const float physicsScale = 100;
+	AudioPlayer audioSystem;
 private:
 	void init();
 	void initPhysics();
@@ -73,7 +74,6 @@ private:
 	bool isPlayerWithinBounds();
 
 	//Audio
-	AudioPlayer audioSystem;
 
 	friend class PhysicsComponent;
 	friend class LevelLoader;
