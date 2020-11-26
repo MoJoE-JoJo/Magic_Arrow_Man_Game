@@ -8,8 +8,9 @@
 #include "PhysicsComponent.hpp"
 #include "Box2DDebugDraw.hpp"
 #include "AudioPlayer.hpp"
+#include "Gui.hpp"
 
-enum class GameState { Won, Running };
+enum class GameState { Won, Running, Menu };
 
 
 class MAMGame : public b2ContactListener, public b2ContactFilter {
@@ -25,6 +26,7 @@ public:
 	static const glm::vec2 windowSize;
 	sre::Sprite getSprite(int index);
 	void setGameState(GameState newState);
+	void beginLevel(int level);
 	
 	const float physicsScale = 100;
 	AudioPlayer audioSystem;
@@ -41,6 +43,8 @@ private:
 	void reset();
 	void createTileMap();
 
+	Gui* gui;
+
 	int currentLevel = 0;
 	sre::SDLRenderer r;
 	b2World* world = nullptr;
@@ -55,7 +59,7 @@ private:
 	bool doDebugDraw = false;
 	std::shared_ptr<sre::SpriteAtlas> sprites;
 	std::map<int, std::string> tileMap;
-	GameState gameState = GameState::Running;
+	GameState gameState = GameState::Menu;
 	
 	//Camera-stuff
 	float cameraTotalMoveTime = 0.0f;
