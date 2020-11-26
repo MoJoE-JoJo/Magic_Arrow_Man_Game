@@ -146,8 +146,8 @@ void LevelLoader::loadMap(std::string filename) {
     }
     
     MAMGame::instance->createPlayerObject(playerPoint);
-    if (!bowSet) MAMGame::instance->createBowObject(playerPoint);
-    else MAMGame::instance->createBowObject(bowPos);
+    if (!bowSet) MAMGame::instance->createBowObject(playerPoint, true);
+    else MAMGame::instance->createBowObject(bowPos, false);
 }
 
 std::shared_ptr<GameObject> LevelLoader::createGameObject(glm::vec2 position, GOType type, int tileId) {

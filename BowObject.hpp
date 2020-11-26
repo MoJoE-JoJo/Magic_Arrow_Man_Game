@@ -15,7 +15,9 @@ public:
     void callArrow(glm::vec2 playerPos);
     void stopArrow();
     glm::vec2 getArrowPosition();
+    void reset();
 private:
     std::shared_ptr<GameObject> arrow;
+    glm::vec2 originalPosition;
     bool hasArrow = true;
 };
