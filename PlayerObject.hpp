@@ -28,6 +28,7 @@ private:
     bool movingRight = false;
     bool callingArrow = false;
     bool hasCalledArrowOnceInAir = false;
+    bool stoppedCallingArrow = false;
     bool onLeftSlope = false;
     bool onRightSlope = false;
     sre::Sprite walk1;

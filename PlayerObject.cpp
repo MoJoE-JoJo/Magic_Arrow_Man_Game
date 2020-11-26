@@ -35,9 +35,12 @@ PlayerObject::~PlayerObject() {
 void PlayerObject::update(float deltaTime) {
 	GameObject::update(deltaTime);
     auto phys = getComponent<PhysicsComponent>();
-    bool debug = false;
+    bool debug = true;
     if (debug) std::cout << "Begin update" << std::endl;
-    if (isGrounded()) { hasCalledArrowOnceInAir = false; }
+    if (isGrounded()) { 
+        hasCalledArrowOnceInAir = false;
+        stoppedCallingArrow = false;
+    }
     if (movingRight && isGrounded()) {
         
         if (phys->getLinearVelocity().x < 0) {
@@ -75,7 +78,7 @@ void PlayerObject::update(float deltaTime) {
         glm::vec2 vec = phys->getLinearVelocity();
         if (glm::length(vec) > 0.1) {
             float decel = (1 - (playerDeceleration * deltaTime));
-            std::cout << "decel: " << decel << std::endl;
+            if (debug) std::cout << "decel: " << decel << std::endl;
             phys->setLinearVelocity(vec * decel);
         }
         decelerate = false;
@@ -87,27 +90,32 @@ void PlayerObject::update(float deltaTime) {
         bow->updatePos(position);
 
         if (callingArrow) {
+            hasCalledArrowOnceInAir = true;
             bow->callArrow(getPosition());
             if (!isGrounded()) {
                 if (bow->isHoldingArrow()) {
                     stopAfterFlying();
                     callingArrow = false;
-                } else if (!hasCalledArrowOnceInAir) {
+                } else if (!stoppedCallingArrow) {
                     auto arrowPos = bow->getArrowPosition();
                     b2Vec2 toTarget = b2Vec2(arrowPos.x, arrowPos.y) - b2Vec2(getPosition().x, getPosition().y);
                     float angle = glm::radians(glm::degrees(atan2f(-toTarget.x, toTarget.y)) + 90);
-                    float force = 300 * phys->getMass();
-                    phys->setLinearVelocity(glm::vec2(cos(angle), sin(angle)) * force);
-                    hasCalledArrowOnceInAir = true;
+                    float force = (1500 * phys->getMass());
+                    glm::vec2 linVelocity = glm::vec2(cos(angle), sin(angle)) * force;
+                    phys->addImpulse(linVelocity);
                 }
             }
         }
     }
 
+    if (hasCalledArrowOnceInAir && !isGrounded() && !callingArrow) {
+        stoppedCallingArrow = true;
+    }
+
     updateSprite(deltaTime);
     glm::vec2 physVec = phys->getLinearVelocity();
     float length = glm::length(physVec);
-    std::cout << length << std::endl;
+   if (debug) std::cout << length << std::endl;
     if (length > maxVelocity) {
         glm::vec2 newVelocity = (physVec / length) * maxVelocity;
         phys->setLinearVelocity(newVelocity);
