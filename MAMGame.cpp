@@ -25,6 +25,8 @@ MAMGame::MAMGame() : debugDraw(physicsScale) {
     createTileMap();
     init();
 
+    gui = new Gui(windowSize);
+
     // setup callback functions
     r.keyEvent = [&](SDL_Event& e) { onKey(e); };
     r.mouseEvent = [&](SDL_Event& e) { mouseEvent(e); };
@@ -200,11 +202,15 @@ void MAMGame::render() {
         rp.drawLines(debugDraw.getLines());
         debugDraw.clear();
     }
+
+    if (gameState == GameState::Menu) {
+        gui->renderGui();
+    }
 }
 
 void MAMGame::onKey(SDL_Event& event) {
     if (event.type == SDL_KEYDOWN) {
-        if (event.key.keysym.sym == SDLK_q) {
+        if (event.key.keysym.sym == SDLK_p) {
             doDebugDraw = !doDebugDraw;
             if (doDebugDraw) {
                 world->SetDebugDraw(&debugDraw);
@@ -214,18 +220,10 @@ void MAMGame::onKey(SDL_Event& event) {
         } else if (event.key.keysym.sym == SDLK_r) {
             reset();
             return;
-        } else if (event.key.keysym.sym == SDLK_LEFT) {
-            camera.setPositionAndRotation(glm::vec3(camera.getPosition().x - 20, camera.getPosition().y, camera.getPosition().z), camera.getRotationEuler());
-        } else if (event.key.keysym.sym == SDLK_RIGHT) {
-            camera.setPositionAndRotation(glm::vec3(camera.getPosition().x + 20, camera.getPosition().y, camera.getPosition().z), camera.getRotationEuler());
-        } else if (event.key.keysym.sym == SDLK_UP) {
-            camera.setPositionAndRotation(glm::vec3(camera.getPosition().x, camera.getPosition().y + 20, camera.getPosition().z), camera.getRotationEuler());
-        } else if (event.key.keysym.sym == SDLK_DOWN) {
-            camera.setPositionAndRotation(glm::vec3(camera.getPosition().x, camera.getPosition().y - 20, camera.getPosition().z), camera.getRotationEuler());
+        } else if (event.key.keysym.sym == SDLK_q) {
+            setGameState(GameState::Menu);
         } else if (event.key.keysym.sym == SDLK_SPACE && gameState == GameState::Won) {
-            currentLevel++;
-            init();
-            setGameState(GameState::Running);
+            beginLevel(currentLevel + 1);
             return;
         }
     }
@@ -304,4 +302,10 @@ bool MAMGame::isPlayerWithinBounds() {
     if (playerPosition.y < levelYMinBound) return false;
     if (playerPosition.y > levelYMaxBound) return false;
     return true;
+}
+
+void MAMGame::beginLevel(int level) {
+    currentLevel = level;
+    init();
+    setGameState(GameState::Running);
 }
