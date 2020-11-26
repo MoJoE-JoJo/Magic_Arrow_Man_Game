@@ -72,9 +72,11 @@ void PlayerObject::update(float deltaTime) {
     }
     if (decelerate || (!movingRight && !movingLeft && isGrounded())) {
         glm::vec2 vec = phys->getLinearVelocity();
-        float decel = (1 - (playerDeceleration * deltaTime));
-        std::cout << "decel: " << decel << std::endl;
-        phys->setLinearVelocity(vec * decel);
+        if (glm::length(vec) > 0.1) {
+            float decel = (1 - (playerDeceleration * deltaTime));
+            std::cout << "decel: " << decel << std::endl;
+            phys->setLinearVelocity(vec * decel);
+        }
         decelerate = false;
     }
 
@@ -216,5 +218,5 @@ void PlayerObject::stopAfterFlying() {
     auto phys = getComponent<PhysicsComponent>();
     auto currentVelocity = phys->getLinearVelocity();
     phys->setLinearVelocity(glm::vec2(0, 0));
-    phys->addForce(currentVelocity * 50.0f);
+    phys->addForce(currentVelocity * 100.0f);
 }
