@@ -172,6 +172,7 @@ void PhysicsComponent::initArrow(b2BodyType type, glm::vec2 center) {
     bd.position = b2Vec2(center.x, center.y);
     body = world->CreateBody(&bd);
     body->SetFixedRotation(false);
+    body->SetSleepingAllowed(false);
     polygon = new b2PolygonShape();
 
     b2Vec2 vertices[4];
