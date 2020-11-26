@@ -7,6 +7,8 @@ public:
     void onCollisionStart(PhysicsComponent* comp) override;
     void onCollisionEnd(PhysicsComponent* comp) override;
     void update(float deltaTime) override;
+    void setRotation(float angle) override;
 private:
     bool isReturned = true;
+    int collisionCounter = 0;
 };

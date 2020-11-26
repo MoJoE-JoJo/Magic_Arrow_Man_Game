@@ -25,6 +25,8 @@ private:
     bool decelerate = false;
     bool movingLeft = false;
     bool movingRight = false;
+    bool callingArrow = false;
+    bool hasCalledArrowOnceInAir = false;
     bool onLeftSlope = false;
     bool onRightSlope = false;
     sre::Sprite walk1;
@@ -43,5 +45,6 @@ private:
     bool bowIsSet = false;
 
     void updateSprite(float deltaTime);
+    void stopAfterFlying();
     friend class PlayerController;
 };

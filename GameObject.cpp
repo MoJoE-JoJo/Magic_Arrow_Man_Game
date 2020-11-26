@@ -15,7 +15,8 @@ GameObject::~GameObject() {
 }
 
 const glm::vec2& GameObject::getPosition() const {
-    return position;
+    auto newPosition = glm::vec2((int)position.x, (int)position.y);
+    return newPosition;
 }
 
 void GameObject::setPosition(const glm::vec2& position) {

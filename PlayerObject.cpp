@@ -36,8 +36,9 @@ void PlayerObject::update(float deltaTime) {
     auto phys = getComponent<PhysicsComponent>();
     bool debug = false;
     if (debug) std::cout << "Begin update" << std::endl;
+    if (isGrounded()) { hasCalledArrowOnceInAir = false; }
     if (movingRight && isGrounded()) {
-
+        
         if (phys->getLinearVelocity().x < 0) {
             decelerate = true;
         }
@@ -49,7 +50,6 @@ void PlayerObject::update(float deltaTime) {
         phys->addForce(vector);
     }
     if (movingLeft && isGrounded()) {
-        if (debug) std::cout << "moving left" << std::endl;
 
         if (phys->getLinearVelocity().x > 0) {
             decelerate = true;
@@ -82,6 +82,23 @@ void PlayerObject::update(float deltaTime) {
         auto offset = flipIndicator ? glm::vec2(-15, -13) : glm::vec2(15, -13);
         auto position = getPosition() + offset;
         bow->updatePos(position);
+
+        if (callingArrow) {
+            bow->callArrow(getPosition());
+            if (!isGrounded()) {
+                if (bow->isHoldingArrow()) {
+                    stopAfterFlying();
+                    callingArrow = false;
+                } else if (!hasCalledArrowOnceInAir) {
+                    auto arrowPos = bow->getArrowPosition();
+                    b2Vec2 toTarget = b2Vec2(arrowPos.x, arrowPos.y) - b2Vec2(getPosition().x, getPosition().y);
+                    float angle = glm::radians(glm::degrees(atan2f(-toTarget.x, toTarget.y)) + 90);
+                    float force = 300 * phys->getMass();
+                    phys->setLinearVelocity(glm::vec2(cos(angle), sin(angle)) * force);
+                    hasCalledArrowOnceInAir = true;
+                }
+            }
+        }
     }
 
     updateSprite(deltaTime);
@@ -96,7 +113,7 @@ void PlayerObject::update(float deltaTime) {
 
 void PlayerObject::jump() {
     auto phys = getComponent<PhysicsComponent>();
-    phys->addForce(glm::vec2(0, 20000 * phys->getMass()));
+    phys->addForce(glm::vec2(0, 22500 * phys->getMass()));
 }
 
 void PlayerObject::incrGroundCounter() {
@@ -178,7 +195,26 @@ void PlayerObject::useBow(SDL_Event& event, glm::vec2 pos) {
     if (bowIsSet) {
         bow->updateAngle(pos);
         if (event.type == SDL_MOUSEBUTTONDOWN && event.button.button == SDL_BUTTON_LEFT) {
-            bow->shootArrow();
+            if (bow->isHoldingArrow()) {
+                bow->shootArrow();
+            } else {
+                callingArrow = true;
+            }
+        } else if (event.type == SDL_MOUSEBUTTONUP && event.button.button == SDL_BUTTON_LEFT) {
+            if (callingArrow) {
+                callingArrow = false;
+                bow->stopArrow();
+                if (!isGrounded() && !bow->isHoldingArrow()) {
+                    stopAfterFlying();
+                }
+            }
         }
     }
+}
+
+void PlayerObject::stopAfterFlying() {
+    auto phys = getComponent<PhysicsComponent>();
+    auto currentVelocity = phys->getLinearVelocity();
+    phys->setLinearVelocity(glm::vec2(0, 0));
+    phys->addForce(currentVelocity * 50.0f);
 }
