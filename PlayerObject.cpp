@@ -38,25 +38,29 @@ void PlayerObject::update(float deltaTime) {
     if (debug) std::cout << "Begin update" << std::endl;
     if (movingRight && isGrounded()) {
 
-        float xValue = 1000 * phys->getMass();
-        float yValue = 0;
-        glm::vec2 dotVector = glm::vec2(1, 0);
-        
-        if (onRightSlope) {
-            yValue = slopeSpeed * phys->getMass();
-            dotVector = glm::vec2(1, 1);
+        if (phys->getLinearVelocity().x < 0) {
+            decelerate = true;
         }
+
+        float xValue = 1;
+        float yValue = (onRightSlope) ?  1 : 0;
         
-        glm::vec2 vector = glm::vec2(xValue, yValue);
+        glm::vec2 vector = glm::vec2(xValue, yValue) * (speed * phys->getMass());
         phys->addForce(vector);
     }
     if (movingLeft && isGrounded()) {
         if (debug) std::cout << "moving left" << std::endl;
-        phys->addForce(glm::vec2(-1000 * phys->getMass(), 0));
-        if (onLeftSlope) {
-            if (debug) std::cout << "and up" << std::endl;
-            phys->addForce(glm::vec2(0, slopeSpeed * phys->getMass()));
+
+        if (phys->getLinearVelocity().x > 0) {
+            decelerate = true;
         }
+
+        float xValue = -1;
+        float yValue = (onLeftSlope) ? 1 : 0;
+
+        glm::vec2 vector = glm::vec2(xValue, yValue) * (1000 * phys->getMass());
+        phys->addForce(vector);
+
     }
     if (onLeftSlope && isGrounded() && groundCounter == 0 && !onRightSlope) {
         if (debug) std::cout << "standing on left" << std::endl;
@@ -66,8 +70,12 @@ void PlayerObject::update(float deltaTime) {
         if (debug) std::cout << "standing on right" << std::endl;
         phys->addForce(glm::vec2(1000 * phys->getMass(), 0));
     }
-    if (!movingRight && !movingLeft && isGrounded()) {
-        //TODO: Implement player deceleration
+    if (decelerate || (!movingRight && !movingLeft && isGrounded())) {
+        glm::vec2 vec = phys->getLinearVelocity();
+        float decel = (1 - (playerDeceleration * deltaTime));
+        std::cout << "decel: " << decel << std::endl;
+        phys->setLinearVelocity(vec * decel);
+        decelerate = false;
     }
 
     if (bowIsSet) {
@@ -77,6 +85,13 @@ void PlayerObject::update(float deltaTime) {
     }
 
     updateSprite(deltaTime);
+    glm::vec2 physVec = phys->getLinearVelocity();
+    float length = glm::length(physVec);
+    std::cout << length << std::endl;
+    if (length > maxVelocity) {
+        glm::vec2 newVelocity = (physVec / length) * maxVelocity;
+        phys->setLinearVelocity(newVelocity);
+    }
 }
 
 void PlayerObject::jump() {
