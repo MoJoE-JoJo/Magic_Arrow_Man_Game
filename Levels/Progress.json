@@ -33,33 +33,33 @@
             "Completed": false,
             "BestTime": "00:00:00",
             "Gold": "00:00:05",
-            "Silver": "00:01:00",
-            "Bronze": "00:05:00"
+            "Silver": "00:00:10",
+            "Bronze": "00:00:30"
         },
         {
             "Name": "Leap of faith",
             "File": "leapoffaith",
             "Completed": false,
             "BestTime": "00:00:00",
-            "Gold": "00:00:05",
-            "Silver": "00:01:00",
-            "Bronze": "00:05:00"
+            "Gold": "00:00:02",
+            "Silver": "00:00:04",
+            "Bronze": "00:00:10"
         },
         {
             "Name": "Floating ladder",
             "File": "jumpingfloatyhard",
             "Completed": false,
             "BestTime": "00:00:00",
-            "Gold": "00:00:15",
-            "Silver": "00:01:00",
-            "Bronze": "00:05:00"
+            "Gold": "00:00:12",
+            "Silver": "00:00:20",
+            "Bronze": "00:01:00"
         },
         {
             "Name": "There and back again",
             "File": "thereandbackagain",
             "Completed": false,
             "BestTime": "00:00:00",
-            "Gold": "00:00:15",
+            "Gold": "00:00:25",
             "Silver": "00:01:00",
             "Bronze": "00:05:00"
         },
@@ -68,45 +68,45 @@
             "File": "dropshot",
             "Completed": false,
             "BestTime": "00:00:00",
-            "Gold": "00:00:15",
-            "Silver": "00:01:00",
-            "Bronze": "00:05:00"
+            "Gold": "00:00:03",
+            "Silver": "00:00:05",
+            "Bronze": "00:00:10"
         },
         {
             "Name": "Takeoff",
             "File": "takeoff",
             "Completed": false,
             "BestTime": "00:00:00",
-            "Gold": "00:00:15",
-            "Silver": "00:01:00",
-            "Bronze": "00:05:00"
+            "Gold": "00:00:02",
+            "Silver": "00:00:05",
+            "Bronze": "00:00:10"
         },
         {
             "Name": "Temple of Doom",
             "File": "templeofdoom",
             "Completed": false,
             "BestTime": "00:00:00",
-            "Gold": "00:00:15",
+            "Gold": "00:00:44",
             "Silver": "00:01:00",
-            "Bronze": "00:05:00"
+            "Bronze": "00:02:00"
         },
         {
             "Name": "What comes around",
             "File": "boomerang",
             "Completed": false,
             "BestTime": "00:00:00",
-            "Gold": "00:00:15",
-            "Silver": "00:01:00",
-            "Bronze": "00:05:00"
+            "Gold": "00:00:03",
+            "Silver": "00:00:05",
+            "Bronze": "00:00:10"
         },
         {
             "Name": "Basket",
             "File": "basket",
             "Completed": false,
             "BestTime": "00:00:00",
-            "Gold": "00:00:15",
-            "Silver": "00:01:00",
-            "Bronze": "00:05:00"
+            "Gold": "00:00:06",
+            "Silver": "00:00:10",
+            "Bronze": "00:00:30"
         },
         {
             "Name": "A-maze-ing",
@@ -114,8 +114,8 @@
             "Completed": false,
             "BestTime": "00:00:00",
             "Gold": "00:00:15",
-            "Silver": "00:01:00",
-            "Bronze": "00:05:00"
+            "Silver": "00:00:25",
+            "Bronze": "00:00:45"
         },
         {
             "Name": "Yoyo",
@@ -123,8 +123,8 @@
             "Completed": false,
             "BestTime": "00:00:00",
             "Gold": "00:00:15",
-            "Silver": "00:01:00",
-            "Bronze": "00:05:00"
+            "Silver": "00:00:25",
+            "Bronze": "00:00:45"
         }
     ]
 }

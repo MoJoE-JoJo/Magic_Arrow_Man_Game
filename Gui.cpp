@@ -151,10 +151,15 @@ void Gui::renderWinScreen() {
     }
 
     ImGui::Text("");
-    ImVec2 buttonSize(60, 40);
-    if (ImGui::Button("Ok", buttonSize)) {
+    ImGui::Columns(2, NULL, false);
+    if (ImGui::Button("Ok", { 60, 40 })) {
         MAMGame::instance->setGuiState(GuiState::LevelSelect);
     }
+    ImGui::NextColumn();
+    if (ImGui::Button("Reset", { 80, 40 })) {
+        MAMGame::instance->reset();
+    }
+    ImGui::Columns(1);
     ImGui::End();
 
     ImGui::PopFont();

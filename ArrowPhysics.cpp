@@ -13,8 +13,10 @@ void ArrowPhysics::onCollisionStart(PhysicsComponent* comp) {
 		isReturned = true;
 		body->SetAngularVelocity(0);
 	} else if (comp->getGameObject()->goType == GOType::target) {
-		if (!isReturned) MAMGame::instance->levelWon();
-		MAMGame::instance->audioSystem.playSound(SoundType::ArrowHitting, 100);
+		if (!isReturned) {
+			MAMGame::instance->audioSystem.playSound(SoundType::ArrowHitting, 100);
+			MAMGame::instance->levelWon();
+		}
 	}
 }
 

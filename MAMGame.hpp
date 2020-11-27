@@ -29,6 +29,7 @@ public:
 	void setGuiState(GuiState newState);
 	void beginLevel(std::string filename);
 	void levelWon();
+	void reset();
 	
 	const float physicsScale = 100;
 	AudioPlayer audioSystem;
@@ -42,7 +43,6 @@ private:
 	void onKey(SDL_Event& event);
 	void mouseEvent(SDL_Event& event);
 	void handleContact(b2Contact* contact, bool begin);
-	void reset();
 	void createTileMap();
 	void startTime();
 

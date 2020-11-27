@@ -304,6 +304,7 @@ void MAMGame::createTileMap() {
 void MAMGame::reset() {
     playerController->reset();
     startTime();
+    setGameState(GameState::Running);
 }
 
 bool MAMGame::isPlayerWithinBounds() {
