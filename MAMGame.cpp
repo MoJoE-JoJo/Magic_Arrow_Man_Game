@@ -23,9 +23,11 @@ MAMGame::MAMGame() : debugDraw(physicsScale) {
     r.setWindowSize(windowSize);
     r.init().withSdlInitFlags(SDL_INIT_EVERYTHING).withSdlWindowFlags(SDL_WINDOW_OPENGL);
     createTileMap();
+
     audioSystem = AudioPlayer();
 
     gui = new Gui(windowSize);
+    guiState = GuiState::MainMenu;
 
     // setup callback functions
     r.keyEvent = [&](SDL_Event& e) { onKey(e); };
@@ -206,12 +208,12 @@ void MAMGame::render() {
     }
 
     if (gameState == GameState::Menu) {
-        gui->renderGui();
+        gui->renderGui(guiState);
     }
 }
 
 void MAMGame::onKey(SDL_Event& event) {
-    if (gameState != GameState::Menu) {
+    if (gameState == GameState::Running) {
         if (event.type == SDL_KEYDOWN) {
             if (event.key.keysym.sym == SDLK_p) {
                 doDebugDraw = !doDebugDraw;
@@ -225,20 +227,18 @@ void MAMGame::onKey(SDL_Event& event) {
                 return;
             } else if (event.key.keysym.sym == SDLK_q) {
                 setGameState(GameState::Menu);
-            } else if (event.key.keysym.sym == SDLK_SPACE && gameState == GameState::Won) {
-                setGameState(GameState::Menu);
                 return;
             }
         }
-    }
 
-    if (playerController != nullptr && gameState != GameState::Won) {
-        playerController->onKey(event);
+        if (playerController != nullptr) {
+            playerController->onKey(event);
+        }
     }
 }
 
 void MAMGame::mouseEvent(SDL_Event& e) {
-    if (gameState != GameState::Menu) {
+    if (gameState == GameState::Running) {
         auto r = Renderer::instance;
         glm::vec2 pos{ e.motion.x, r->getWindowSize().y - e.motion.y };
 
@@ -271,6 +271,10 @@ void MAMGame::setGameState(GameState newState) {
     gameState = newState;
 }
 
+void MAMGame::setGuiState(GuiState newState) {
+    guiState = newState;
+}
+
 void MAMGame::createTileMap() {
     tileMap.insert({ 2, "Tilesets-1-01.png" });
     tileMap.insert({ 3, "Tilesets-1-02.png" });
@@ -299,6 +303,7 @@ void MAMGame::createTileMap() {
 
 void MAMGame::reset() {
     playerController->reset();
+    startTime();
 }
 
 bool MAMGame::isPlayerWithinBounds() {
@@ -314,4 +319,18 @@ void MAMGame::beginLevel(std::string level) {
     currentLevel = level;
     init();
     setGameState(GameState::Running);
+    startTime();
+}
+
+void MAMGame::levelWon() {
+    end = std::chrono::steady_clock::now();
+    int winTime = std::chrono::duration_cast<std::chrono::seconds>(end - begin).count();
+    gui->setWinTime(winTime, currentLevel);
+    setGameState(GameState::Menu);
+    setGuiState(GuiState::Won);
+}
+
+void MAMGame::startTime() {
+    begin = std::chrono::steady_clock::now();
+    end = std::chrono::steady_clock::now();
 }

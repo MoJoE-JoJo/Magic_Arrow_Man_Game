@@ -24,8 +24,8 @@
             "Completed": false,
             "BestTime": "00:00:00",
             "Gold": "00:00:05",
-            "Silver": "00:01:00",
-            "Bronze": "00:05:00"
+            "Silver": "00:00:15",
+            "Bronze": "00:01:30"
         },
         {
             "Name": "Elevator",
