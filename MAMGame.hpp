@@ -2,6 +2,7 @@
 #include "sre/SDLRenderer.hpp"
 #include "Box2D/Dynamics/b2World.h"
 #include "sre/Camera.hpp"
+#include <chrono>
 
 #include "GameObject.hpp"
 #include "PlayerController.hpp"
@@ -10,8 +11,7 @@
 #include "AudioPlayer.hpp"
 #include "Gui.hpp"
 
-enum class GameState { Won, Running, Menu };
-
+enum class GameState { Running, Menu };
 
 class MAMGame : public b2ContactListener, public b2ContactFilter {
 public:
@@ -26,7 +26,9 @@ public:
 	static const glm::vec2 windowSize;
 	sre::Sprite getSprite(int index);
 	void setGameState(GameState newState);
+	void setGuiState(GuiState newState);
 	void beginLevel(std::string filename);
+	void levelWon();
 	
 	const float physicsScale = 100;
 	AudioPlayer audioSystem;
@@ -42,8 +44,12 @@ private:
 	void handleContact(b2Contact* contact, bool begin);
 	void reset();
 	void createTileMap();
+	void startTime();
 
 	Gui* gui;
+	GuiState guiState;
+	std::chrono::steady_clock::time_point begin;
+	std::chrono::steady_clock::time_point end;
 
 	std::string currentLevel = "";
 	sre::SDLRenderer r;
@@ -81,5 +87,4 @@ private:
 
 	friend class PhysicsComponent;
 	friend class LevelLoader;
-
 };

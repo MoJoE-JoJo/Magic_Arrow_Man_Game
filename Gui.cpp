@@ -2,6 +2,8 @@
 #include "rapidjson/rapidjson.h"
 #include "rapidjson/document.h"
 #include "rapidjson/istreamwrapper.h"
+#include "rapidjson/ostreamwrapper.h"
+#include "rapidjson/writer.h"
 #include <fstream>
 #include <iostream>
 #include <memory>
@@ -18,20 +20,45 @@ Gui::Gui(glm::vec2 windowSize) {
     auto fonts = ImGui::GetIO().Fonts;
     fonts->AddFontDefault();
     auto fontName = "Fonts/Swanky/Swanky.ttf";
-    int fontSize = 50;
-    font = fonts->AddFontFromFileTTF(fontName, fontSize);
+    headerFont = fonts->AddFontFromFileTTF(fontName, 50);
+    normalFont = fonts->AddFontFromFileTTF(fontName, 25);
+
+    loadProgress();
 }
 
-void Gui::renderGui() {
-    ImGui::PushFont(font);
+void Gui::loadProgress() {
+    levelsList.clear();
 
-    if (isRenderMenu) renderMenu();
-    else renderLevelSelect();
+    std::ifstream fis("Levels/Progress.json");
+    IStreamWrapper isw(fis);
+    Document d;
+    d.ParseStream(isw);
+    rapidjson::Value& levels = d["Levels"];
 
-    ImGui::PopFont();
+    for (int i = 0; i < levels.Size(); i++) {
+        rapidjson::Value& level = levels[i];
+        std::string name = level["Name"].GetString();
+        std::string file = level["File"].GetString();
+        bool completed = level["Completed"].GetBool();
+        std::string bestTime = level["BestTime"].GetString();
+        std::string gold = level["Gold"].GetString();
+        std::string silver = level["Silver"].GetString();
+        std::string bronze = level["Bronze"].GetString();
+
+        auto levelObj = std::shared_ptr<Level>(new Level(name, file, bestTime, gold, silver, bronze, completed));
+        levelsList.push_back(levelObj);
+    }
+}
+
+void Gui::renderGui(GuiState guiState) {
+    if (guiState == GuiState::MainMenu) renderMenu();
+    else if (guiState == GuiState::LevelSelect) renderLevelSelect();
+    else if (guiState == GuiState::Won) renderWinScreen();
 }
 
 void Gui::renderMenu() {
+    ImGui::PushFont(headerFont);
+
     ImVec2 size = { 600, 300 };
     ImGui::SetNextWindowSize(size, ImGuiCond_Always);
     ImGui::SetNextWindowBgAlpha(1);
@@ -48,39 +75,125 @@ void Gui::renderMenu() {
     ImVec2 buttonSize(100, 60);
     ImGui::SetCursorPos({ (ImGui::GetWindowSize().x - 10 - buttonSize.x) / 2, (ImGui::GetWindowSize().y - 10 - buttonSize.y) / 2 });
     if (ImGui::Button("Play", buttonSize)) {
-        isRenderMenu = false;
+        MAMGame::instance->setGuiState(GuiState::LevelSelect);
     }
     ImGui::End();
+
+    ImGui::PopFont();
 }
 
 void Gui::renderLevelSelect() {
-    levelFiles.clear();
-
-    std::ifstream fis("Levels/Progress.json");
-    IStreamWrapper isw(fis);
-    Document d;
-    d.ParseStream(isw);
-    rapidjson::Value& levels = d["Levels"];
+    ImGui::PushFont(normalFont);
 
     ImGui::SetNextWindowPos({ 0, 0 }, ImGuiSetCond_Always);
     ImGui::SetNextWindowSize(ImGui::GetIO().DisplaySize, ImGuiSetCond_Always);
     ImGui::Begin("background wall", NULL, ImGuiWindowFlags_NoBringToFrontOnFocus | ImGuiWindowFlags_NoFocusOnAppearing | ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
-    ImGui::Columns(4, NULL);
-    ImGui::Separator();
+    ImGui::Columns(5, NULL, false);
+
+    ImVec2 buttonSize = { 200, 100 };
   
-    for (int i = 0; i < levels.Size(); i++) {
-        if (i > 0 && i % 4 == 0) ImGui::Separator();
-        rapidjson::Value& level = levels[i];
-        std::string name = level["Name"].GetString();
-        std::string file = level["File"].GetString();
-        bool btnPress = ImGui::Button(name.c_str(), { ImGui::GetIO().DisplaySize.x / 6 - 10, ImGui::GetIO().DisplaySize.y / 6 - 10 });
+    for (int i = 0; i < levelsList.size(); i++) {
+        auto level = levelsList[i];
+        bool btnPress = ImGui::Button(level->name.c_str(), buttonSize);
         if (btnPress) {
-            MAMGame::instance->beginLevel(file);
+            MAMGame::instance->beginLevel(level->file);
         }
-        bool completed = level["Completed"].GetBool();
+        std::string hasCompleted = level->completed ? "yes" : "no";
+        std::string completed = "Completed: " + hasCompleted;
+        ImGui::TextColored(level->completed ? colorWon : colorNotWon, completed.c_str());
+
+        std::string printBestTime = "Best time: " + level->bestTime;
+
+        if (level->rank > 2) {
+            ImGui::Text(printBestTime.c_str());
+        } else {
+            auto color = level->rank == 0 ? colorGold : (level->rank == 1 ? colorSilver : colorBronze);
+            ImGui::TextColored(color, printBestTime.c_str());
+        }
+
+        ImGui::Text("");
         ImGui::NextColumn();
     }
     ImGui::Columns(1);
-    ImGui::Separator();
     ImGui::End();
+
+    ImGui::PopFont();
+}
+
+void Gui::renderWinScreen() {
+    ImGui::PushFont(normalFont);
+
+    ImVec2 size = { 400, 240 };
+    ImGui::SetNextWindowSize(size, ImGuiCond_Always);
+    ImGui::SetNextWindowBgAlpha(1);
+    ImVec2 pos = { (windowSize.x - size.x) / 2, (windowSize.y - size.y) / 2 };
+    ImGui::SetNextWindowPos(pos);
+
+    ImGui::Begin("", NULL, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
+    ImGui::Text("You won the level!");
+    auto title = std::string("Your time: " + wonLevel->GetString(winTime));
+    ImGui::Text(title.c_str());
+    ImGui::Text("");
+
+    if (winTime <= wonLevel->goldTotal) {
+        ImGui::Text("You got gold!");
+    } else if (winTime <= wonLevel->silverTotal) {
+        ImGui::Text("You got silver!");
+        auto getGold = std::string("Try again and beat the gold time: " + wonLevel->gold);
+        ImGui::Text(getGold.c_str());
+    } else if (winTime <= wonLevel->bronzeTotal) {
+        ImGui::Text("You got bronze!");
+        auto getSilver = std::string("Try again and beat the silver time: " + wonLevel->silver);
+        ImGui::Text(getSilver.c_str());
+    } else {
+        auto getBronze = std::string("Try again and beat the bronze time: " + wonLevel->bronze);
+        ImGui::Text(getBronze.c_str());
+    }
+
+    ImGui::Text("");
+    ImVec2 buttonSize(60, 40);
+    if (ImGui::Button("Ok", buttonSize)) {
+        MAMGame::instance->setGuiState(GuiState::LevelSelect);
+    }
+    ImGui::End();
+
+    ImGui::PopFont();
+}
+
+void Gui::setWinTime(int seconds, std::string levelFileName) {
+    winTime = seconds;
+    int levelIndex = 0;
+    for (auto& level : levelsList) {
+        if (level->file == levelFileName) {
+            wonLevel = level;
+            break;
+        }
+        levelIndex++;
+    }
+    updateProgress(levelIndex);
+    loadProgress();
+}
+
+void Gui::updateProgress(int levelIndex) {
+    std::ifstream fis("Levels/Progress.json");
+    IStreamWrapper isw(fis);
+    Document d;
+    d.ParseStream(isw);
+    Value& level = d["Levels"][levelIndex];
+
+    if (level["BestTime"] == "00:00:00" || winTime < wonLevel->GetSeconds(wonLevel->bestTime)) {
+        Value newTime;
+        char buffer[10];
+        int len = sprintf(buffer, wonLevel->GetString(winTime).c_str());
+        newTime.SetString(buffer, len, d.GetAllocator());
+        memset(buffer, 0, sizeof(buffer));
+        level["BestTime"] = newTime;
+    }
+
+    level["Completed"].SetBool(true);
+
+    std::ofstream ofs("Levels/Progress.json");
+    OStreamWrapper osw(ofs);
+    Writer<OStreamWrapper> writer(osw);
+    d.Accept(writer);
 }
