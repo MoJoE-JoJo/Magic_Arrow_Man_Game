@@ -6,26 +6,26 @@
             "Completed": false,
             "BestTime": "00:00:00",
             "Gold": "00:00:05",
-            "Silver": "00:00:15",
-            "Bronze": "00:05:00"
+            "Silver": "00:00:10",
+            "Bronze": "00:00:15"
         },
         {
             "Name": "Pillars",
             "File": "pillars",
             "Completed": false,
             "BestTime": "00:00:00",
-            "Gold": "00:00:10",
-            "Silver": "00:01:00",
-            "Bronze": "00:05:00"
+            "Gold": "00:00:03",
+            "Silver": "00:00:07",
+            "Bronze": "00:00:30"
         },
         {
             "Name": "Jumpshot",
             "File": "jumpshot",
             "Completed": false,
             "BestTime": "00:00:00",
-            "Gold": "00:00:05",
+            "Gold": "00:00:02",
             "Silver": "00:00:15",
-            "Bronze": "00:01:30"
+            "Bronze": "00:01:00"
         },
         {
             "Name": "Elevator",
