@@ -53,6 +53,78 @@
             "Gold": "00:00:15",
             "Silver": "00:01:00",
             "Bronze": "00:05:00"
+        },
+        {
+            "Name": "There and back again",
+            "File": "thereandbackagain",
+            "Completed": false,
+            "BestTime": "00:00:00",
+            "Gold": "00:00:15",
+            "Silver": "00:01:00",
+            "Bronze": "00:05:00"
+        },
+        {
+            "Name": "Dropshot",
+            "File": "dropshot",
+            "Completed": false,
+            "BestTime": "00:00:00",
+            "Gold": "00:00:15",
+            "Silver": "00:01:00",
+            "Bronze": "00:05:00"
+        },
+        {
+            "Name": "Takeoff",
+            "File": "takeoff",
+            "Completed": false,
+            "BestTime": "00:00:00",
+            "Gold": "00:00:15",
+            "Silver": "00:01:00",
+            "Bronze": "00:05:00"
+        },
+        {
+            "Name": "Temple of Doom",
+            "File": "templeofdoom",
+            "Completed": false,
+            "BestTime": "00:00:00",
+            "Gold": "00:00:15",
+            "Silver": "00:01:00",
+            "Bronze": "00:05:00"
+        },
+        {
+            "Name": "What comes around",
+            "File": "boomerang",
+            "Completed": false,
+            "BestTime": "00:00:00",
+            "Gold": "00:00:15",
+            "Silver": "00:01:00",
+            "Bronze": "00:05:00"
+        },
+        {
+            "Name": "Basket",
+            "File": "basket",
+            "Completed": false,
+            "BestTime": "00:00:00",
+            "Gold": "00:00:15",
+            "Silver": "00:01:00",
+            "Bronze": "00:05:00"
+        },
+        {
+            "Name": "A-maze-ing",
+            "File": "maze",
+            "Completed": false,
+            "BestTime": "00:00:00",
+            "Gold": "00:00:15",
+            "Silver": "00:01:00",
+            "Bronze": "00:05:00"
+        },
+        {
+            "Name": "Yoyo",
+            "File": "yoyo",
+            "Completed": false,
+            "BestTime": "00:00:00",
+            "Gold": "00:00:15",
+            "Silver": "00:01:00",
+            "Bronze": "00:05:00"
         }
     ]
 }
