@@ -139,6 +139,16 @@
             "Silver": "00:01:00",
             "Bronze": "00:05:00",
 			"Difficulty": 5
+        },
+		{
+            "Name": "The pit",
+            "File": "thepit",
+            "Completed": false,
+            "BestTime": "00:00:00",
+            "Gold": "00:01:45",
+            "Silver": "00:02:30",
+            "Bronze": "00:05:00",
+			"Difficulty": 2
         }
     ]
 }
