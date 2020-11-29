@@ -210,8 +210,10 @@ void PlayerObject::useBow(SDL_Event& event, glm::vec2 pos) {
         bow->updateAngle(pos);
         if (event.type == SDL_MOUSEBUTTONDOWN && event.button.button == SDL_BUTTON_LEFT) {
             if (bow->isHoldingArrow()) {
+                MAMGame::instance->audioSystem.playSound(SoundType::BowShooting, 100);
                 bow->shootArrow();
             } else {
+                MAMGame::instance->audioSystem.playSound(SoundType::ArrowReturning, 80);
                 callingArrow = true;
             }
         } else if (event.type == SDL_MOUSEBUTTONUP && event.button.button == SDL_BUTTON_LEFT) {

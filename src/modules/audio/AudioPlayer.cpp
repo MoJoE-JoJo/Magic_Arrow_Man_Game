@@ -20,6 +20,15 @@ void AudioPlayer::init(int musicVolume, int standardSoundVolume) {
         }
         this->musicVolume = musicVolume;
         this->standardSoundVolume = standardSoundVolume;
+        //Load all of the sounds, so that they are only loaded once, which is fine as they are used throughout all of the game
+        jumpSounds.push_back(Mix_LoadWAV("Assets/Audio/Jump/jump1.wav"));
+        jumpSounds.push_back(Mix_LoadWAV("Assets/Audio/Jump/jump2.wav"));
+        jumpSounds.push_back(Mix_LoadWAV("Assets/Audio/Jump/jump3.wav"));
+        bowSounds.push_back(Mix_LoadWAV("Assets/Audio/Bow/shoot1.wav"));
+        bowSounds.push_back(Mix_LoadWAV("Assets/Audio/Bow/shoot2.wav"));
+        arrowHitSounds.push_back(Mix_LoadWAV("Assets/Audio/Bow/hit.wav"));
+        arrowReturnSounds.push_back(Mix_LoadWAV("Assets/Audio/Bow/return.wav"));
+        
         initialized = true;
     }
 }
@@ -57,35 +66,51 @@ void AudioPlayer::stopBackgroundMusic() {
 void AudioPlayer::playSound(SoundType sound, int volume) {
     switch (sound) {
     case SoundType::BowShooting: {
-        startRandomSound("Assets/Audio/Bow", "bow", "wav", 1, 3, volume);
+        startRandomSound(sound, 0, 1, volume);
         break;
     }
     case SoundType::PlayerJumping:
-        startRandomSound("Assets/Audio/Jump", "jump", "wav", 1, 3, volume);
+        //startSound("Assets/Audio/Bow/hit.wav", volume);
+        startRandomSound(sound, 0, 1, volume);
         break;
     case SoundType::ArrowHitting:
-        startSound("Assets/Audio/Bow/hit.wav", volume);
+        startSound(sound, 0, volume);
+        break;
+    case SoundType::ArrowReturning:
+        startSound(sound, 0, volume);
         break;
     }
 }
 
-void AudioPlayer::startRandomSound(char* folderName, char* fileName, char* fileType, int min, int max, int volume) {
+void AudioPlayer::startRandomSound(SoundType type, int min, int max, int volume) {
     auto num = min + (rand() % (max - min + 1));
-    auto str = (std::string(folderName) + "/" + fileName + std::to_string(num) + "." + fileType);
-    const char* c = str.data();
-    startSound(c, volume);
+    startSound(type, num, volume);
 }
 
-void AudioPlayer::startSound(const char* file, int volume) {
-    Mix_Chunk* sound;
-    sound = Mix_LoadWAV(file);
-    if (sound == nullptr) {
-        cout << "Cannot load sound" << endl;
-        return;
+void AudioPlayer::startSound(SoundType type, int index, int volume) {
+    switch (type) {
+    case SoundType::BowShooting: {
+        if (volume == 0) Mix_VolumeChunk(bowSounds[index], standardSoundVolume);
+        else Mix_VolumeChunk(bowSounds[index], volume);
+        Mix_PlayChannel(-1, bowSounds[index], 0);
+        break;
     }
-    if (volume == 0) Mix_VolumeChunk(sound, standardSoundVolume);
-    else Mix_VolumeChunk(sound, volume);
-    Mix_PlayChannel(-1, sound, 0);
+    case SoundType::PlayerJumping:
+        if (volume == 0) Mix_VolumeChunk(jumpSounds[index], standardSoundVolume);
+        else Mix_VolumeChunk(jumpSounds[index], volume);
+        Mix_PlayChannel(-1, jumpSounds[index], 0);
+        break;
+    case SoundType::ArrowHitting:
+        if (volume == 0) Mix_VolumeChunk(arrowHitSounds[index], standardSoundVolume);
+        else Mix_VolumeChunk(arrowHitSounds[index], volume);
+        Mix_PlayChannel(-1, arrowHitSounds[index], 0);
+        break;
+    case SoundType::ArrowReturning:
+        if (volume == 0) Mix_VolumeChunk(arrowReturnSounds[index], standardSoundVolume);
+        else Mix_VolumeChunk(arrowReturnSounds[index], volume);
+        Mix_PlayChannel(-1, arrowReturnSounds[index], 0);
+        break;
+    }
 }
 
 
