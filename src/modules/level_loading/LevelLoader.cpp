@@ -1,16 +1,17 @@
 #pragma once
-#include "LevelLoader.hpp"
 #include "../../../rapidjson/rapidjson.h"
 #include "../../../rapidjson/document.h"
 #include "../../../rapidjson/istreamwrapper.h"
+#include "sre/SpriteAtlas.hpp"
 #include <fstream>
 #include <iostream>
 #include <memory>
+#include <vector>
+
 #include "../../GameObject.hpp"
 #include "../../MAMGame.hpp"
 #include "../../SpriteComponent.hpp"
-#include "sre/SpriteAtlas.hpp"
-#include <vector>
+#include "LevelLoader.hpp"
 
 using namespace std;
 using namespace rapidjson;
@@ -103,7 +104,6 @@ void LevelLoader::loadMap(std::string filename) {
                 if (nexttileid != tileId) {
                     createBigSlopeRight(tile, position, tileId, size, i, width, data);
                 }
-
                 
                 break;
             }
@@ -121,9 +121,6 @@ void LevelLoader::loadMap(std::string filename) {
             case 23: {
                 position = position + glm::vec2(0, 15);
                 auto tile = createGameObject(position, GOType::target, tileId);
-                auto phys = tile->addComponent<PhysicsComponent>();
-
-                auto center = tile->getPosition() + glm::vec2(0, 7);
 
                 b2Vec2 vertices[4];
                 vertices[0].Set(-10 / MAMGame::instance->physicsScale, 30 / MAMGame::instance->physicsScale);
@@ -131,6 +128,8 @@ void LevelLoader::loadMap(std::string filename) {
                 vertices[2].Set(10 / MAMGame::instance->physicsScale, -50 / MAMGame::instance->physicsScale);
                 vertices[3].Set(10 / MAMGame::instance->physicsScale, 30 / MAMGame::instance->physicsScale);
 
+                auto center = tile->getPosition() + glm::vec2(0, 7);
+                auto phys = tile->addComponent<PhysicsComponent>();
                 phys->initPolygon(b2_staticBody, center, 1, vertices, 4, 1);
                 phys->setSensor(true);
                 break;

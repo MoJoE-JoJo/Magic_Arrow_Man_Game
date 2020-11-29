@@ -2,9 +2,8 @@
 #include "sre/SDLRenderer.hpp"
 #include "SDL_mixer.h"
 
-//enum class GameState { Won, Running };
-enum class SoundType{ BowShooting, ArrowHitting, PlayerJumping};
-enum class MusicType{ Background_Game};
+enum class SoundType { BowShooting, ArrowHitting, PlayerJumping };
+enum class MusicType { Background_Game };
 
 class AudioPlayer {
 public:
