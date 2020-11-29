@@ -10,7 +10,8 @@ IF (WIN32)
 ENDIF(WIN32)
 
 # Add hpp and cpp files to MagicArrowMan variable
-file(GLOB MagicArrowMan "*.hpp" "*.h" "*.cpp")
+file(GLOB_RECURSE MagicArrowMan "src/*.hpp" "src/*.h" "src/*.cpp")
+
 
 # Compile cpp files (from MagicArrowMan variable)
 add_executable(MagicArrowMan ${MagicArrowMan})
@@ -21,17 +22,9 @@ file(COPY MAM.png MAM.json DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/Debug)
 file(COPY MAM.png MAM.json DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/Release)
 file(COPY MAM.png MAM.json DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
-file(COPY Audio/ DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/Debug/Audio)
-file(COPY Audio/ DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/Release/Audio)
-file(COPY Audio/ DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/Audio)
-
-file(COPY Levels/ DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/Debug/Levels)
-file(COPY Levels/ DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/Release/Levels)
-file(COPY Levels/ DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/Levels)
-
-file(COPY Fonts/ DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/Debug/Fonts)
-file(COPY Fonts/ DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/Release/Fonts)
-file(COPY Fonts/ DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/Fonts)
+file(COPY Assets/ DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/Debug/Assets)
+file(COPY Assets/ DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/Release/Assets)
+file(COPY Assets/ DESTINATION ${CMAKE_CURRENT_BINARY_DIR}/Assets)
 
 
 IF (WIN32)
