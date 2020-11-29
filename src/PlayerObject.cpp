@@ -238,5 +238,13 @@ void PlayerObject::reset() {
     phys->setPosition(originalPosition);
     phys->setLinearVelocity(glm::vec2(0, 0));
     bowIsSet = samePosAsPlayer;
+    bool decelerate = false;
+    bool movingLeft = false;
+    bool movingRight = false;
+    bool callingArrow = false;
+    bool hasCalledArrowOnceInAir = false;
+    bool stoppedCallingArrow = false;
+    bool onLeftSlope = false;
+    bool onRightSlope = false;
     bow->reset();
 }
