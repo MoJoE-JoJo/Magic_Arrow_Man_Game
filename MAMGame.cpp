@@ -140,6 +140,12 @@ bool MAMGame::ShouldCollide(b2Fixture* fixtureA, b2Fixture* fixtureB) {
             return false;
         } else if (physB->second->getGameObject()->goType == GOType::arrow && physA->second->getGameObject()->goType == GOType::player) {
             return false;
+        } 
+        if (physA->second->getGameObject()->goType == GOType::target && physB->second->getGameObject()->goType == GOType::player) {
+            return false;
+        }
+        else if (physB->second->getGameObject()->goType == GOType::target && physA->second->getGameObject()->goType == GOType::player) {
+            return false;
         }
     }
     return true;
