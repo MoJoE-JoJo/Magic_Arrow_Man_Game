@@ -45,7 +45,6 @@ void BowObject::updateAngle(glm::vec2 mousePos) {
 }
 
 void BowObject::shootArrow() {
-    MAMGame::instance->audioSystem.playSound(SoundType::BowShooting, 100);
     hasArrow = false;
     arrow->getComponent<ArrowPhysics>()->shoot(50000);
 }

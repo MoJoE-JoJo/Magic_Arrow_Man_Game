@@ -3,7 +3,7 @@
 #include "SDL_mixer.h"
 
 //enum class GameState { Won, Running };
-enum class SoundType{ BowShooting, ArrowHitting, PlayerJumping};
+enum class SoundType{ BowShooting, ArrowHitting, PlayerJumping, ArrowReturning};
 enum class MusicType{ Background_Game};
 
 class AudioPlayer {
@@ -16,11 +16,15 @@ public:
 	int standardSoundVolume;
 private:
 	void init(int musicVolume, int standardSoundVolume);
-	void startRandomSound(char* folder, char* fileName, char* fileType, int minNumber, int maxNumber, int volume);
-	void startSound(const char* file, int volume);
+	void startRandomSound(SoundType type, int minNumber, int maxNumber, int volume);
+	void startSound(SoundType type, int index, int volume);
 
 	bool musicPlaying = false;
 	bool initialized = false;
+	std::vector<Mix_Chunk*> jumpSounds;
+	std::vector<Mix_Chunk*> bowSounds;
+	std::vector<Mix_Chunk*> arrowHitSounds;
+	std::vector<Mix_Chunk*> arrowReturnSounds;
 
 	friend class MAMGame;
 };
