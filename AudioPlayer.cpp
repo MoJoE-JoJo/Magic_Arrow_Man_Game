@@ -33,19 +33,7 @@ void AudioPlayer::startBackgroundMusic(MusicType music, int volume) {
         switch (music) {
             Mix_Music* music;
         case MusicType::Background_Game: 
-            music = Mix_LoadMUS("Audio/Music/bg_game.ogg");
-            if (music == nullptr) {
-                cout << "Cannot load music" << endl;
-                return;
-            }
-            musicPlaying = true;
-            if (volume == 0)Mix_VolumeMusic(musicVolume);
-            else Mix_VolumeMusic(volume);
-            Mix_PlayMusic(music, -1);
-
-            break;
-        case MusicType::Background_Menu: 
-            music = Mix_LoadMUS("Audio/Music/bg_menu.wav");
+            music = Mix_LoadMUS("Assets/Audio/Music/bg_game.wav");
             if (music == nullptr) {
                 cout << "Cannot load music" << endl;
                 return;
@@ -69,14 +57,14 @@ void AudioPlayer::stopBackgroundMusic() {
 void AudioPlayer::playSound(SoundType sound, int volume) {
     switch (sound) {
     case SoundType::BowShooting: {
-        startRandomSound("Audio/Bow", "bow", "wav", 1, 3, volume);
+        startRandomSound("Assets/Audio/Bow", "bow", "wav", 1, 3, volume);
         break;
     }
     case SoundType::PlayerJumping:
-        startRandomSound("Audio/Jump", "jump", "wav", 1, 3, volume);
+        startRandomSound("Assets/Audio/Jump", "jump", "wav", 1, 3, volume);
         break;
     case SoundType::ArrowHitting:
-        startSound("Audio/Bow/hit.wav", volume);
+        startSound("Assets/Audio/Bow/hit.wav", volume);
         break;
     }
 }

@@ -19,7 +19,7 @@ Gui::Gui(glm::vec2 windowSize) {
 
     auto fonts = ImGui::GetIO().Fonts;
     fonts->AddFontDefault();
-    auto fontName = "Fonts/Swanky/Swanky.ttf";
+    auto fontName = "Assets/Fonts/Swanky/Swanky.ttf";
     headerFont = fonts->AddFontFromFileTTF(fontName, 50);
     normalFont = fonts->AddFontFromFileTTF(fontName, 25);
 
@@ -29,7 +29,7 @@ Gui::Gui(glm::vec2 windowSize) {
 void Gui::loadProgress() {
     levelsList.clear();
 
-    std::ifstream fis("Levels/Progress.json");
+    std::ifstream fis("Assets/Levels/Progress.json");
     IStreamWrapper isw(fis);
     Document d;
     d.ParseStream(isw);
@@ -180,7 +180,7 @@ void Gui::setWinTime(int seconds, std::string levelFileName) {
 }
 
 void Gui::updateProgress(int levelIndex) {
-    std::ifstream fis("Levels/Progress.json");
+    std::ifstream fis("Assets/Levels/Progress.json");
     IStreamWrapper isw(fis);
     Document d;
     d.ParseStream(isw);
@@ -197,7 +197,7 @@ void Gui::updateProgress(int levelIndex) {
 
     level["Completed"].SetBool(true);
 
-    std::ofstream ofs("Levels/Progress.json");
+    std::ofstream ofs("Assets/Levels/Progress.json");
     OStreamWrapper osw(ofs);
     Writer<OStreamWrapper> writer(osw);
     d.Accept(writer);

@@ -55,7 +55,7 @@ void MAMGame::init() {
     sprites = SpriteAtlas::create("MAM.json", "MAM.png");
     // Test json loading
     LevelLoader ll = LevelLoader();
-    ll.loadMap("Levels/Level-" + currentLevel + ".json");
+    ll.loadMap("Assets/Levels/Level-" + currentLevel + ".json");
     levelBounds = glm::vec2(ll.getMapWidth(), ll.getMapHeight());
     
     levelCamXMinBound = 0.0f - 64.0f; //-64.0f Keeps half a tile of padding at the left side of the screeen

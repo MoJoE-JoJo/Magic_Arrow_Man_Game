@@ -4,7 +4,7 @@
 
 //enum class GameState { Won, Running };
 enum class SoundType{ BowShooting, ArrowHitting, PlayerJumping};
-enum class MusicType{ Background_Game, Background_Menu};
+enum class MusicType{ Background_Game};
 
 class AudioPlayer {
 public:
