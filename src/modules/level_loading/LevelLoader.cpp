@@ -140,15 +140,23 @@ void LevelLoader::loadMap(std::string filename) {
                 break;
             }
             case 6:
-            case 7:
             case 8:
+            case 15:
+            case 19: {
+                auto tile = createGameObject(position, GOType::wall, tileId);
+
+                int nextId = ((i + width) >= data.Size()) ? 0 : data[i + width].GetInt();
+                if (nextId != 6 && nextId != 8 && nextId != 15 && nextId != 19) {
+                    createBigVerticalWall(tile, position, tileId, size, i, width, data);
+                }
+                break;
+            }
+            case 7:
             case 10:
             case 11:
             case 12:
             case 13:
-            case 14:
-            case 15:
-            case 19: {
+            case 14: {
                 auto tile = createGameObject(position, GOType::wall, tileId);
 
                 if (!startedOnWall) {
@@ -161,7 +169,7 @@ void LevelLoader::loadMap(std::string filename) {
                 }
 
                 int nextId = (i >= data.Size() || (i + 1) % width == 0) ? 0 : data[i + 1].GetInt();
-                if (nextId != 6 && nextId != 7 && nextId != 8 && nextId != 10 && nextId != 11 && nextId != 12 && nextId != 13 && nextId != 14 && nextId != 15 && nextId != 19) {
+                if (nextId != 7 && nextId != 10 && nextId != 11 && nextId != 12 && nextId != 13 && nextId != 14) {
                     createBig(tile, startOfWallPos, position, wallCount, false, false, size);
 
                     startedOnWall = false;
@@ -293,6 +301,31 @@ void LevelLoader::createBigSlopeLeft(std::shared_ptr<GameObject> tile, glm::vec2
     vertices[3].Set(-(size.x * slopeCount), (size.y * slopeCount));
 
     glm::vec2 otherPosition = glm::vec2(position.x - ((slopeCount - 1) * tileWidth), position.y + ((slopeCount - 1) * tileHeight));
+    glm::vec2 center = glm::vec2((otherPosition.x + position.x) / 2, (otherPosition.y + position.y) / 2);
+
+    auto phys = tile->addComponent<PhysicsComponent>();
+    phys->initPolygon(b2_staticBody, center, 1, &vertices[0], 4, 1);
+}
+
+void LevelLoader::createBigVerticalWall(std::shared_ptr<GameObject> tile, glm::vec2 position, int tileId, glm::vec2 size, int initialIndex, int width, rapidjson::Value& data) {
+    int vertCount = 0;
+    int nextId;
+    do {
+        vertCount++;
+        initialIndex = initialIndex - width;
+        nextId = (initialIndex < 0) ? 0 : data[initialIndex].GetInt();
+    } while (nextId == 6 || nextId == 8 || nextId == 15 || nextId == 19);
+
+    float offset = vertCount / 2.0f;
+    float x = size.x;
+    float y = -((size.y * 2) * (offset));
+    b2Vec2 vertices[4];
+    vertices[0].Set(-x, y);
+    vertices[1].Set(-x, -y);
+    vertices[2].Set(x, -y);
+    vertices[3].Set(x, y);
+
+    glm::vec2 otherPosition = glm::vec2(position.x, position.y + ((vertCount - 1) * tileHeight));
     glm::vec2 center = glm::vec2((otherPosition.x + position.x) / 2, (otherPosition.y + position.y) / 2);
 
     auto phys = tile->addComponent<PhysicsComponent>();

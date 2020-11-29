@@ -209,8 +209,10 @@ void PlayerObject::useBow(SDL_Event& event, glm::vec2 pos) {
         bow->updateAngle(pos);
         if (event.type == SDL_MOUSEBUTTONDOWN && event.button.button == SDL_BUTTON_LEFT) {
             if (bow->isHoldingArrow()) {
+                MAMGame::instance->audioSystem.playSound(SoundType::BowShooting, 100);
                 bow->shootArrow();
             } else {
+                MAMGame::instance->audioSystem.playSound(SoundType::ArrowReturning, 80);
                 callingArrow = true;
             }
         } else if (event.type == SDL_MOUSEBUTTONUP && event.button.button == SDL_BUTTON_LEFT) {
@@ -237,5 +239,13 @@ void PlayerObject::reset() {
     phys->setPosition(originalPosition);
     phys->setLinearVelocity(glm::vec2(0, 0));
     bowIsSet = samePosAsPlayer;
+    bool decelerate = false;
+    bool movingLeft = false;
+    bool movingRight = false;
+    bool callingArrow = false;
+    bool hasCalledArrowOnceInAir = false;
+    bool stoppedCallingArrow = false;
+    bool onLeftSlope = false;
+    bool onRightSlope = false;
     bow->reset();
 }
