@@ -1,12 +1,11 @@
 #pragma once
 #include "sre/SpriteAtlas.hpp"
 
-#include "PlayerObject.hpp"
-#include "modules/physics/components/PhysicsComponent.hpp"
 #include "modules/physics/components/PlayerPhysics.hpp"
+#include "modules/audio/AudioPlayer.hpp"
+#include "PlayerObject.hpp"
 #include "SpriteComponent.hpp"
 #include "MAMGame.hpp"
-#include "modules/audio/AudioPlayer.hpp"
 
 PlayerObject::PlayerObject(glm::vec2 pos, sre::Sprite walk1, sre::Sprite standing, sre::Sprite walk2) : GameObject(pos, GOType::player) {
     auto pSpriteBox = addComponent<SpriteComponent>();
@@ -35,7 +34,7 @@ PlayerObject::~PlayerObject() {
 
 void PlayerObject::update(float deltaTime) {
 	GameObject::update(deltaTime);
-    auto phys = getComponent<PhysicsComponent>();
+    auto phys = getComponent<PlayerPhysics>();
     bool debug = false;
     if (debug) std::cout << "Begin update" << std::endl;
     if (isGrounded()) { 
@@ -125,7 +124,7 @@ void PlayerObject::update(float deltaTime) {
 
 void PlayerObject::jump() {
     MAMGame::instance->audioSystem.playSound(SoundType::PlayerJumping, 100);
-    auto phys = getComponent<PhysicsComponent>();
+    auto phys = getComponent<PlayerPhysics>();
     phys->addForce(glm::vec2(0, 22500 * phys->getMass()));
 }
 
@@ -157,7 +156,7 @@ void PlayerObject::setOnLeftSlope(bool newOnSlope) {
 }
 
 void PlayerObject::updateSprite(float deltaTime) {
-    auto phys = getComponent<PhysicsComponent>();
+    auto phys = getComponent<PlayerPhysics>();
     auto velocity = phys->getLinearVelocity();
 
     auto newSprite = standing;
@@ -229,14 +228,14 @@ void PlayerObject::useBow(SDL_Event& event, glm::vec2 pos) {
 }
 
 void PlayerObject::stopAfterFlying() {
-    auto phys = getComponent<PhysicsComponent>();
+    auto phys = getComponent<PlayerPhysics>();
     auto currentVelocity = phys->getLinearVelocity();
     phys->setLinearVelocity(glm::vec2(0, 0));
     phys->addForce(currentVelocity * 100.0f);
 }
 
 void PlayerObject::reset() {
-    auto phys = getComponent<PhysicsComponent>();
+    auto phys = getComponent<PlayerPhysics>();
     phys->setPosition(originalPosition);
     phys->setLinearVelocity(glm::vec2(0, 0));
     bowIsSet = samePosAsPlayer;

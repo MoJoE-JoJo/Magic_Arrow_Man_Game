@@ -4,13 +4,13 @@
 #include "glm/gtc/random.hpp"
 #include "Box2D/Dynamics/Contacts/b2Contact.h"
 
+#include "modules/physics/components/PlayerPhysics.hpp"
+#include "modules/physics/components/ArrowPhysics.hpp"
+#include "modules/level_loading/LevelLoader.hpp"
 #include "MAMGame.hpp"
 #include "GameObject.hpp"
 #include "PlayerObject.hpp"
-#include "modules/physics/components/PlayerPhysics.hpp"
-#include "modules/physics/components/ArrowPhysics.hpp"
 #include "SpriteComponent.hpp"
-#include "modules/level_loading/LevelLoader.hpp"
 
 using namespace sre;
 using namespace std;

@@ -1,20 +1,19 @@
 #pragma once
-
-#include "AudioPlayer.hpp"
 #include <string>
 #include <time.h>
 #include <stdio.h>
 #include <stdlib.h> 
+
+#include "AudioPlayer.hpp"
 
 using namespace sre;
 using namespace std;
 
 void AudioPlayer::init(int musicVolume, int standardSoundVolume) {
     // Mix_OpenAudio(int frequency, Uint16 format,
-// int channels, int chunksize)
+    // int channels, int chunksize)
     if (!initialized) {
-        if (Mix_OpenAudio(22050, MIX_DEFAULT_FORMAT, 2, 4096) == -1)
-        {
+        if (Mix_OpenAudio(22050, MIX_DEFAULT_FORMAT, 2, 4096) == -1) {
             cout << "Cannot initialize audio output" << endl;
             return;
         }
@@ -41,21 +40,20 @@ void AudioPlayer::startBackgroundMusic(MusicType music, int volume) {
     if (!musicPlaying) {
         switch (music) {
             Mix_Music* music;
-        case MusicType::Background_Game: 
-            music = Mix_LoadMUS("Assets/Audio/Music/bg_game.wav");
-            if (music == nullptr) {
-                cout << "Cannot load music" << endl;
-                return;
-            }
-            musicPlaying = true;
-            if (volume == 0)Mix_VolumeMusic(musicVolume);
-            else Mix_VolumeMusic(volume);
-            Mix_PlayMusic(music, -1);
+            case MusicType::Background_Game: 
+                music = Mix_LoadMUS("Assets/Audio/Music/bg_game.wav");
+                if (music == nullptr) {
+                    cout << "Cannot load music" << endl;
+                    return;
+                }
+                musicPlaying = true;
+                if (volume == 0) Mix_VolumeMusic(musicVolume);
+                else Mix_VolumeMusic(volume);
+                Mix_PlayMusic(music, -1);
 
-            break;
+                break;
         }
     }
-    
 }
 
 void AudioPlayer::stopBackgroundMusic() {
@@ -65,21 +63,21 @@ void AudioPlayer::stopBackgroundMusic() {
 
 void AudioPlayer::playSound(SoundType sound, int volume) {
     switch (sound) {
-    case SoundType::BowShooting: {
-        startRandomSound(sound, 0, 1, volume);
-        break;
-    }
-    case SoundType::PlayerJumping:
-        //startSound("Assets/Audio/Bow/hit.wav", volume);
-        startRandomSound(sound, 0, 1, volume);
-        break;
-    case SoundType::ArrowHitting:
-        startSound(sound, 0, volume);
-        break;
-    case SoundType::ArrowReturning:
-        startSound(sound, 0, volume);
-        break;
-    }
+        case SoundType::BowShooting: {
+            startRandomSound(sound, 0, 1, volume);
+            break;
+        }
+        case SoundType::PlayerJumping:
+            //startSound("Assets/Audio/Bow/hit.wav", volume);
+            startRandomSound(sound, 0, 1, volume);
+            break;
+        case SoundType::ArrowHitting:
+            startSound(sound, 0, volume);
+            break;
+        case SoundType::ArrowReturning:
+            startSound(sound, 0, volume);
+            break;
+        }
 }
 
 void AudioPlayer::startRandomSound(SoundType type, int min, int max, int volume) {
