@@ -116,7 +116,7 @@ void PlayerObject::update(float deltaTime) {
     updateSprite(deltaTime);
     glm::vec2 physVec = phys->getLinearVelocity();
     float length = glm::length(physVec);
-   if (debug) std::cout << length << std::endl;
+    if (debug) std::cout << length << std::endl;
     if (length > maxVelocity) {
         glm::vec2 newVelocity = (physVec / length) * maxVelocity;
         phys->setLinearVelocity(newVelocity);
@@ -210,7 +210,6 @@ void PlayerObject::useBow(SDL_Event& event, glm::vec2 pos) {
         bow->updateAngle(pos);
         if (event.type == SDL_MOUSEBUTTONDOWN && event.button.button == SDL_BUTTON_LEFT) {
             if (bow->isHoldingArrow()) {
-                MAMGame::instance->audioSystem.playSound(SoundType::BowShooting, 100);
                 bow->shootArrow();
             } else {
                 callingArrow = true;

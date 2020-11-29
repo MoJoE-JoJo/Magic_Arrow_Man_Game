@@ -27,14 +27,14 @@ public:
 		rank = bestTotal == 0 ? 3 : (bestTotal <= goldTotal ? 0 : (bestTotal <= silverTotal ? 1 : (bestTotal <= bronzeTotal ? 2 : 3)));
 	}
 
-	int GetSeconds(std::string timeText) {
+	static int GetSeconds(std::string timeText) {
 		std::tm time;
 		std::istringstream ss(timeText);
 		ss >> std::get_time(&time, "%H:%M:%S");
 		return time.tm_hour * 3600 + time.tm_min * 60 + time.tm_sec;
 	}
 
-	std::string GetString(int time) {
+	static std::string GetString(int time) {
 		time = time % (24 * 3600);
 		int hour = time / 3600;
 		time %= 3600;
