@@ -44,6 +44,9 @@ void LevelLoader::loadMap(std::string filename) {
     bool startedOnBig = false;
     bool leftDiamond = false;
     bool rightDiamond = false;
+    glm::vec2 startOfWallPos;
+    int wallCount = 0;
+    bool startedOnWall = false;
 
     bool bowSet = false;
     glm::vec2 bowPos;
@@ -127,15 +130,46 @@ void LevelLoader::loadMap(std::string filename) {
             case 24: {
                 bowPos = position;
                 bowSet = true;
+                break;
+            }
+            case 6:
+            case 7:
+            case 8:
+            case 10:
+            case 11:
+            case 12:
+            case 13:
+            case 14:
+            case 15:
+            case 19: {
+                auto tile = createGameObject(position, GOType::wall, tileId);
+
+                if (!startedOnWall) {
+                    startOfWallPos = position;
+                    wallCount++;
+                    startedOnWall = true;
+                }
+                else {
+                    wallCount++;
+                }
+
+                int nextId = (i >= data.Size() || (i + 1) % width == 0) ? 0 : data[i + 1].GetInt();
+                if (nextId != 6 && nextId != 7 && nextId != 8 && nextId != 10 && nextId != 11 && nextId != 12 && nextId != 13 && nextId != 14 && nextId != 15 && nextId != 19) {
+                    createBig(tile, startOfWallPos, position, wallCount, false, false, size);
+
+                    startedOnWall = false;
+                    wallCount = 0;
+                }
+
+                //auto phys = tile->addComponent<PhysicsComponent>();
+                //float wallSizeOffset = 0.5;
+                //glm::vec2 wallSize = glm::vec2(getTileSize().x - wallSizeOffset, getTileSize().y - wallSizeOffset);
+                //phys->initBox(b2_staticBody, wallSize, tile->getPosition(), 1);
+                break;
             }
             case 0:
                 break;
             default: {
-                auto tile = createGameObject(position, GOType::wall, tileId);
-                auto phys = tile->addComponent<PhysicsComponent>();
-                float wallSizeOffset = 0.5;
-                glm::vec2 wallSize = glm::vec2(getTileSize().x - wallSizeOffset, getTileSize().y - wallSizeOffset);
-                phys->initBox(b2_staticBody, wallSize, tile->getPosition(), 1);
                 break;
             }
         }
