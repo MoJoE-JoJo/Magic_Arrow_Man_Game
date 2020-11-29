@@ -44,8 +44,9 @@ void Gui::loadProgress() {
         std::string gold = level["Gold"].GetString();
         std::string silver = level["Silver"].GetString();
         std::string bronze = level["Bronze"].GetString();
+        int difficulty = level["Difficulty"].GetInt();
 
-        auto levelObj = std::shared_ptr<Level>(new Level(name, file, bestTime, gold, silver, bronze, completed));
+        auto levelObj = std::shared_ptr<Level>(new Level(name, file, bestTime, gold, silver, bronze, completed, difficulty));
         levelsList.push_back(levelObj);
     }
 }
@@ -111,7 +112,17 @@ void Gui::renderLevelSelect() {
             ImGui::TextColored(color, printBestTime.c_str());
         }
 
-        ImGui::Text("");
+        std::string stars = "";
+        for (int s = 0; s < level->difficulty; s++) {
+            stars = stars + "*";
+        }
+        std::string diffString = "Difficulty: " + stars;
+
+        ImVec4 diffColor =  level->difficulty == 1 ? colorDiff1 : (level->difficulty == 2 ? colorDiff2 : (level->difficulty == 3) ? colorDiff3 : colorDiff5);
+        //ImVec4 diffColor = { 1.0, 1.0, 1.0, 1 }; 
+
+
+        ImGui::TextColored(diffColor, diffString.c_str());
         ImGui::NextColumn();
     }
     ImGui::Columns(1);

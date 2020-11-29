@@ -7,7 +7,8 @@
             "BestTime": "00:00:00",
             "Gold": "00:00:05",
             "Silver": "00:00:10",
-            "Bronze": "00:00:15"
+            "Bronze": "00:00:15",
+			"Difficulty": 1
         },
         {
             "Name": "Pillars",
@@ -16,7 +17,38 @@
             "BestTime": "00:00:00",
             "Gold": "00:00:03",
             "Silver": "00:00:07",
-            "Bronze": "00:00:30"
+            "Bronze": "00:00:30",
+			"Difficulty": 1
+        },
+		{
+            "Name": "Elevator",
+            "File": "elevator",
+            "Completed": false,
+            "BestTime": "00:00:00",
+            "Gold": "00:00:05",
+            "Silver": "00:00:10",
+            "Bronze": "00:00:30",
+			"Difficulty": 1
+        },
+		{
+            "Name": "Takeoff",
+            "File": "takeoff",
+            "Completed": false,
+            "BestTime": "00:00:00",
+            "Gold": "00:00:02",
+            "Silver": "00:00:05",
+            "Bronze": "00:00:10",
+			"Difficulty": 2
+        },
+		{
+            "Name": "Yoyo",
+            "File": "yoyo",
+            "Completed": false,
+            "BestTime": "00:00:00",
+            "Gold": "00:00:15",
+            "Silver": "00:00:25",
+            "Bronze": "00:00:45",
+			"Difficulty": 2
         },
         {
             "Name": "Jumpshot",
@@ -25,16 +57,8 @@
             "BestTime": "00:00:00",
             "Gold": "00:00:02",
             "Silver": "00:00:15",
-            "Bronze": "00:01:00"
-        },
-        {
-            "Name": "Elevator",
-            "File": "elevator",
-            "Completed": false,
-            "BestTime": "00:00:00",
-            "Gold": "00:00:05",
-            "Silver": "00:00:10",
-            "Bronze": "00:00:30"
+            "Bronze": "00:01:00",
+			"Difficulty": 2
         },
         {
             "Name": "Leap of faith",
@@ -43,7 +67,8 @@
             "BestTime": "00:00:00",
             "Gold": "00:00:02",
             "Silver": "00:00:04",
-            "Bronze": "00:00:10"
+            "Bronze": "00:00:10",
+			"Difficulty": 2
         },
         {
             "Name": "Floating ladder",
@@ -52,61 +77,18 @@
             "BestTime": "00:00:00",
             "Gold": "00:00:12",
             "Silver": "00:00:20",
-            "Bronze": "00:01:00"
+            "Bronze": "00:01:00",
+			"Difficulty": 2
         },
-        {
-            "Name": "There and back again",
-            "File": "thereandbackagain",
-            "Completed": false,
-            "BestTime": "00:00:00",
-            "Gold": "00:00:25",
-            "Silver": "00:01:00",
-            "Bronze": "00:05:00"
-        },
-        {
-            "Name": "Dropshot",
-            "File": "dropshot",
-            "Completed": false,
-            "BestTime": "00:00:00",
-            "Gold": "00:00:03",
-            "Silver": "00:00:05",
-            "Bronze": "00:00:10"
-        },
-        {
-            "Name": "Takeoff",
-            "File": "takeoff",
-            "Completed": false,
-            "BestTime": "00:00:00",
-            "Gold": "00:00:02",
-            "Silver": "00:00:05",
-            "Bronze": "00:00:10"
-        },
-        {
-            "Name": "Temple of Doom",
-            "File": "templeofdoom",
-            "Completed": false,
-            "BestTime": "00:00:00",
-            "Gold": "00:00:44",
-            "Silver": "00:01:00",
-            "Bronze": "00:02:00"
-        },
-        {
+		{
             "Name": "What comes around",
             "File": "boomerang",
             "Completed": false,
             "BestTime": "00:00:00",
             "Gold": "00:00:03",
             "Silver": "00:00:05",
-            "Bronze": "00:00:10"
-        },
-        {
-            "Name": "Basket",
-            "File": "basket",
-            "Completed": false,
-            "BestTime": "00:00:00",
-            "Gold": "00:00:06",
-            "Silver": "00:00:10",
-            "Bronze": "00:00:30"
+            "Bronze": "00:00:10",
+			"Difficulty": 3
         },
         {
             "Name": "A-maze-ing",
@@ -115,16 +97,48 @@
             "BestTime": "00:00:00",
             "Gold": "00:00:15",
             "Silver": "00:00:25",
-            "Bronze": "00:00:45"
+            "Bronze": "00:00:45",
+			"Difficulty": 3
         },
-        {
-            "Name": "Yoyo",
-            "File": "yoyo",
+		{
+            "Name": "Basket",
+            "File": "basket",
             "Completed": false,
             "BestTime": "00:00:00",
-            "Gold": "00:00:15",
-            "Silver": "00:00:25",
-            "Bronze": "00:00:45"
+            "Gold": "00:00:06",
+            "Silver": "00:00:10",
+            "Bronze": "00:00:30",
+			"Difficulty": 3
+        },
+        {
+            "Name": "Temple of Doom",
+            "File": "templeofdoom",
+            "Completed": false,
+            "BestTime": "00:00:00",
+            "Gold": "00:00:44",
+            "Silver": "00:01:00",
+            "Bronze": "00:02:00",
+			"Difficulty": 3
+        },
+		{
+            "Name": "Dropshot",
+            "File": "dropshot",
+            "Completed": false,
+            "BestTime": "00:00:00",
+            "Gold": "00:00:03",
+            "Silver": "00:00:05",
+            "Bronze": "00:00:10",
+			"Difficulty": 5
+        },
+		{
+            "Name": "There and back again",
+            "File": "thereandbackagain",
+            "Completed": false,
+            "BestTime": "00:00:00",
+            "Gold": "00:00:25",
+            "Silver": "00:01:00",
+            "Bronze": "00:05:00",
+			"Difficulty": 5
         }
     ]
 }
