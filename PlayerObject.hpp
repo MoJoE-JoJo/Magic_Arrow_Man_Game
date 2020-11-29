@@ -23,6 +23,9 @@ public:
     void useBow(SDL_Event& event, glm::vec2 pos);
     void reset();
 private:
+    void updateSprite(float deltaTime);
+    void stopAfterFlying();
+
     bool decelerate = false;
     bool movingLeft = false;
     bool movingRight = false;
@@ -31,9 +34,6 @@ private:
     bool stoppedCallingArrow = false;
     bool onLeftSlope = false;
     bool onRightSlope = false;
-    sre::Sprite walk1;
-    sre::Sprite walk2;
-    sre::Sprite standing;
     int groundCounter = 0;
     int slopeCounter = 0;
     int speed = 1000;
@@ -43,13 +43,15 @@ private:
     glm::vec2 originalPosition;
     bool samePosAsPlayer = false;
 
+    sre::Sprite walk1;
+    sre::Sprite walk2;
+    sre::Sprite standing;
     float walkingSpriteIndicator = 0;
     int whichWalkIndicator = 0;
     bool flipIndicator = false;
+
     std::shared_ptr<BowObject> bow;
     bool bowIsSet = false;
 
-    void updateSprite(float deltaTime);
-    void stopAfterFlying();
     friend class PlayerController;
 };

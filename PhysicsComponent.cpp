@@ -14,7 +14,6 @@ PhysicsComponent::~PhysicsComponent() {
     MAMGame::instance->deregisterPhysicsComponent(this);
 
     delete polygon;
-    delete circle;
     if (body != nullptr && fixture != nullptr) {
         body->DestroyFixture(fixture);
         fixture = nullptr;
@@ -23,6 +22,53 @@ PhysicsComponent::~PhysicsComponent() {
         world->DestroyBody(body);
         body = nullptr;
     }
+}
+
+void PhysicsComponent::init(b2BodyType type, glm::vec2 center) {
+    assert(body == nullptr);
+    // do init
+    shapeType = b2Shape::Type::e_polygon;
+    b2BodyDef bd;
+    bd.type = type;
+    rbType = type;
+    center = center / MAMGame::instance->physicsScale;
+    bd.position = b2Vec2(center.x, center.y);
+    body = world->CreateBody(&bd);
+    body->SetFixedRotation(true);
+    polygon = new b2PolygonShape();
+}
+
+void PhysicsComponent::initBox(b2BodyType type, glm::vec2 size, glm::vec2 center, float density) {
+    init(type, center);
+    size = size / MAMGame::instance->physicsScale;
+    polygon->SetAsBox(size.x, size.y, { 0, 0 }, 0);
+    b2FixtureDef fxD;
+    fxD.shape = polygon;
+    fxD.friction = 1;
+    fxD.density = density;
+    fixture = body->CreateFixture(&fxD);
+
+    MAMGame::instance->registerPhysicsComponent(this);
+}
+
+void PhysicsComponent::initPolygon(b2BodyType type, glm::vec2 center, float density, b2Vec2* vertices, int32 vertexCount, float friction) {
+    init(type, center);
+    polygon->Set(vertices, vertexCount);
+    b2FixtureDef fxD;
+    fxD.shape = polygon;
+    fxD.density = density;
+    fxD.friction = friction;
+    fixture = body->CreateFixture(&fxD);
+
+    MAMGame::instance->registerPhysicsComponent(this);
+}
+
+void PhysicsComponent::update(float deltaTime) {
+    if (rbType == b2_staticBody) return;
+    auto position = body->GetPosition();
+    float angle = glm::degrees(body->GetAngle());
+    getGameObject()->setPosition(glm::vec2(position.x, position.y) * MAMGame::instance->physicsScale);
+    getGameObject()->setRotation(angle);
 }
 
 void PhysicsComponent::addImpulse(glm::vec2 impulse) {
@@ -48,80 +94,8 @@ void PhysicsComponent::setLinearVelocity(glm::vec2 velocity) {
     body->SetLinearVelocity(v);
 }
 
-void PhysicsComponent::initBox(b2BodyType type, glm::vec2 size, glm::vec2 center, float density) {
-    assert(body == nullptr);
-    // do init
-    shapeType = b2Shape::Type::e_polygon;
-    b2BodyDef bd;
-    bd.type = type;
-    rbType = type;
-    center = center / MAMGame::instance->physicsScale;
-    bd.position = b2Vec2(center.x, center.y);
-    body = world->CreateBody(&bd);
-    body->SetFixedRotation(true);
-    polygon = new b2PolygonShape();
-    size = size / MAMGame::instance->physicsScale;
-    polygon->SetAsBox(size.x, size.y, { 0, 0 }, 0);
-    b2FixtureDef fxD;
-    fxD.shape = polygon;
-    fxD.friction = 1;
-    fxD.density = density;
-    fixture = body->CreateFixture(&fxD);
-
-    MAMGame::instance->registerPhysicsComponent(this);
-}
-
-void PhysicsComponent::initPolygon(b2BodyType type, glm::vec2 center, float density, b2Vec2* vertices, int32 vertexCount, float friction) {
-    assert(body == nullptr);
-    // do init
-    shapeType = b2Shape::Type::e_polygon;
-    b2BodyDef bd;
-    bd.type = type;
-    rbType = type;
-    center = center / MAMGame::instance->physicsScale;
-    bd.position = b2Vec2(center.x, center.y);
-    body = world->CreateBody(&bd);
-    body->SetFixedRotation(true);
-    polygon = new b2PolygonShape();
-    polygon->Set(vertices, vertexCount);
-    b2FixtureDef fxD;
-    fxD.shape = polygon;
-    fxD.density = density;
-    fxD.friction = friction;
-    fixture = body->CreateFixture(&fxD);
-
-    MAMGame::instance->registerPhysicsComponent(this);
-}
-
-void PhysicsComponent::initArrow(b2BodyType type, glm::vec2 center) {
-    assert(body == nullptr);
-    // do init
-    shapeType = b2Shape::Type::e_polygon;
-    b2BodyDef bd;
-    bd.type = type;
-    rbType = type;
-    center = center / MAMGame::instance->physicsScale;
-    bd.position = b2Vec2(center.x, center.y);
-    body = world->CreateBody(&bd);
-    body->SetFixedRotation(false);
-    body->SetSleepingAllowed(false);
-    polygon = new b2PolygonShape();
-
-    b2Vec2 vertices[4];
-    vertices[0].Set(-30 / MAMGame::instance->physicsScale, 10 / MAMGame::instance->physicsScale);
-    vertices[1].Set(-30 / MAMGame::instance->physicsScale, -10 / MAMGame::instance->physicsScale);
-    vertices[2].Set(30 / MAMGame::instance->physicsScale, -10 / MAMGame::instance->physicsScale);
-    vertices[3].Set(30 / MAMGame::instance->physicsScale, 10 / MAMGame::instance->physicsScale);
-
-    polygon->Set(vertices, 4);
-    b2FixtureDef fxD;
-    fxD.shape = polygon;
-    fxD.density = 0.2;
-    fxD.friction = 0.1;
-    fixture = body->CreateFixture(&fxD);
-    fixture->SetSensor(true);
-
-    MAMGame::instance->registerPhysicsComponent(this);
+float PhysicsComponent::getMass() {
+    return body->GetMass();
 }
 
 bool PhysicsComponent::isSensor() {
@@ -132,26 +106,6 @@ void PhysicsComponent::setSensor(bool enabled) {
     fixture->SetSensor(enabled);
 }
 
-void PhysicsComponent::update(float deltaTime) {
-    if (rbType == b2_staticBody) return;
-    auto position = body->GetPosition();
-    float angle = glm::degrees(body->GetAngle());
-    getGameObject()->setPosition(glm::vec2(position.x, position.y) * MAMGame::instance->physicsScale);
-    getGameObject()->setRotation(angle);
-}
-
-void PhysicsComponent::setPosition(b2Vec2 position) {
-    body->SetTransform(position, body->GetTransform().q.GetAngle());
-}
-
-void PhysicsComponent::onCollisionStart(PhysicsComponent* comp) { }
-
-void PhysicsComponent::onCollisionEnd(PhysicsComponent* comp) { }
-
-float PhysicsComponent::getMass() {
-    return body->GetMass();
-}
-
 void PhysicsComponent::setPosition(glm::vec2 pos) {
     body->SetTransform(b2Vec2(pos.x, pos.y), body->GetAngle());
 }
@@ -159,3 +113,7 @@ void PhysicsComponent::setPosition(glm::vec2 pos) {
 void PhysicsComponent::setRotation(float angle) {
     body->SetTransform(body->GetPosition(), angle);
 }
+
+void PhysicsComponent::onCollisionStart(PhysicsComponent* comp) {}
+
+void PhysicsComponent::onCollisionEnd(PhysicsComponent* comp) {}

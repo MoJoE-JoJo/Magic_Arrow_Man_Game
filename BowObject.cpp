@@ -3,6 +3,7 @@
 
 #include "BowObject.hpp"
 #include "PhysicsComponent.hpp"
+#include "ArrowPhysics.hpp"
 #include "SpriteComponent.hpp"
 #include "MAMGame.hpp"
 
@@ -30,7 +31,7 @@ BowObject::~BowObject() {
 void BowObject::updatePos(glm::vec2 pos) {
     getComponent<PhysicsComponent>()->setPosition(pos / MAMGame::instance->physicsScale);
     if (hasArrow) {
-        arrow->getComponent<PhysicsComponent>()->setPosition(pos / MAMGame::instance->physicsScale);
+        arrow->getComponent<ArrowPhysics>()->setPosition(pos / MAMGame::instance->physicsScale);
     }
 }
 
@@ -39,22 +40,14 @@ void BowObject::updateAngle(glm::vec2 mousePos) {
     float angle = glm::degrees(atan2f(-toTarget.x, toTarget.y)) + 90;
     getComponent<PhysicsComponent>()->setRotation(glm::radians(angle));
     if (hasArrow) {
-        arrow->getComponent<PhysicsComponent>()->setRotation(glm::radians(angle));
+        arrow->getComponent<ArrowPhysics>()->setRotation(glm::radians(angle));
     }
 }
 
 void BowObject::shootArrow() {
-    if (hasArrow) {
-        hasArrow = false;
-        auto phys = arrow->getComponent<PhysicsComponent>();
-        phys->setSensor(false);
-        phys->setLinearVelocity(glm::vec2(0, 0));
-
-        float angle = std::fmod(arrow->getRotation(), 360);
-        angle = angle * (3.14 / 180);
-        float force = 50000 * phys->getMass();
-        phys->addForce(glm::vec2(cos(angle), sin(angle)) * force);
-    }
+    MAMGame::instance->audioSystem.playSound(SoundType::BowShooting, 100);
+    hasArrow = false;
+    arrow->getComponent<ArrowPhysics>()->shoot(50000);
 }
 
 void BowObject::arrowReturned() {
@@ -67,7 +60,7 @@ bool BowObject::isHoldingArrow() {
 
 void BowObject::stopArrow() {
     if (!hasArrow) {
-        auto phys = arrow->getComponent<PhysicsComponent>();
+        auto phys = arrow->getComponent<ArrowPhysics>();
         auto currentVelocity = phys->getLinearVelocity();
         phys->setLinearVelocity(glm::vec2(0, 0));
         phys->addForce(currentVelocity * 50.0f);
@@ -76,7 +69,7 @@ void BowObject::stopArrow() {
 
 void BowObject::callArrow(glm::vec2 playerPos) {
     if (!hasArrow) {
-        auto phys = arrow->getComponent<PhysicsComponent>();
+        auto phys = arrow->getComponent<ArrowPhysics>();
 
         b2Vec2 toTarget = b2Vec2(playerPos.x, playerPos.y) - b2Vec2(arrow->getPosition().x, arrow->getPosition().y);
         float angle = glm::radians(glm::degrees(atan2f(-toTarget.x, toTarget.y)) + 90);
@@ -95,7 +88,7 @@ void BowObject::reset() {
     auto phys = getComponent<PhysicsComponent>();
     phys->setPosition(originalPosition);
     phys->setRotation(0);
-    auto arrowPhys = arrow->getComponent<PhysicsComponent>();
+    auto arrowPhys = arrow->getComponent<ArrowPhysics>();
     arrowPhys->setPosition(originalPosition * 100000.0f);
     arrowPhys->setLinearVelocity(glm::vec2(0, 0));
 }
