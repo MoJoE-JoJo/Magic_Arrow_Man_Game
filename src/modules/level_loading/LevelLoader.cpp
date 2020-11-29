@@ -171,7 +171,7 @@ void LevelLoader::loadMap(std::string filename) {
 
                 int nextId = (i >= data.Size() || (i + 1) % width == 0) ? 0 : data[i + 1].GetInt();
                 if (nextId != 7 && nextId != 10 && nextId != 11 && nextId != 12 && nextId != 13 && nextId != 14) {
-                    createBig(tile, startOfWallPos, position, wallCount, false, false, size);
+                    createBig(tile, startOfWallPos, position, wallCount, false, false, size, 0.5f);
 
                     startedOnWall = false;
                     wallCount = 0;
@@ -228,18 +228,19 @@ float LevelLoader::getMapWidth() {
     return mapWidth;
 }
 
-void LevelLoader::createBig(std::shared_ptr<GameObject> tile, glm::vec2 startOfBigPos, glm::vec2 position, int bigCount, bool leftDiamond, bool rightDiamond, glm::vec2 size) {
+void LevelLoader::createBig(std::shared_ptr<GameObject> tile, glm::vec2 startOfBigPos, glm::vec2 position, int bigCount, bool leftDiamond, bool rightDiamond, glm::vec2 size, float offset) {
     b2Vec2 vertices[6];
     int vertexCount = 4;
     float mult = 0.5;
+    offset = offset / MAMGame::instance->physicsScale;
     if (leftDiamond) {
         vertices[0].Set(-size.x * bigCount, size.y);
         vertices[1].Set(-size.x * bigCount, size.y * mult);
         vertices[2].Set((-size.x * bigCount) + (size.x * 2) - (size.x * mult), -size.y);
         vertexCount++;
     } else {
-        vertices[0].Set(-size.x * bigCount, size.y);
-        vertices[1].Set(-size.x * bigCount, -size.y);
+        vertices[0].Set((-size.x * bigCount) + offset, size.y);
+        vertices[1].Set((-size.x * bigCount) + offset, -size.y);
     }
 
     if (rightDiamond) {
@@ -248,8 +249,8 @@ void LevelLoader::createBig(std::shared_ptr<GameObject> tile, glm::vec2 startOfB
         vertices[4 + (vertexCount - 4)].Set(size.x * bigCount, size.y);
         vertexCount++;
     } else {
-        vertices[2 + (vertexCount - 4)].Set(size.x * bigCount, -size.y);
-        vertices[3 + (vertexCount - 4)].Set(size.x * bigCount, size.y);
+        vertices[2 + (vertexCount - 4)].Set((size.x * bigCount) - offset, -size.y);
+        vertices[3 + (vertexCount - 4)].Set((size.x * bigCount) - offset, size.y);
     }
 
     auto phys = tile->addComponent<PhysicsComponent>();
