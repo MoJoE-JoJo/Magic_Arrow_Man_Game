@@ -305,6 +305,7 @@ void MAMGame::reset() {
     playerController->reset();
     startTime();
     setGameState(GameState::Running);
+    setGuiState(GuiState::LevelSelect);
 }
 
 bool MAMGame::isPlayerWithinBounds() {

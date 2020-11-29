@@ -1,17 +1,17 @@
 #pragma once
-
-#include "LevelLoader.hpp"
 #include "rapidjson/rapidjson.h"
 #include "rapidjson/document.h"
 #include "rapidjson/istreamwrapper.h"
 #include <fstream>
 #include <iostream>
 #include <memory>
+#include <vector>
+#include "sre/SpriteAtlas.hpp"
+
+#include "LevelLoader.hpp"
 #include "GameObject.hpp"
 #include "MAMGame.hpp"
 #include "SpriteComponent.hpp"
-#include "sre/SpriteAtlas.hpp"
-#include <vector>
 
 using namespace std;
 using namespace rapidjson;
@@ -120,7 +120,16 @@ void LevelLoader::loadMap(std::string filename) {
                 position = position + glm::vec2(0, 15);
                 auto tile = createGameObject(position, GOType::target, tileId);
                 auto phys = tile->addComponent<PhysicsComponent>();
-                phys->initTarget(b2_staticBody, tile->getPosition());
+
+                auto center = tile->getPosition() + glm::vec2(0, 7);
+
+                b2Vec2 vertices[4];
+                vertices[0].Set(-10 / MAMGame::instance->physicsScale, 30 / MAMGame::instance->physicsScale);
+                vertices[1].Set(-10 / MAMGame::instance->physicsScale, -50 / MAMGame::instance->physicsScale);
+                vertices[2].Set(10 / MAMGame::instance->physicsScale, -50 / MAMGame::instance->physicsScale);
+                vertices[3].Set(10 / MAMGame::instance->physicsScale, 30 / MAMGame::instance->physicsScale);
+
+                phys->initPolygon(b2_staticBody, center, 1, vertices, 4, 1);
                 phys->setSensor(true);
                 break;
             }

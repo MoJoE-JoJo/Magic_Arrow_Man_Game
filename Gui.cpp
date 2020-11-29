@@ -123,7 +123,7 @@ void Gui::renderLevelSelect() {
 void Gui::renderWinScreen() {
     ImGui::PushFont(normalFont);
 
-    ImVec2 size = { 400, 240 };
+    ImVec2 size = { 400, 250 };
     ImGui::SetNextWindowSize(size, ImGuiCond_Always);
     ImGui::SetNextWindowBgAlpha(1);
     ImVec2 pos = { (windowSize.x - size.x) / 2, (windowSize.y - size.y) / 2 };
