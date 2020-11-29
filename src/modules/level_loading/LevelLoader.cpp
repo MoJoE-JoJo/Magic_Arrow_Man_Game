@@ -1,5 +1,4 @@
 #pragma once
-
 #include "LevelLoader.hpp"
 #include "../../../rapidjson/rapidjson.h"
 #include "../../../rapidjson/document.h"
@@ -44,6 +43,9 @@ void LevelLoader::loadMap(std::string filename) {
     bool startedOnBig = false;
     bool leftDiamond = false;
     bool rightDiamond = false;
+    glm::vec2 startOfWallPos;
+    int wallCount = 0;
+    bool startedOnWall = false;
 
     bool bowSet = false;
     glm::vec2 bowPos;
@@ -120,22 +122,62 @@ void LevelLoader::loadMap(std::string filename) {
                 position = position + glm::vec2(0, 15);
                 auto tile = createGameObject(position, GOType::target, tileId);
                 auto phys = tile->addComponent<PhysicsComponent>();
-                phys->initTarget(b2_staticBody, tile->getPosition());
+
+                auto center = tile->getPosition() + glm::vec2(0, 7);
+
+                b2Vec2 vertices[4];
+                vertices[0].Set(-10 / MAMGame::instance->physicsScale, 30 / MAMGame::instance->physicsScale);
+                vertices[1].Set(-10 / MAMGame::instance->physicsScale, -50 / MAMGame::instance->physicsScale);
+                vertices[2].Set(10 / MAMGame::instance->physicsScale, -50 / MAMGame::instance->physicsScale);
+                vertices[3].Set(10 / MAMGame::instance->physicsScale, 30 / MAMGame::instance->physicsScale);
+
+                phys->initPolygon(b2_staticBody, center, 1, vertices, 4, 1);
                 phys->setSensor(true);
                 break;
             }
             case 24: {
                 bowPos = position;
                 bowSet = true;
+                break;
+            }
+            case 6:
+            case 7:
+            case 8:
+            case 10:
+            case 11:
+            case 12:
+            case 13:
+            case 14:
+            case 15:
+            case 19: {
+                auto tile = createGameObject(position, GOType::wall, tileId);
+
+                if (!startedOnWall) {
+                    startOfWallPos = position;
+                    wallCount++;
+                    startedOnWall = true;
+                }
+                else {
+                    wallCount++;
+                }
+
+                int nextId = (i >= data.Size() || (i + 1) % width == 0) ? 0 : data[i + 1].GetInt();
+                if (nextId != 6 && nextId != 7 && nextId != 8 && nextId != 10 && nextId != 11 && nextId != 12 && nextId != 13 && nextId != 14 && nextId != 15 && nextId != 19) {
+                    createBig(tile, startOfWallPos, position, wallCount, false, false, size);
+
+                    startedOnWall = false;
+                    wallCount = 0;
+                }
+
+                //auto phys = tile->addComponent<PhysicsComponent>();
+                //float wallSizeOffset = 0.5;
+                //glm::vec2 wallSize = glm::vec2(getTileSize().x - wallSizeOffset, getTileSize().y - wallSizeOffset);
+                //phys->initBox(b2_staticBody, wallSize, tile->getPosition(), 1);
+                break;
             }
             case 0:
                 break;
             default: {
-                auto tile = createGameObject(position, GOType::wall, tileId);
-                auto phys = tile->addComponent<PhysicsComponent>();
-                float wallSizeOffset = 0.5;
-                glm::vec2 wallSize = glm::vec2(getTileSize().x - wallSizeOffset, getTileSize().y - wallSizeOffset);
-                phys->initBox(b2_staticBody, wallSize, tile->getPosition(), 1);
                 break;
             }
         }

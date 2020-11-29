@@ -25,6 +25,8 @@ MAMGame::MAMGame() : debugDraw(physicsScale) {
     createTileMap();
 
     audioSystem = AudioPlayer();
+    audioSystem.init(MIX_MAX_VOLUME / 2, MIX_MAX_VOLUME / 2);
+    audioSystem.startBackgroundMusic(MusicType::Background_Game, 40);
 
     gui = new Gui(windowSize);
     guiState = GuiState::MainMenu;
@@ -68,9 +70,6 @@ void MAMGame::init() {
     levelXMaxBound = levelBounds.x;
     levelYMinBound = -levelBounds.y;
     levelYMaxBound = 0.0f + 64.0f;
-
-    audioSystem.init(MIX_MAX_VOLUME/2, MIX_MAX_VOLUME/2);
-    audioSystem.startBackgroundMusic(MusicType::Background_Game, 40);
 }
 
 void MAMGame::initPhysics() {
@@ -100,8 +99,7 @@ void MAMGame::createBowObject(glm::vec2 pos, bool samePosAsPlayer) {
     auto arrow = createGameObject(pos, GOType::arrow);
     auto arrowSpriteBox = arrow->addComponent<SpriteComponent>();
     arrowSpriteBox->setSprite(sprites->get("blue_arrow_projectile.png"));
-    auto phys = arrow->addComponent<ArrowPhysics>();
-    phys->initArrow(b2_dynamicBody, arrow->getPosition() * 100000.0f);
+    arrow->addComponent<ArrowPhysics>();
 
     auto bow = shared_ptr<BowObject>(new BowObject(pos, sprites->get("bow.png"), arrow));
     gameObjects.push_back(bow);
@@ -141,6 +139,12 @@ bool MAMGame::ShouldCollide(b2Fixture* fixtureA, b2Fixture* fixtureB) {
         if (physA->second->getGameObject()->goType == GOType::arrow && physB->second->getGameObject()->goType == GOType::player) {
             return false;
         } else if (physB->second->getGameObject()->goType == GOType::arrow && physA->second->getGameObject()->goType == GOType::player) {
+            return false;
+        } 
+        if (physA->second->getGameObject()->goType == GOType::target && physB->second->getGameObject()->goType == GOType::player) {
+            return false;
+        }
+        else if (physB->second->getGameObject()->goType == GOType::target && physA->second->getGameObject()->goType == GOType::player) {
             return false;
         }
     }
@@ -259,14 +263,6 @@ sre::Sprite MAMGame::getSprite(int index) {
     return sprites->get(tileMap.find(index)->second);
 }
 
-void MAMGame::setGameState(GameState newState) {
-    gameState = newState;
-}
-
-void MAMGame::setGuiState(GuiState newState) {
-    guiState = newState;
-}
-
 void MAMGame::createTileMap() {
     tileMap.insert({ 2, "Tilesets-1-01.png" });
     tileMap.insert({ 3, "Tilesets-1-02.png" });
@@ -293,16 +289,25 @@ void MAMGame::createTileMap() {
     tileMap.insert({ 24, "bow.png" });
 }
 
-void MAMGame::reset() {
-    playerController->reset();
-    startTime();
-    setGameState(GameState::Running);
+void MAMGame::setGameState(GameState newState) {
+    gameState = newState;
+}
+
+void MAMGame::setGuiState(GuiState newState) {
+    guiState = newState;
 }
 
 void MAMGame::beginLevel(std::string level) {
     currentLevel = level;
     init();
     setGameState(GameState::Running);
+    startTime();
+}
+
+void MAMGame::reset() {
+    playerController->reset();
+    setGameState(GameState::Running);
+    setGuiState(GuiState::LevelSelect);
     startTime();
 }
 

@@ -44,8 +44,9 @@ void Gui::loadProgress() {
         std::string gold = level["Gold"].GetString();
         std::string silver = level["Silver"].GetString();
         std::string bronze = level["Bronze"].GetString();
+        int difficulty = level["Difficulty"].GetInt();
 
-        auto levelObj = std::shared_ptr<Level>(new Level(name, file, bestTime, gold, silver, bronze, completed));
+        auto levelObj = std::shared_ptr<Level>(new Level(name, file, bestTime, gold, silver, bronze, completed, difficulty));
         levelsList.push_back(levelObj);
     }
 }
@@ -111,7 +112,14 @@ void Gui::renderLevelSelect() {
             ImGui::TextColored(color, printBestTime.c_str());
         }
 
-        ImGui::Text("");
+        std::string stars = "";
+        for (int s = 0; s < level->difficulty; s++) {
+            stars = stars + "*";
+        }
+        std::string diffString = "Difficulty: " + stars;
+        ImVec4 diffColor = level->difficulty == 1 ? colorDiff1 : (level->difficulty == 2 ? colorDiff2 : (level->difficulty == 3) ? colorDiff3 : colorDiff5);
+
+        ImGui::TextColored(diffColor, diffString.c_str());
         ImGui::NextColumn();
     }
     ImGui::Columns(1);
@@ -123,7 +131,7 @@ void Gui::renderLevelSelect() {
 void Gui::renderWinScreen() {
     ImGui::PushFont(normalFont);
 
-    ImVec2 size = { 400, 240 };
+    ImVec2 size = { 400, 250 };
     ImGui::SetNextWindowSize(size, ImGuiCond_Always);
     ImGui::SetNextWindowBgAlpha(1);
     ImVec2 pos = { (windowSize.x - size.x) / 2, (windowSize.y - size.y) / 2 };
@@ -131,7 +139,7 @@ void Gui::renderWinScreen() {
 
     ImGui::Begin("", NULL, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
     ImGui::Text("You won the level!");
-    auto title = std::string("Your time: " + wonLevel->GetString(winTime));
+    auto title = std::string("Your time: " + Level::GetString(winTime));
     ImGui::Text(title.c_str());
     ImGui::Text("");
 
@@ -186,10 +194,10 @@ void Gui::updateProgress(int levelIndex) {
     d.ParseStream(isw);
     Value& level = d["Levels"][levelIndex];
 
-    if (level["BestTime"] == "00:00:00" || winTime < wonLevel->GetSeconds(wonLevel->bestTime)) {
+    if (level["BestTime"] == "00:00:00" || winTime < Level::GetSeconds(wonLevel->bestTime)) {
         Value newTime;
         char buffer[10];
-        int len = sprintf(buffer, wonLevel->GetString(winTime).c_str());
+        int len = sprintf(buffer, Level::GetString(winTime).c_str());
         newTime.SetString(buffer, len, d.GetAllocator());
         memset(buffer, 0, sizeof(buffer));
         level["BestTime"] = newTime;
