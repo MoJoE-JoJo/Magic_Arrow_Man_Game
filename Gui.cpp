@@ -117,10 +117,7 @@ void Gui::renderLevelSelect() {
             stars = stars + "*";
         }
         std::string diffString = "Difficulty: " + stars;
-
-        ImVec4 diffColor =  level->difficulty == 1 ? colorDiff1 : (level->difficulty == 2 ? colorDiff2 : (level->difficulty == 3) ? colorDiff3 : colorDiff5);
-        //ImVec4 diffColor = { 1.0, 1.0, 1.0, 1 }; 
-
+        ImVec4 diffColor = level->difficulty == 1 ? colorDiff1 : (level->difficulty == 2 ? colorDiff2 : (level->difficulty == 3) ? colorDiff3 : colorDiff5);
 
         ImGui::TextColored(diffColor, diffString.c_str());
         ImGui::NextColumn();
