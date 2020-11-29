@@ -9,7 +9,7 @@
 
 class Level {
 public:
-	Level(std::string name, std::string file, std::string bestTime, std::string gold, std::string silver, std::string bronze, bool completed) {
+	Level(std::string name, std::string file, std::string bestTime, std::string gold, std::string silver, std::string bronze, bool completed, int difficulty) {
 		this->name = name;
 		this->file = file;
 		this->bestTime = bestTime;
@@ -17,6 +17,7 @@ public:
 		this->gold = gold;
 		this->silver = silver;
 		this->bronze = bronze;
+		this->difficulty = difficulty;
 
 		int bestTotal = GetSeconds(bestTime);
 		this->goldTotal = GetSeconds(gold);
@@ -60,6 +61,7 @@ public:
 	int goldTotal;
 	int silverTotal;
 	int bronzeTotal;
+	int difficulty;
 	int rank;
 	bool completed;
 };
