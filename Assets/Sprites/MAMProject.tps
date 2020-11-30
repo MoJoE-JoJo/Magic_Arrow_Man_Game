@@ -305,6 +305,21 @@
                 <key>scale9FromFile</key>
                 <false/>
             </struct>
+            <key type="filename">logo.png</key>
+            <struct type="IndividualSpriteSettings">
+                <key>pivotPoint</key>
+                <point_f>0.5,0.5</point_f>
+                <key>spriteScale</key>
+                <double>1</double>
+                <key>scale9Enabled</key>
+                <false/>
+                <key>scale9Borders</key>
+                <rect>24,20,49,39</rect>
+                <key>scale9Paddings</key>
+                <rect>24,20,49,39</rect>
+                <key>scale9FromFile</key>
+                <false/>
+            </struct>
         </map>
         <key>fileList</key>
         <array>
@@ -316,6 +331,7 @@
             <filename>target.png</filename>
             <filename>target_legs.png</filename>
             <filename>bow.png</filename>
+            <filename>logo.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>

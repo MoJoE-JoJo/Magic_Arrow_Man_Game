@@ -4,6 +4,7 @@
 #include "../../../rapidjson/istreamwrapper.h"
 #include "../../../rapidjson/ostreamwrapper.h"
 #include "../../../rapidjson/writer.h"
+#include "sre/Texture.hpp"
 #include <fstream>
 #include <iostream>
 #include <memory>
@@ -27,14 +28,26 @@ Gui::Gui(glm::vec2 windowSize) {
 }
 
 void Gui::loadProgress() {
+    tutorialsList.clear();
     levelsList.clear();
 
     std::ifstream fis("Assets/Levels/Progress.json");
     IStreamWrapper isw(fis);
     Document d;
     d.ParseStream(isw);
-    rapidjson::Value& levels = d["Levels"];
 
+    rapidjson::Value& tutorials = d["Tutorials"];
+    for (int i = 0; i < tutorials.Size(); i++) {
+        rapidjson::Value& tutorial = tutorials[i];
+        std::string name = tutorial["Name"].GetString();
+        std::string file = tutorial["File"].GetString();
+        bool completed = tutorial["Completed"].GetBool();
+
+        auto levelObj = std::shared_ptr<Level>(new Level(name, file, "", "", "", "", completed, 0));
+        tutorialsList.push_back(levelObj);
+    }
+
+    rapidjson::Value& levels = d["Levels"];
     for (int i = 0; i < levels.Size(); i++) {
         rapidjson::Value& level = levels[i];
         std::string name = level["Name"].GetString();
@@ -55,12 +68,13 @@ void Gui::renderGui(GuiState guiState) {
     if (guiState == GuiState::MainMenu) renderMenu();
     else if (guiState == GuiState::LevelSelect) renderLevelSelect();
     else if (guiState == GuiState::Won) renderWinScreen();
+    else if (guiState == GuiState::HowToPlay) renderHowToPlayScreen();
 }
 
 void Gui::renderMenu() {
     ImGui::PushFont(headerFont);
 
-    ImVec2 size = { 600, 300 };
+    ImVec2 size = { 420, 575 };
     ImGui::SetNextWindowSize(size, ImGuiCond_Always);
     ImGui::SetNextWindowBgAlpha(1);
     ImVec2 pos = { (windowSize.x - size.x) / 2, (windowSize.y - size.y) / 2 };
@@ -69,14 +83,27 @@ void Gui::renderMenu() {
     auto flags = ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove;
     bool* open = nullptr;
     ImGui::Begin("", open, flags);
-    auto title = std::string("Magic Arrow Man");
-    float font_size = ImGui::GetFontSize() * title.size() / 2;
-    ImGui::SameLine(ImGui::GetWindowSize().x / 2 - font_size + (font_size / 2));
-    ImGui::TextColored({ 1, 1, 0, 1 }, title.c_str());
-    ImVec2 buttonSize(100, 60);
-    ImGui::SetCursorPos({ (ImGui::GetWindowSize().x - 10 - buttonSize.x) / 2, (ImGui::GetWindowSize().y - 10 - buttonSize.y) / 2 });
+
+    static auto logo = sre::Texture::create().withFile("Assets/Sprites/logo.png").withFilterSampling(false).build();
+    auto logoId = logo->getNativeTexturePtr();
+    ImVec2 logoSize(400, 300);
+    ImGui::Image(logoId, logoSize, ImVec2(0, 1), ImVec2(1, 0));
+
+    ImVec2 buttonSize(300, 60);
+    ImGui::SetCursorPos({ (ImGui::GetWindowSize().x - 10 - buttonSize.x) / 2, (ImGui::GetWindowSize().y + 175 - buttonSize.y) / 2 });
     if (ImGui::Button("Play", buttonSize)) {
         MAMGame::instance->setGuiState(GuiState::LevelSelect);
+    }
+
+    ImGui::SetCursorPos({ (ImGui::GetWindowSize().x - 10 - buttonSize.x) / 2, (ImGui::GetWindowSize().y + 325 - buttonSize.y) / 2 });
+    if (ImGui::Button("Tutorial", buttonSize)) {
+        tutorialMode = true;
+        MAMGame::instance->setGuiState(GuiState::LevelSelect);
+    }
+
+    ImGui::SetCursorPos({ (ImGui::GetWindowSize().x - 10 - buttonSize.x) / 2, (ImGui::GetWindowSize().y + 475 - buttonSize.y) / 2 });
+    if (ImGui::Button("How to play", buttonSize)) {
+        MAMGame::instance->setGuiState(GuiState::HowToPlay);
     }
     ImGui::End();
 
@@ -93,8 +120,9 @@ void Gui::renderLevelSelect() {
 
     ImVec2 buttonSize = { 200, 100 };
   
-    for (int i = 0; i < levelsList.size(); i++) {
-        auto level = levelsList[i];
+    int size = tutorialMode ? tutorialsList.size() : levelsList.size();
+    for (int i = 0; i < size; i++) {
+        auto level = tutorialMode ? tutorialsList[i] : levelsList[i];
         bool btnPress = ImGui::Button(level->name.c_str(), buttonSize);
         if (btnPress) {
             MAMGame::instance->beginLevel(level->file);
@@ -103,26 +131,37 @@ void Gui::renderLevelSelect() {
         std::string completed = "Completed: " + hasCompleted;
         ImGui::TextColored(level->completed ? colorWon : colorNotWon, completed.c_str());
 
-        std::string printBestTime = "Best time: " + level->bestTime;
+        if (!tutorialMode) {
+            std::string printBestTime = "Best time: " + level->bestTime;
 
-        if (level->rank > 2) {
-            ImGui::Text(printBestTime.c_str());
+            if (level->rank > 2) {
+                ImGui::Text(printBestTime.c_str());
+            } else {
+                auto color = level->rank == 0 ? colorGold : (level->rank == 1 ? colorSilver : colorBronze);
+                ImGui::TextColored(color, printBestTime.c_str());
+            }
+
+            std::string stars = "";
+            for (int s = 0; s < level->difficulty; s++) {
+                stars = stars + "*";
+            }
+            std::string diffString = "Difficulty: " + stars;
+            ImVec4 diffColor = level->difficulty == 1 ? colorDiff1 : (level->difficulty == 2 ? colorDiff2 : (level->difficulty == 3) ? colorDiff3 : colorDiff5);
+
+            ImGui::TextColored(diffColor, diffString.c_str());
         } else {
-            auto color = level->rank == 0 ? colorGold : (level->rank == 1 ? colorSilver : colorBronze);
-            ImGui::TextColored(color, printBestTime.c_str());
+            ImGui::Text("");
         }
 
-        std::string stars = "";
-        for (int s = 0; s < level->difficulty; s++) {
-            stars = stars + "*";
-        }
-        std::string diffString = "Difficulty: " + stars;
-        ImVec4 diffColor = level->difficulty == 1 ? colorDiff1 : (level->difficulty == 2 ? colorDiff2 : (level->difficulty == 3) ? colorDiff3 : colorDiff5);
-
-        ImGui::TextColored(diffColor, diffString.c_str());
         ImGui::NextColumn();
     }
     ImGui::Columns(1);
+    ImGui::Text("");
+    if (ImGui::Button("Back", ImVec2(100, 60))) {
+        tutorialMode = false;
+        MAMGame::instance->setGuiState(GuiState::MainMenu);
+    }
+
     ImGui::End();
 
     ImGui::PopFont();
@@ -139,23 +178,26 @@ void Gui::renderWinScreen() {
 
     ImGui::Begin("", NULL, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
     ImGui::Text("You won the level!");
-    auto title = std::string("Your time: " + Level::GetString(winTime));
-    ImGui::Text(title.c_str());
-    ImGui::Text("");
 
-    if (winTime <= wonLevel->goldTotal) {
-        ImGui::Text("You got gold!");
-    } else if (winTime <= wonLevel->silverTotal) {
-        ImGui::Text("You got silver!");
-        auto getGold = std::string("Try again and beat the gold time: " + wonLevel->gold);
-        ImGui::Text(getGold.c_str());
-    } else if (winTime <= wonLevel->bronzeTotal) {
-        ImGui::Text("You got bronze!");
-        auto getSilver = std::string("Try again and beat the silver time: " + wonLevel->silver);
-        ImGui::Text(getSilver.c_str());
-    } else {
-        auto getBronze = std::string("Try again and beat the bronze time: " + wonLevel->bronze);
-        ImGui::Text(getBronze.c_str());
+    if (!tutorialMode) {
+        auto title = std::string("Your time: " + Level::GetString(winTime));
+        ImGui::Text(title.c_str());
+        ImGui::Text("");
+
+        if (winTime <= wonLevel->goldTotal) {
+            ImGui::Text("You got gold!");
+        } else if (winTime <= wonLevel->silverTotal) {
+            ImGui::Text("You got silver!");
+            auto getGold = std::string("Try again and beat the gold time: " + wonLevel->gold);
+            ImGui::Text(getGold.c_str());
+        } else if (winTime <= wonLevel->bronzeTotal) {
+            ImGui::Text("You got bronze!");
+            auto getSilver = std::string("Try again and beat the silver time: " + wonLevel->silver);
+            ImGui::Text(getSilver.c_str());
+        } else {
+            auto getBronze = std::string("Try again and beat the bronze time: " + wonLevel->bronze);
+            ImGui::Text(getBronze.c_str());
+        }
     }
 
     ImGui::Text("");
@@ -173,15 +215,61 @@ void Gui::renderWinScreen() {
     ImGui::PopFont();
 }
 
+void Gui::renderHowToPlayScreen() {
+    ImGui::PushFont(normalFont);
+
+    ImVec2 size = { 600, 550 };
+    ImGui::SetNextWindowSize(size, ImGuiCond_Always);
+    ImGui::SetNextWindowBgAlpha(1);
+    ImVec2 pos = { (windowSize.x - size.x) / 2, (windowSize.y - size.y) / 2 };
+    ImGui::SetNextWindowPos(pos);
+
+    ImGui::Begin("", NULL, ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove);
+    ImGui::Text("You control Magic Arrow Man with the A and D keys,");
+    ImGui::Text("reset a level with the R key and quit a level with Q.");
+    ImGui::Text("");
+    ImGui::Text("He jumps when you press space bar. He can climb ledges if");
+    ImGui::Text("you continue to push the space bar.");
+    ImGui::Text("");
+    ImGui::Text("When he has the bow and arrow, he shoots the arrow");
+    ImGui::Text("when you click with the left mouse button.");
+    ImGui::Text("");
+    ImGui::Text("If Magic Arrow Man stands still and his arrow is far away,");
+    ImGui::Text("he can call it back when you hold the left mouse button.");
+    ImGui::Text("");
+    ImGui::Text("If Magic Arrow Man is flying in the air and his arrow is");
+    ImGui::Text("far away, both him and his arrow will be propelled towards");
+    ImGui::Text("eachother. Although he can only do this once before having");
+    ImGui::Text("to get back to the ground.");
+    ImGui::Text("");
+    if (ImGui::Button("Ok", { 60, 40 })) {
+        MAMGame::instance->setGuiState(GuiState::MainMenu);
+    }
+    ImGui::End();
+
+    ImGui::PopFont();
+}
+
 void Gui::setWinTime(int seconds, std::string levelFileName) {
     winTime = seconds;
     int levelIndex = 0;
-    for (auto& level : levelsList) {
-        if (level->file == levelFileName) {
-            wonLevel = level;
-            break;
+
+    if (tutorialMode) {
+        for (auto& level : tutorialsList) {
+            if (level->file == levelFileName) {
+                wonLevel = level;
+                break;
+            }
+            levelIndex++;
         }
-        levelIndex++;
+    } else {
+        for (auto& level : levelsList) {
+            if (level->file == levelFileName) {
+                wonLevel = level;
+                break;
+            }
+            levelIndex++;
+        }
     }
     updateProgress(levelIndex);
     loadProgress();
@@ -192,9 +280,9 @@ void Gui::updateProgress(int levelIndex) {
     IStreamWrapper isw(fis);
     Document d;
     d.ParseStream(isw);
-    Value& level = d["Levels"][levelIndex];
+    Value& level = tutorialMode ? d["Tutorials"][levelIndex] :  d["Levels"][levelIndex];
 
-    if (level["BestTime"] == "00:00:00" || winTime < Level::GetSeconds(wonLevel->bestTime)) {
+    if (wonLevel->bestTime == "00:00:00" || winTime < Level::GetSeconds(wonLevel->bestTime)) {
         Value newTime;
         char buffer[10];
         int len = sprintf(buffer, Level::GetString(winTime).c_str());
