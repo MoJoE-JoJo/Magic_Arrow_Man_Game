@@ -125,7 +125,8 @@ void PlayerObject::update(float deltaTime) {
 void PlayerObject::jump() {
     MAMGame::instance->audioSystem.playSound(SoundType::PlayerJumping, 100);
     auto phys = getComponent<PlayerPhysics>();
-    phys->addForce(glm::vec2(0, 22500 * phys->getMass()));
+    auto currentVel = phys->getLinearVelocity();
+    if (currentVel.y < 1.5) phys->addForce(glm::vec2(0, 22500 * phys->getMass()));
 }
 
 void PlayerObject::incrGroundCounter() {

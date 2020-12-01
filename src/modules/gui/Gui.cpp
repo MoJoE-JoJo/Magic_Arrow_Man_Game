@@ -229,7 +229,7 @@ void Gui::renderHowToPlayScreen() {
     ImGui::Text("reset a level with the R key and quit a level with Q.");
     ImGui::Text("");
     ImGui::Text("He jumps when you press space bar. He can climb ledges if");
-    ImGui::Text("you continue to push the space bar.");
+    ImGui::Text("you continue to hold the space bar.");
     ImGui::Text("");
     ImGui::Text("When he has the bow and arrow, he shoots the arrow");
     ImGui::Text("when you click with the left mouse button.");
