@@ -170,7 +170,7 @@ void LevelLoader::loadMap(std::string filename) {
 
                 int nextId = (i >= data.Size() || (i + 1) % width == 0) ? 0 : data[i + 1].GetInt();
                 if (nextId != 7 && nextId != 10 && nextId != 11 && nextId != 12 && nextId != 13 && nextId != 14) {
-                    createBig(tile, startOfWallPos, position, wallCount, false, false, size, 0.5f);
+                    createBig(tile, startOfWallPos, position, wallCount, false, false, size, 1.0f);
 
                     startedOnWall = false;
                     wallCount = 0;
