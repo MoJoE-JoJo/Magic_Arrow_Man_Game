@@ -126,7 +126,7 @@ void PlayerObject::jump() {
     MAMGame::instance->audioSystem.playSound(SoundType::PlayerJumping, 100);
     auto phys = getComponent<PlayerPhysics>();
     auto currentVel = phys->getLinearVelocity();
-    if (currentVel.y < 1.5) phys->addForce(glm::vec2(0, 22500 * phys->getMass()));
+    if (currentVel.y < 1.5 || onLeftSlope || onRightSlope) phys->addForce(glm::vec2(0, 22500 * phys->getMass()));
 }
 
 void PlayerObject::incrGroundCounter() {
