@@ -1,4 +1,36 @@
 {
+    "Tutorials": [
+        {
+            "Name": "Move",
+            "File": "tutorial-move",
+            "Completed": false
+        },
+        {
+            "Name": "Jump",
+            "File": "tutorial-jump",
+            "Completed": false
+        },
+        {
+            "Name": "Climb",
+            "File": "tutorial-climb",
+            "Completed": false
+        },
+        {
+            "Name": "Don't fall",
+            "File": "tutorial-dontfall",
+            "Completed": false
+        },
+        {
+            "Name": "Fly",
+            "File": "tutorial-fly",
+            "Completed": false
+        },
+        {
+            "Name": "Call the arrow",
+            "File": "tutorial-callthearrow",
+            "Completed": false
+        }
+    ],
     "Levels": [
         {
             "Name": "The Start",

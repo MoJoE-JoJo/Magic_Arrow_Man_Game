@@ -9,7 +9,7 @@
 
 #include "../level_loading/Level.hpp"
 
-enum class GuiState { MainMenu, LevelSelect, Won };
+enum class GuiState { MainMenu, LevelSelect, Won, HowToPlay };
 
 class Gui {
 public:
@@ -21,6 +21,7 @@ private:
 	void renderMenu();
 	void renderLevelSelect();
 	void renderWinScreen();
+	void renderHowToPlayScreen();
 	void updateProgress(int levelIndex);
 
 	glm::vec2 windowSize;
@@ -35,7 +36,9 @@ private:
 	ImVec4 colorDiff2 = { 0.941, 0.769, 0.125, 1 };
 	ImVec4 colorDiff3 = { 0.933, 0.251, 0.0, 1 };
 	ImVec4 colorDiff5 = { 1.0, 0.0, 0.0, 1 };
+	bool tutorialMode = false;
 	int winTime = 0;
 	std::shared_ptr<Level> wonLevel;
 	std::vector<std::shared_ptr<Level>> levelsList;
+	std::vector<std::shared_ptr<Level>> tutorialsList;
 };
