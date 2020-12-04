@@ -21,8 +21,6 @@ public:
 	std::shared_ptr<GameObject> createGameObject(glm::vec2 pos, GOType goType);
 	void createPlayerObject(glm::vec2 pos);
 	void createBowObject(glm::vec2 pos, bool samePosAsPlayer);
-	static MAMGame* instance;
-	static const glm::vec2 windowSize;
 	sre::Sprite getSprite(int index);
 	void setGameState(GameState newState);
 	void setGuiState(GuiState newState);
@@ -30,6 +28,8 @@ public:
 	void levelWon();
 	void reset();
 	
+	static MAMGame* instance;
+	static const glm::vec2 windowSize;
 	const float physicsScale = 100;
 	AudioPlayer audioSystem;
 private:
@@ -44,6 +44,8 @@ private:
 	void createTileMap();
 	void startTime();
 	bool isPlayerWithinBounds();
+	void registerPhysicsComponent(PhysicsComponent* r);
+	void deregisterPhysicsComponent(PhysicsComponent* r);
 
 	Gui* gui;
 	GuiState guiState;
@@ -56,8 +58,6 @@ private:
 	float gravity = -9.8;
 	std::shared_ptr<PlayerController> playerController;
 	std::vector<std::shared_ptr<GameObject>> gameObjects;
-	void registerPhysicsComponent(PhysicsComponent* r);
-	void deregisterPhysicsComponent(PhysicsComponent* r);
 	std::map<b2Fixture*, PhysicsComponent*> physicsComponentLookup;
 	Box2DDebugDraw debugDraw;
 	bool doDebugDraw = false;
@@ -74,6 +74,4 @@ private:
 	glm::vec2 levelBounds;
 
 	friend class PhysicsComponent;
-	friend class LevelLoader;
-	friend class CameraController;
 };

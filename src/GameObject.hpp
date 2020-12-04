@@ -11,7 +11,6 @@ class GameObject {
 public:
     GameObject(glm::vec2 pos, GOType goType);
     virtual ~GameObject();
-    
     float getRotation() const;
     void setRotation(float rotation);
     const glm::vec2& getPosition() const;

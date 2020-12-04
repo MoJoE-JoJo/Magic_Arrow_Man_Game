@@ -36,9 +36,9 @@ void Gui::loadProgress() {
     Document d;
     d.ParseStream(isw);
 
-    rapidjson::Value& tutorials = d["Tutorials"];
+    Value& tutorials = d["Tutorials"];
     for (int i = 0; i < tutorials.Size(); i++) {
-        rapidjson::Value& tutorial = tutorials[i];
+        Value& tutorial = tutorials[i];
         std::string name = tutorial["Name"].GetString();
         std::string file = tutorial["File"].GetString();
         bool completed = tutorial["Completed"].GetBool();
@@ -47,9 +47,9 @@ void Gui::loadProgress() {
         tutorialsList.push_back(levelObj);
     }
 
-    rapidjson::Value& levels = d["Levels"];
+    Value& levels = d["Levels"];
     for (int i = 0; i < levels.Size(); i++) {
-        rapidjson::Value& level = levels[i];
+        Value& level = levels[i];
         std::string name = level["Name"].GetString();
         std::string file = level["File"].GetString();
         bool completed = level["Completed"].GetBool();

@@ -3,6 +3,7 @@
 #include "sre/SpriteAtlas.hpp"
 #include "glm/gtc/random.hpp"
 #include "Box2D/Dynamics/Contacts/b2Contact.h"
+#include "SDL_mixer.h"
 
 #include "modules/physics/components/PlayerPhysics.hpp"
 #include "modules/physics/components/ArrowPhysics.hpp"
@@ -54,7 +55,6 @@ void MAMGame::init() {
     initPhysics();
 
     sprites = SpriteAtlas::create("MAM.json", "MAM.png");
-    // Test json loading
     LevelLoader ll = LevelLoader();
     ll.loadMap("Assets/Levels/Level-" + currentLevel + ".json");
     levelBounds = glm::vec2(ll.getMapWidth(), ll.getMapHeight());
@@ -103,7 +103,7 @@ void MAMGame::createBowObject(glm::vec2 pos, bool samePosAsPlayer) {
 
     auto bow = shared_ptr<BowObject>(new BowObject(pos, sprites->get("bow.png"), arrow));
     gameObjects.push_back(bow);
-    playerController->player->setBow(bow, samePosAsPlayer);
+    playerController->getPlayer()->setBow(bow, samePosAsPlayer);
 }
 
 void MAMGame::BeginContact(b2Contact* contact) {
@@ -140,12 +140,6 @@ bool MAMGame::ShouldCollide(b2Fixture* fixtureA, b2Fixture* fixtureB) {
             return false;
         } else if (physB->second->getGameObject()->goType == GOType::arrow && physA->second->getGameObject()->goType == GOType::player) {
             return false;
-        } 
-        if (physA->second->getGameObject()->goType == GOType::target && physB->second->getGameObject()->goType == GOType::player) {
-            return false;
-        }
-        else if (physB->second->getGameObject()->goType == GOType::target && physA->second->getGameObject()->goType == GOType::player) {
-            return false;
         }
     }
     return true;
@@ -163,12 +157,12 @@ void MAMGame::update(float time) {
         }
         if (!isPlayerWithinBounds()) reset();
 
-        cameraController.updateCamera(time, playerController->player->getPosition());
+        cameraController.updateCamera(time, playerController->getPlayerPosition());
     }
 }
 
 bool MAMGame::isPlayerWithinBounds() {
-    auto playerPosition = playerController->player->getPosition();
+    auto playerPosition = playerController->getPlayerPosition();
     if (playerPosition.x < levelXMinBound) return false;
     if (playerPosition.x > levelXMaxBound) return false;
     if (playerPosition.y < levelYMinBound) return false;

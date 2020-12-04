@@ -1,7 +1,6 @@
 #pragma once
 #include "GameObject.hpp"
 #include "BowObject.hpp"
-#include "PlayerController.hpp"
 
 class BowObject;
 
@@ -18,6 +17,8 @@ public:
     bool isGrounded();
     void setOnLeftSlope(bool newOnSlope);
     void setOnRightSlope(bool newOnSlope);
+    void setMovingLeft(bool isMoving);
+    void setMovingRight(bool isMoving);
     void setBow(std::shared_ptr<BowObject> bow, bool samePosAsPlayer);
     void pickUpBow();
     void useBow(SDL_Event& event, glm::vec2 pos);
@@ -52,6 +53,4 @@ private:
 
     std::shared_ptr<BowObject> bow;
     bool bowIsSet = false;
-
-    friend class PlayerController;
 };

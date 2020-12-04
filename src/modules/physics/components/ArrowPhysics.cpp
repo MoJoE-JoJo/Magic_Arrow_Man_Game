@@ -66,7 +66,6 @@ void ArrowPhysics::shoot(float bowForce) {
 	setSensor(false);
 	setLinearVelocity(glm::vec2(0, 0));
 	isReturned = false;
-	
 
 	float angle = std::fmod(gameObject->getRotation(), 360);
 	angle = angle * (3.14 / 180);

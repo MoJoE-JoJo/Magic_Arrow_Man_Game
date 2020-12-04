@@ -83,7 +83,7 @@ void PhysicsComponent::addForce(glm::vec2 force) {
 
 glm::vec2 PhysicsComponent::getLinearVelocity() {
     b2Vec2 v = body->GetLinearVelocity();
-    return { v.x,v.y };
+    return { v.x, v.y };
 }
 
 void PhysicsComponent::setLinearVelocity(glm::vec2 velocity) {

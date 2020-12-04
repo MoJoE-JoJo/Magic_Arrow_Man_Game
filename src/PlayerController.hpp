@@ -12,10 +12,8 @@ public:
     void onKey(SDL_Event& event);
     void mouseEvent(SDL_Event& event, glm::vec2 pos);
     void reset();
+    glm::vec2 getPlayerPosition();
+    std::shared_ptr<PlayerObject> getPlayer();
 private:
     std::shared_ptr<PlayerObject> player;
-    
-    friend class PlayerObject;
-    friend class MAMGame;
-    friend class CameraController;
 };

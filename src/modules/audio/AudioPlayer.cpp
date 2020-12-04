@@ -50,7 +50,6 @@ void AudioPlayer::startBackgroundMusic(MusicType music, int volume) {
                 if (volume == 0) Mix_VolumeMusic(musicVolume);
                 else Mix_VolumeMusic(volume);
                 Mix_PlayMusic(music, -1);
-
                 break;
         }
     }
@@ -68,7 +67,6 @@ void AudioPlayer::playSound(SoundType sound, int volume) {
             break;
         }
         case SoundType::PlayerJumping:
-            //startSound("Assets/Audio/Bow/hit.wav", volume);
             startRandomSound(sound, 0, 1, volume);
             break;
         case SoundType::ArrowHitting:
@@ -87,27 +85,27 @@ void AudioPlayer::startRandomSound(SoundType type, int min, int max, int volume)
 
 void AudioPlayer::startSound(SoundType type, int index, int volume) {
     switch (type) {
-    case SoundType::BowShooting: {
-        if (volume == 0) Mix_VolumeChunk(bowSounds[index], standardSoundVolume);
-        else Mix_VolumeChunk(bowSounds[index], volume);
-        Mix_PlayChannel(-1, bowSounds[index], 0);
-        break;
-    }
-    case SoundType::PlayerJumping:
-        if (volume == 0) Mix_VolumeChunk(jumpSounds[index], standardSoundVolume);
-        else Mix_VolumeChunk(jumpSounds[index], volume);
-        Mix_PlayChannel(-1, jumpSounds[index], 0);
-        break;
-    case SoundType::ArrowHitting:
-        if (volume == 0) Mix_VolumeChunk(arrowHitSounds[index], standardSoundVolume);
-        else Mix_VolumeChunk(arrowHitSounds[index], volume);
-        Mix_PlayChannel(-1, arrowHitSounds[index], 0);
-        break;
-    case SoundType::ArrowReturning:
-        if (volume == 0) Mix_VolumeChunk(arrowReturnSounds[index], standardSoundVolume);
-        else Mix_VolumeChunk(arrowReturnSounds[index], volume);
-        Mix_PlayChannel(-1, arrowReturnSounds[index], 0);
-        break;
+        case SoundType::BowShooting: {
+            if (volume == 0) Mix_VolumeChunk(bowSounds[index], standardSoundVolume);
+            else Mix_VolumeChunk(bowSounds[index], volume);
+            Mix_PlayChannel(-1, bowSounds[index], 0);
+            break;
+        }
+        case SoundType::PlayerJumping:
+            if (volume == 0) Mix_VolumeChunk(jumpSounds[index], standardSoundVolume);
+            else Mix_VolumeChunk(jumpSounds[index], volume);
+            Mix_PlayChannel(-1, jumpSounds[index], 0);
+            break;
+        case SoundType::ArrowHitting:
+            if (volume == 0) Mix_VolumeChunk(arrowHitSounds[index], standardSoundVolume);
+            else Mix_VolumeChunk(arrowHitSounds[index], volume);
+            Mix_PlayChannel(-1, arrowHitSounds[index], 0);
+            break;
+        case SoundType::ArrowReturning:
+            if (volume == 0) Mix_VolumeChunk(arrowReturnSounds[index], standardSoundVolume);
+            else Mix_VolumeChunk(arrowReturnSounds[index], volume);
+            Mix_PlayChannel(-1, arrowReturnSounds[index], 0);
+            break;
     }
 }
 

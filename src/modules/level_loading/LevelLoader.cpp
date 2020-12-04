@@ -21,10 +21,10 @@ void LevelLoader::loadMap(std::string filename) {
     IStreamWrapper isw(fis);
     Document d;
     d.ParseStream(isw);
-    rapidjson::Value& layers = d["layers"];
-    rapidjson::Value& layerObj = layers[0];
+    Value& layers = d["layers"];
+    Value& layerObj = layers[0];
     
-    rapidjson::Value& tilesets = d["tilesets"];
+    Value& tilesets = d["tilesets"];
     tileHeight = d["tileheight"].GetInt();
     tileWidth = d["tilewidth"].GetInt();
     glm::vec2 size = glm::vec2(tileWidth / 2, tileHeight / 2) / MAMGame::instance->physicsScale;
@@ -36,7 +36,7 @@ void LevelLoader::loadMap(std::string filename) {
     mapHeight = height * tileHeight;
     mapWidth = width * tileWidth;
 
-    rapidjson::Value& data = layerObj["data"];
+    Value& data = layerObj["data"];
     int verticalCounter = 0;
     glm::vec2 startOfBigPos;
     int bigCount = 0;
@@ -50,7 +50,7 @@ void LevelLoader::loadMap(std::string filename) {
     bool bowSet = false;
     glm::vec2 bowPos;
 
-    for (rapidjson::SizeType i = 0; i < data.Size(); i++) {
+    for (SizeType i = 0; i < data.Size(); i++) {
         int hozMod = i % width;
         int xPos = hozMod + x;
         int yPos = (verticalCounter + y) * -1;
@@ -99,7 +99,7 @@ void LevelLoader::loadMap(std::string filename) {
                 auto tile = createGameObject(position, GOType::rightSlope, tileId);
 
                 int lowerLeftId = i + width - 1;
-                int nexttileid = (lowerLeftId >= data.Size() || (lowerLeftId) % width == (width-1)) ? 0 : data[lowerLeftId].GetInt();
+                int nexttileid = (lowerLeftId >= data.Size() || (lowerLeftId) % width == (width - 1)) ? 0 : data[lowerLeftId].GetInt();
                 if (nexttileid != tileId) {
                     createBigSlopeRight(tile, position, tileId, size, i, width, data);
                 }
@@ -238,7 +238,6 @@ void LevelLoader::createBig(std::shared_ptr<GameObject> tile, glm::vec2 startOfB
     glm::vec2 center = glm::vec2((startOfBigPos.x + position.x) / 2, position.y);
     phys->initPolygon(b2_staticBody, center, 1, vertices, vertexCount, 1);
 }
-
 
 void LevelLoader::createBigSlopeRight(std::shared_ptr<GameObject> tile, glm::vec2 position, int tileId, glm::vec2 size, int initialIndex, int width, rapidjson::Value& data) {
     int slopeCount = 0; 
