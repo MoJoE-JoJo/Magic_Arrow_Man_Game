@@ -6,12 +6,12 @@
 
 ArrowPhysics::ArrowPhysics(GameObject* gameObject) : PhysicsComponent(gameObject) {
 	b2Vec2 vertices[4];
-	vertices[0].Set(-30 / MAMGame::instance->physicsScale, 10 / MAMGame::instance->physicsScale);
-	vertices[1].Set(-30 / MAMGame::instance->physicsScale, -10 / MAMGame::instance->physicsScale);
-	vertices[2].Set(30 / MAMGame::instance->physicsScale, -10 / MAMGame::instance->physicsScale);
-	vertices[3].Set(30 / MAMGame::instance->physicsScale, 10 / MAMGame::instance->physicsScale);
+	vertices[0].Set(-20 / MAMGame::instance->physicsScale, 5 / MAMGame::instance->physicsScale);
+	vertices[1].Set(-20 / MAMGame::instance->physicsScale, -5 / MAMGame::instance->physicsScale);
+	vertices[2].Set(20 / MAMGame::instance->physicsScale, -5 / MAMGame::instance->physicsScale);
+	vertices[3].Set(20 / MAMGame::instance->physicsScale, 5 / MAMGame::instance->physicsScale);
 
-	initPolygon(b2_dynamicBody, gameObject->getPosition() * 100000.0f, 0.2, vertices, 4, 0.1);
+	initPolygon(b2_dynamicBody, gameObject->getPosition() * 100000.0f, 0.4, vertices, 4, 0.1);
 	body->SetSleepingAllowed(false);
 	setSensor(true);
 }
