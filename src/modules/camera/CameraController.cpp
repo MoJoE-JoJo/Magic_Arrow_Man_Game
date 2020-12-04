@@ -1,9 +1,9 @@
 #pragma once
-#include "CameraController.hpp"
-#include "../../MAMGame.hpp"
 #include "sre/Camera.hpp"
 #include "sre/SDLRenderer.hpp"
 
+#include "../../MAMGame.hpp"
+#include "CameraController.hpp"
 
 void CameraController::init() {
     camera.setOrthographicProjection(MAMGame::instance->windowSize.y / 2, -1, 1);
@@ -35,9 +35,4 @@ void CameraController::updateCamera(float deltaTime) {
 void CameraController::centerOnPlayer() {
     glm::vec3 playerPos = glm::vec3(MAMGame::instance->playerController->player->getPosition(), camera.getPosition().z);
     camera.setPositionAndRotation(glm::vec3(playerPos.x - MAMGame::instance->windowSize.x / 2, playerPos.y - MAMGame::instance->windowSize.y / 2, camera.getPosition().z), camera.getRotationEuler());
-}
-
-
-float CameraController::easingFunc(float x) {
-    return 1 - (1 - x) * (1 - x);
 }

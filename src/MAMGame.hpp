@@ -73,8 +73,6 @@ private:
 
 	glm::vec2 levelBounds;
 
-	//Audio
-
 	friend class PhysicsComponent;
 	friend class LevelLoader;
 	friend class CameraController;

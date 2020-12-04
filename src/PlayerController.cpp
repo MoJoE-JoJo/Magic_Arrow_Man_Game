@@ -1,6 +1,5 @@
 #pragma once
 #include "PlayerController.hpp"
-#include "modules/physics/components/PhysicsComponent.hpp"
 #include "PlayerObject.hpp"
 
 PlayerController::PlayerController(std::shared_ptr<PlayerObject> player) {

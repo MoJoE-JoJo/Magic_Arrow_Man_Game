@@ -1,16 +1,17 @@
 #pragma once
-#include "LevelLoader.hpp"
 #include "../../../rapidjson/rapidjson.h"
 #include "../../../rapidjson/document.h"
 #include "../../../rapidjson/istreamwrapper.h"
+#include "sre/SpriteAtlas.hpp"
 #include <fstream>
 #include <iostream>
 #include <memory>
+#include <vector>
+
 #include "../../GameObject.hpp"
 #include "../../MAMGame.hpp"
 #include "../../SpriteComponent.hpp"
-#include "sre/SpriteAtlas.hpp"
-#include <vector>
+#include "LevelLoader.hpp"
 
 using namespace std;
 using namespace rapidjson;
@@ -103,7 +104,6 @@ void LevelLoader::loadMap(std::string filename) {
                 if (nexttileid != tileId) {
                     createBigSlopeRight(tile, position, tileId, size, i, width, data);
                 }
-
                 
                 break;
             }
@@ -121,9 +121,6 @@ void LevelLoader::loadMap(std::string filename) {
             case 23: {
                 position = position + glm::vec2(0, 15);
                 auto tile = createGameObject(position, GOType::target, tileId);
-                auto phys = tile->addComponent<PhysicsComponent>();
-
-                auto center = tile->getPosition() + glm::vec2(0, 7);
 
                 b2Vec2 vertices[4];
                 vertices[0].Set(-10 / MAMGame::instance->physicsScale, 30 / MAMGame::instance->physicsScale);
@@ -131,6 +128,8 @@ void LevelLoader::loadMap(std::string filename) {
                 vertices[2].Set(10 / MAMGame::instance->physicsScale, -50 / MAMGame::instance->physicsScale);
                 vertices[3].Set(10 / MAMGame::instance->physicsScale, 30 / MAMGame::instance->physicsScale);
 
+                auto center = tile->getPosition() + glm::vec2(0, 7);
+                auto phys = tile->addComponent<PhysicsComponent>();
                 phys->initPolygon(b2_staticBody, center, 1, vertices, 4, 1);
                 phys->setSensor(true);
                 break;
@@ -141,15 +140,23 @@ void LevelLoader::loadMap(std::string filename) {
                 break;
             }
             case 6:
-            case 7:
             case 8:
+            case 15:
+            case 19: {
+                auto tile = createGameObject(position, GOType::wall, tileId);
+
+                int nextId = ((i + width) >= data.Size()) ? 0 : data[i + width].GetInt();
+                if (nextId != 6 && nextId != 8 && nextId != 15 && nextId != 19) {
+                    createBigVerticalWall(tile, position, tileId, size, i, width, data);
+                }
+                break;
+            }
+            case 7:
             case 10:
             case 11:
             case 12:
             case 13:
-            case 14:
-            case 15:
-            case 19: {
+            case 14: {
                 auto tile = createGameObject(position, GOType::wall, tileId);
 
                 if (!startedOnWall) {
@@ -162,8 +169,8 @@ void LevelLoader::loadMap(std::string filename) {
                 }
 
                 int nextId = (i >= data.Size() || (i + 1) % width == 0) ? 0 : data[i + 1].GetInt();
-                if (nextId != 6 && nextId != 7 && nextId != 8 && nextId != 10 && nextId != 11 && nextId != 12 && nextId != 13 && nextId != 14 && nextId != 15 && nextId != 19) {
-                    createBig(tile, startOfWallPos, position, wallCount, false, false, size);
+                if (nextId != 7 && nextId != 10 && nextId != 11 && nextId != 12 && nextId != 13 && nextId != 14) {
+                    createBig(tile, startOfWallPos, position, wallCount, false, false, size, 1.0f);
 
                     startedOnWall = false;
                     wallCount = 0;
@@ -220,18 +227,19 @@ float LevelLoader::getMapWidth() {
     return mapWidth;
 }
 
-void LevelLoader::createBig(std::shared_ptr<GameObject> tile, glm::vec2 startOfBigPos, glm::vec2 position, int bigCount, bool leftDiamond, bool rightDiamond, glm::vec2 size) {
+void LevelLoader::createBig(std::shared_ptr<GameObject> tile, glm::vec2 startOfBigPos, glm::vec2 position, int bigCount, bool leftDiamond, bool rightDiamond, glm::vec2 size, float offset) {
     b2Vec2 vertices[6];
     int vertexCount = 4;
     float mult = 0.5;
+    offset = offset / MAMGame::instance->physicsScale;
     if (leftDiamond) {
         vertices[0].Set(-size.x * bigCount, size.y);
         vertices[1].Set(-size.x * bigCount, size.y * mult);
         vertices[2].Set((-size.x * bigCount) + (size.x * 2) - (size.x * mult), -size.y);
         vertexCount++;
     } else {
-        vertices[0].Set(-size.x * bigCount, size.y);
-        vertices[1].Set(-size.x * bigCount, -size.y);
+        vertices[0].Set((-size.x * bigCount) + offset, size.y);
+        vertices[1].Set((-size.x * bigCount) + offset, -size.y);
     }
 
     if (rightDiamond) {
@@ -240,8 +248,8 @@ void LevelLoader::createBig(std::shared_ptr<GameObject> tile, glm::vec2 startOfB
         vertices[4 + (vertexCount - 4)].Set(size.x * bigCount, size.y);
         vertexCount++;
     } else {
-        vertices[2 + (vertexCount - 4)].Set(size.x * bigCount, -size.y);
-        vertices[3 + (vertexCount - 4)].Set(size.x * bigCount, size.y);
+        vertices[2 + (vertexCount - 4)].Set((size.x * bigCount) - offset, -size.y);
+        vertices[3 + (vertexCount - 4)].Set((size.x * bigCount) - offset, size.y);
     }
 
     auto phys = tile->addComponent<PhysicsComponent>();
@@ -294,6 +302,31 @@ void LevelLoader::createBigSlopeLeft(std::shared_ptr<GameObject> tile, glm::vec2
     vertices[3].Set(-(size.x * slopeCount), (size.y * slopeCount));
 
     glm::vec2 otherPosition = glm::vec2(position.x - ((slopeCount - 1) * tileWidth), position.y + ((slopeCount - 1) * tileHeight));
+    glm::vec2 center = glm::vec2((otherPosition.x + position.x) / 2, (otherPosition.y + position.y) / 2);
+
+    auto phys = tile->addComponent<PhysicsComponent>();
+    phys->initPolygon(b2_staticBody, center, 1, &vertices[0], 4, 1);
+}
+
+void LevelLoader::createBigVerticalWall(std::shared_ptr<GameObject> tile, glm::vec2 position, int tileId, glm::vec2 size, int initialIndex, int width, rapidjson::Value& data) {
+    int vertCount = 0;
+    int nextId;
+    do {
+        vertCount++;
+        initialIndex = initialIndex - width;
+        nextId = (initialIndex < 0) ? 0 : data[initialIndex].GetInt();
+    } while (nextId == 6 || nextId == 8 || nextId == 15 || nextId == 19);
+
+    float offset = vertCount / 2.0f;
+    float x = size.x;
+    float y = -((size.y * 2) * (offset));
+    b2Vec2 vertices[4];
+    vertices[0].Set(-x, y);
+    vertices[1].Set(-x, -y);
+    vertices[2].Set(x, -y);
+    vertices[3].Set(x, y);
+
+    glm::vec2 otherPosition = glm::vec2(position.x, position.y + ((vertCount - 1) * tileHeight));
     glm::vec2 center = glm::vec2((otherPosition.x + position.x) / 2, (otherPosition.y + position.y) / 2);
 
     auto phys = tile->addComponent<PhysicsComponent>();

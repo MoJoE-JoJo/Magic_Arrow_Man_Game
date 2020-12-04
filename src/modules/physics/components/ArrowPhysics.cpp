@@ -1,6 +1,6 @@
 #pragma once
-#include "../../../GameObject.hpp"
 #include "ArrowPhysics.hpp"
+#include "../../../GameObject.hpp"
 #include "../../../BowObject.hpp"
 #include "../../../MAMGame.hpp"
 
