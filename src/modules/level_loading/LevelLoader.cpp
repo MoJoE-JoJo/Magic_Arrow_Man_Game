@@ -27,8 +27,7 @@ void LevelLoader::loadMap(std::string filename) {
     rapidjson::Value& tilesets = d["tilesets"];
     tileHeight = d["tileheight"].GetInt();
     tileWidth = d["tilewidth"].GetInt();
-    tileSize = glm::vec2(tileWidth / 2, tileHeight / 2);
-    glm::vec2 size = getTileSize() / MAMGame::instance->physicsScale;
+    glm::vec2 size = glm::vec2(tileWidth / 2, tileHeight / 2) / MAMGame::instance->physicsScale;
 
     int x = layerObj["x"].GetInt();
     int y = layerObj["y"].GetInt();
@@ -175,11 +174,6 @@ void LevelLoader::loadMap(std::string filename) {
                     startedOnWall = false;
                     wallCount = 0;
                 }
-
-                //auto phys = tile->addComponent<PhysicsComponent>();
-                //float wallSizeOffset = 0.5;
-                //glm::vec2 wallSize = glm::vec2(getTileSize().x - wallSizeOffset, getTileSize().y - wallSizeOffset);
-                //phys->initBox(b2_staticBody, wallSize, tile->getPosition(), 1);
                 break;
             }
             case 0:
@@ -205,18 +199,6 @@ std::shared_ptr<GameObject> LevelLoader::createGameObject(glm::vec2 position, GO
     auto sprite = MAMGame::instance->getSprite(tileId);
     spriteBox->setSprite(sprite);
     return tile;
-}
-
-int LevelLoader::getTileWidth() {
-    return tileWidth;
-}
-
-int LevelLoader::getTileHeight() {
-    return tileHeight;
-}
-
-glm::vec2 LevelLoader::getTileSize() {
-    return tileSize;
 }
 
 float LevelLoader::getMapHeight() {

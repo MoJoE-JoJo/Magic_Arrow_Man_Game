@@ -92,7 +92,7 @@ void MAMGame::createPlayerObject(glm::vec2 pos) {
     auto player = shared_ptr<PlayerObject>(new PlayerObject(pos, sprites->get("player_f1.png"), sprites->get("player_f2.png"), sprites->get("player_f3.png")));
     gameObjects.push_back(player);
     playerController = shared_ptr<PlayerController>(new PlayerController(player));
-    cameraController.centerOnPlayer();
+    cameraController.centerOnPlayer(player->getPosition());
 }
 
 void MAMGame::createBowObject(glm::vec2 pos, bool samePosAsPlayer) {
@@ -163,7 +163,7 @@ void MAMGame::update(float time) {
         }
         if (!isPlayerWithinBounds()) reset();
 
-        cameraController.updateCamera(time);  
+        cameraController.updateCamera(time, playerController->player->getPosition());
     }
 }
 

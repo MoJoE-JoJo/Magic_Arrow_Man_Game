@@ -4,7 +4,6 @@
 #include <locale>
 #include <iomanip>
 #include <ctime>
-
 #include <string>
 
 class Level {

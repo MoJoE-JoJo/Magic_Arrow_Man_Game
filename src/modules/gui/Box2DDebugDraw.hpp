@@ -1,9 +1,11 @@
+//
+// Created by Morten Nobel-Jørgensen on 19/10/2017.
+//
 #pragma once
 
 #include <Box2D/Common/b2Draw.h>
 #include <vector>
 #include <glm/vec3.hpp>
-
 
 // Captures debug information from Box2D as lines (polygon fill and color is discarded)
 class Box2DDebugDraw : public b2Draw {
