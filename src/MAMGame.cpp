@@ -28,6 +28,7 @@ MAMGame::MAMGame() : debugDraw(physicsScale) {
     audioSystem = AudioPlayer();
     audioSystem.init(MIX_MAX_VOLUME / 2, MIX_MAX_VOLUME / 2);
     audioSystem.startBackgroundMusic(MusicType::Background_Game, 40);
+    cameraController.init();
 
     gui = new Gui(windowSize);
     guiState = GuiState::MainMenu;
@@ -51,7 +52,7 @@ void MAMGame::init() {
     gameObjects.clear();
     physicsComponentLookup.clear();
 
-    cameraController.init();
+
     initPhysics();
 
     sprites = SpriteAtlas::create("MAM.json", "MAM.png");
