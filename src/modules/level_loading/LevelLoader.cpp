@@ -71,7 +71,7 @@ void LevelLoader::loadMap(std::string filename) {
             case 17:
             case 18: {
                 auto tile = createGameObject(position, GOType::ground, tileId);
-             
+                
                 if (!startedOnBig) {
                     startOfBigPos = position;
                     bigCount++;
