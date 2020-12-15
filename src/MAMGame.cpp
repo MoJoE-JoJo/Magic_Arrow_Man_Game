@@ -148,6 +148,8 @@ bool MAMGame::ShouldCollide(b2Fixture* fixtureA, b2Fixture* fixtureB) {
 
 void MAMGame::update(float time) {
     if (gameState == GameState::Running) {
+        float winTimerFrameFactor = time * 60.0f;
+        winTimer += time/winTimerFrameFactor;
         updatePhysics();
         
         auto it = gameObjects.begin();
@@ -307,14 +309,13 @@ void MAMGame::reset() {
 }
 
 void MAMGame::levelWon() {
-    end = std::chrono::steady_clock::now();
-    int winTime = std::chrono::duration_cast<std::chrono::seconds>(end - begin).count();
+    int winTime = winTimer;
+    winTimer = 0.0f;
     gui->setWinTime(winTime, currentLevel);
     setGameState(GameState::Menu);
     setGuiState(GuiState::Won);
 }
 
 void MAMGame::startTime() {
-    begin = std::chrono::steady_clock::now();
-    end = std::chrono::steady_clock::now();
+    winTimer = 0.0f;
 }

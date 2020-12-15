@@ -1,6 +1,5 @@
 #pragma once
 #include "Box2D/Dynamics/b2World.h"
-#include <chrono>
 
 #include "GameObject.hpp"
 #include "PlayerController.hpp"
@@ -49,8 +48,6 @@ private:
 
 	Gui* gui;
 	GuiState guiState;
-	std::chrono::steady_clock::time_point begin;
-	std::chrono::steady_clock::time_point end;
 
 	std::string currentLevel = "";
 	sre::SDLRenderer r;
@@ -72,6 +69,7 @@ private:
 	float levelYMaxBound;
 
 	glm::vec2 levelBounds;
+	float winTimer = 0.0f;
 
 	friend class PhysicsComponent;
 };
